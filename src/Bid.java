@@ -36,7 +36,6 @@ public class Bid {
 		}
 		
 		JsonNode bidsNode =  jsonNode.get("messages");
-		System.out.println(bidsNode);
 		for (JsonNode b : bidsNode) {
 			System.out.println(b);
 			this.messages.add(new Message(b.toString()));

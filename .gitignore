@@ -1,7 +1,11 @@
 <<<<<<< HEAD
 /bin/
-=======
-api-key.txt
 .idea
+.settings
+=======
+.classpath
+.project
+pom.xml
+api-key.txt
 venv
 >>>>>>> branch 'master' of https://git.infotech.monash.edu/fit3077-s1-2021/AndrewAndBassel/project.git

@@ -2,9 +2,9 @@ public class OpenBidsWindow {
 	
 	OpenBidsWindow(User currentUser) {
 		OpenBidsLayout window = new OpenBidsLayout(currentUser);
-        window.setTitle("See Bids");
+        window.setTitle("See Requests");
         window.setVisible(true);
-        window.setBounds(100, 100, 500, 800);
+        window.setBounds(100, 100, 500, 750);
         window.setResizable(false);
     }
     

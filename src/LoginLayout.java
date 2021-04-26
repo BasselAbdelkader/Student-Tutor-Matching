@@ -52,7 +52,7 @@ public class LoginLayout extends JFrame implements ActionListener {
 			}
             		
             if (currentUser != null) {
-            	new OpenBidsWindow(currentUser);
+            	new SelectActionWindow(currentUser);
                 dispose();
                 JOptionPane.showMessageDialog(this, "Login Successful");
                 

@@ -1,10 +1,15 @@
 import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -12,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -20,26 +26,40 @@ import javax.swing.event.ListSelectionListener;
 
 public class OpenBidsLayout extends JFrame implements ActionListener, ListSelectionListener {
 	
-	 	Container container = getContentPane();
-	    JLabel searchSubjectLabel = new JLabel("Search bids for subject:");
-	    JComboBox searchSubjectInput = null;
-	    JLabel bidsLabel = new JLabel("Available bids:");
-	    DefaultListModel<String> bidListModel = new DefaultListModel<String>();
-	    JList<String> bidsList = new JList<String>(bidListModel);  
-	    JLabel bidsDetailsLabel = new JLabel("Bid Deatils:");
-	    JTextArea bidDetails = new JTextArea();
-	    JButton closeDownBtn = new JButton("Close This Bid");
-	    JButton newBidBtn = new JButton("New Bid");
-	    JButton seeMyBidsBtn = new JButton("My Bids");
-	    JLabel messagesLbabel = new JLabel("Bid Messages");
-	    DefaultListModel<Message> msgListModel = new DefaultListModel<Message>();
-	    JList<Message> msgList = new JList<Message>(msgListModel);
-	    JTextField chatInput = new JTextField();
-	    JButton sendChatBtn = new JButton("Send");
-	    ArrayList<Subject> subjects;
+	 	ArrayList<Subject> subjects;
 	    Bid selectedBid = null;
 	    Subject selectedSubject = null;
 	    User currentUser = null;
+	    String[] numbers = {"1","2","3","4","5","6","7"};
+	    
+	 	Container container = getContentPane();
+	    JLabel searchSubjectLabel = new JLabel("Search request for subject:");
+	    JComboBox searchSubjectInput = null;
+	    JLabel requestsLabel = new JLabel("Available requests:");
+	    DefaultListModel<String> requestListModel = new DefaultListModel<String>();
+	    JList<String> requestList = new JList<String>(requestListModel);  
+	    JLabel requestDetailsLabel = new JLabel("Request Details:");
+	    JTextArea requestDetails = new JTextArea();
+	    
+	    
+	    JLabel createBidLabel = new JLabel("Create a bid");
+	   
+		JLabel hoursPerSessionLabel = new JLabel("Hours per session :");
+		JLabel sessionsPerWeekLabel = new JLabel("Sessions per week :");
+		JLabel ratePerSessionLabel = new JLabel("Rate per session :");
+		JComboBox hoursPerSessionInput = new JComboBox(numbers);
+		JComboBox sessionsPerWeekInput = new JComboBox(numbers);
+		JTextField ratePerSessionInput = new JTextField("",50);
+		JButton createBidBtn = new JButton("Create Bid");
+		JButton seeBidsBtn = new JButton("See All Bids");
+		
+		JLabel orLabel = new JLabel("OR");
+		JButton buyOutBtn = new JButton("Buy Out Request");
+		JButton messageBtn = new JButton("Message Student");
+		
+
+	    
+	   
 	    
 	    OpenBidsLayout(User currentUser) {
 	    	this.currentUser = currentUser;
@@ -56,41 +76,55 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 			}
 	          
 	    	container.setLayout(null);
+	        
+	    	requestDetails.setEditable(false);
 	    	
-	    	searchSubjectLabel.setBounds(10, 10, 150, 30);
-	    	searchSubjectInput.setBounds(160, 10, 200, 30);
-	    	bidsLabel.setBounds(10, 50, 150, 30);
-	    	bidsList.setBounds(10,90, 350,200);
-	    	newBidBtn.setBounds(370, 90, 100,30);
-	    	seeMyBidsBtn.setBounds(370,130, 100, 30);
-	    	bidsDetailsLabel.setBounds(10, 300, 150, 30);
-	    	bidDetails.setBounds(10, 340, 460, 150);
-	    	messagesLbabel.setBounds(10, 500, 150, 30);
-	    	closeDownBtn.setBounds(320, 500, 150, 30);
-	    	bidDetails.setEditable(false);
-	    	msgList.setBounds(10,540, 460, 150);
-	        chatInput.setBounds(10,700, 350, 30);
-	        sendChatBtn.setBounds(370, 700, 100, 30);
-	        
+	    	searchSubjectLabel.setBounds(10, 10, 200, 30);
+	    	searchSubjectInput.setBounds(210, 10, 200, 30);
+	    	requestsLabel.setBounds(10, 50, 150, 30);
+	    	requestList.setBounds(10,90, 460,200);
+	    	requestDetailsLabel.setBounds(10, 300, 150, 30);
+	    	requestDetails.setBounds(10, 340, 460, 150);
+	    	createBidLabel.setBounds(10, 500, 150, 30);
+	    	hoursPerSessionLabel.setBounds(10, 540, 150, 30);
+	    	sessionsPerWeekLabel.setBounds(10, 580, 150, 30);
+	    	ratePerSessionLabel.setBounds(10, 620, 150, 30);
+	    	hoursPerSessionInput.setBounds(160, 540, 100, 30);
+	    	sessionsPerWeekInput.setBounds(160, 580, 100, 30);
+	    	ratePerSessionInput.setBounds(160, 620, 100, 30);
+	    	seeBidsBtn.setBounds(10, 660, 120, 30);
+	    	createBidBtn.setBounds(140, 660, 120, 30);
+	    	orLabel.setBounds(290, 580, 30,30);
+	    	buyOutBtn.setBounds(330, 540, 140, 50);
+	    	messageBtn.setBounds(330, 600, 140, 50);
+
 	        searchSubjectInput.addActionListener(this);
-	        closeDownBtn.addActionListener(this);
-	        bidsList.addListSelectionListener(this);
-	        sendChatBtn.addActionListener(this);
-	        
+	        buyOutBtn.addActionListener(this);
+	        requestList.addListSelectionListener(this);
+	        messageBtn.addActionListener(this);
+	        seeBidsBtn.addActionListener(this);
+	        createBidBtn.addActionListener(this);
 	        
 	        container.add(searchSubjectLabel);
 	        container.add(searchSubjectInput);
-	        container.add(bidsLabel);
-	        container.add(bidsList);
-	        container.add(bidsDetailsLabel);
-	        container.add(bidDetails);
-	        container.add(closeDownBtn);
-	        container.add(messagesLbabel);
-	        container.add(newBidBtn);
-	        container.add(seeMyBidsBtn);
-	        container.add(msgList);
-	        container.add(chatInput);
-	        container.add(sendChatBtn);
+	        container.add(requestsLabel);
+	        container.add(requestList);
+	        container.add(requestDetailsLabel);
+	        container.add(requestDetails);
+	        container.add(createBidLabel);
+	        container.add(hoursPerSessionLabel);
+	        container.add(sessionsPerWeekLabel);
+	        container.add(ratePerSessionLabel);
+	        container.add(hoursPerSessionInput);
+	        container.add(sessionsPerWeekInput);
+	        container.add(ratePerSessionInput);
+	        container.add(seeBidsBtn);
+	        container.add(createBidBtn);
+	        container.add(orLabel);
+	        container.add(buyOutBtn);
+	        container.add(messageBtn);
+	        
+
 
 
 	    }
@@ -99,42 +133,36 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == searchSubjectInput) {
-			bidListModel.clear();
+			requestListModel.clear();
 			selectedSubject = subjects.get(searchSubjectInput.getSelectedIndex());
 			ArrayList<String> bids = selectedSubject.getBidIds();
-			bidListModel.addAll(bids);
-			bidDetails.setText("");
-        }else if(e.getSource() == closeDownBtn) {
+			requestListModel.addAll(bids);
+			requestDetails.setText("");
+        }else if(e.getSource() == buyOutBtn) {
         	try {
 				Application.bids.closeBid(selectedBid);
-				JOptionPane.showMessageDialog(this, "Bid Closed");
+				JOptionPane.showMessageDialog(this, "Request bought out");
 			}catch (Exception e1) {
-				JOptionPane.showMessageDialog(this, "Error closing bids");
+				JOptionPane.showMessageDialog(this, "Error buying out request");
 			}
-        }else if(e.getSource() == sendChatBtn) {
-        	if (chatInput.getText().length() > 0 && selectedBid != null) {
-        		try {
-					Application.messages.sendMessage(selectedBid, currentUser, chatInput.getText());
-					JOptionPane.showMessageDialog(this, "Message sent");
-				} catch (Exception e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Unable to send message");
-				}
-        	}
+        }else if(e.getSource() == messageBtn) {
+        	new MessagesWindow(currentUser,selectedBid.getId());
+        }else if(e.getSource() == seeBidsBtn) {
+        	new RequestWindow(currentUser,selectedBid.getId());
         }
+
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if (e.getSource() == bidsList) {
-			String id = bidsList.getSelectedValue();
+		if (e.getSource() == requestList) {
+			String id = requestList.getSelectedValue();
 			if(id != null) {
 				System.out.println(id);
 				try {
 					selectedBid = Application.bids.getBid(id);
-					bidDetails.setText(selectedBid.toString());
-					msgListModel.clear();
-					msgListModel.addAll(selectedBid.getMessageIds());
+					requestDetails.setText(selectedBid.toString());
+
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, "Unable to get bid details");

@@ -12,6 +12,31 @@ public class BidsAPI extends APIWrapper {
 		super(api_key, rootUrl + "/bid");
 	}
 	
+	public String addBid(Bid bid) throws Exception{
+	
+		String jsonString = "{" +
+			      "\"type\":\"" + bid.getType() + "\"" + "," +
+			      "\"initiatorId\":\"" + bid.getInitiatorId() + "\"" + "," +
+			      "\"dateCreated\":\"" + bid.getDateCreated() + "\"" + "," +
+			      "\"subjectId\":\"" + bid.getSubjectId() + "\"" + "," +
+			      "\"additionalInfo\":{" + 
+			      		"\"competency\":\""+ bid.getCompetency() + "\"" + "," +
+			      		"\"hoursPerSession\":\""+ bid.getHoursPerSession() + "\"" + "," +
+			      		"\"sessionsPerWeek\":\""+ bid.getSessionsPerWeek()+ "\"" + "," +
+			      		"\"ratePerSession\":\""+ bid.getRatePerSession()+ "\"" + "," +
+			      		"\"contractIds\":[]" +
+			      	"}" + 			      
+			      "}";
+
+		
+		String response = super.postHttpRequest(jsonString, url);
+		System.out.println(response);
+		ObjectNode jsonNode = new ObjectMapper().readValue(response, ObjectNode.class);
+		
+		return jsonNode.get("id").textValue();
+		
+	}
+	
 	public Bid getBid(String id) throws Exception {
 
 		String response =  super.getHttpRequest(url + "/" + id + "?fields=messages");

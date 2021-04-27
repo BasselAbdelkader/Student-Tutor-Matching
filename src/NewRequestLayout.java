@@ -97,10 +97,8 @@ public class NewRequestLayout extends JFrame implements ActionListener {
 		// TODO Auto-generated method stub
 		
 		if(e.getSource() == createRequestBtn) {
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			Instant instant = timestamp.toInstant(); 
+
 			Bid b = new Bid(currentUser,
-					instant.toString(), 
 					requestTypeInput.getSelectedItem().toString(),
 					subjects.get(subjectInput.getSelectedIndex()).getId(),
 					competencyInput.getSelectedItem().toString(),
@@ -110,8 +108,7 @@ public class NewRequestLayout extends JFrame implements ActionListener {
 					);
 			try {
 				String id = Application.bids.addBid(b);
-				System.out.println(id);
-				new RequestWindow(currentUser, id);
+				new RequestWindow(currentUser, Application.bids.getBid(id));
 				dispose();
 			} catch (Exception e1) {
 				e1.printStackTrace();

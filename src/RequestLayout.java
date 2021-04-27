@@ -2,12 +2,14 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -16,6 +18,8 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 	
 	User currentUser = null;
 	Bid request = null;
+	ArrayList<Contract> bids = null;
+	Contract selectedContract = null;
 	
 	Container container = getContentPane();
 	JLabel requestDetailsLabel = new JLabel("Details of the request.");
@@ -32,16 +36,10 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
     JButton closeBidBtn = new JButton("Close this bid");
     
     
-	public RequestLayout(User currentUser, String requestId){
+	public RequestLayout(User currentUser, Bid request){
 		this.currentUser = currentUser;
-		try {
-			request = Application.bids.getBid(requestId);
-			requestDetails.setText(request.toString());
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-//			dispose();
-		}
+		this.request = request;
+		
 		
 		container.setLayout(null);
 		
@@ -74,22 +72,75 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 		
 		
 		//TODO: Add condition, if currrentUser != requestor, disable closeBidBtn and messageBtn
-		container.add(messageBtn);
-		container.add(closeBidBtn);
+		if (currentUser.getId().contentEquals(request.getInitiatorId())) {
+			container.add(messageBtn);
+			container.add(closeBidBtn);
+		}
 		
+		refresh();
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
+		if (e.getSource() == bidsList) {
+			String id = bidsList.getSelectedValue();
+			if(id != null) {
+				try {
+					selectedContract = Application.contracts.getContract(id);
+					bidDetails.setText(selectedContract.toString());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(this, "Unable to get bid details");
+				}
+			}
+			
+		}
 		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		
 		if(e.getSource() == messageBtn) {
 			new MessagesWindow(currentUser,request.getId());
-		}
+		}else if(e.getSource() == closeBidBtn) {
+        	try {
+        		Application.contracts.signContract(selectedContract.getId());
+				Application.bids.closeBid(request);
+				JOptionPane.showMessageDialog(this, "Bid closed");
+				dispose();
+			}catch (Exception e1) {
+				JOptionPane.showMessageDialog(this, "Error buying out request");
+			}
+        }else if(e.getSource() == refreshBtn) {
+    		refresh();
+    	}
+		
 	}
 
+	private void refresh() {
+		try {
+			if(Application.contracts.getSignedContract(request.getId()) != null) {
+				
+				JOptionPane.showMessageDialog(this, "This request has already been bought out. Check your contracts.");
+				dispose();
+			}
+			
+			requestDetails.setText(request.toString());
+			
+			bidListModel.clear();
+			bids = Application.contracts.getUnsignedContracts(request.getId());
+			for(int i = 0; i < bids.size(); i++) {
+				bidListModel.add(i,bids.get(i).getId());
+			}
+			bidDetails.setText("");
+			
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error getting request details");
+//			dispose();
+		}
+	}
 }

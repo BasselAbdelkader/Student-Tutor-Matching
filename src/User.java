@@ -26,8 +26,10 @@ public class User {
 		this.isTutor = jsonNode.get("isTutor").booleanValue();
 		
 		JsonNode bidsNode =  jsonNode.get("initiatedBids");
-		for (JsonNode b : bidsNode) {
-			this.userBidIds.add(b.get("id").textValue());
+		if(bidsNode != null) {
+			for (JsonNode b : bidsNode) {
+				this.userBidIds.add(b.get("id").textValue());
+			}
 		}
 		
 	}

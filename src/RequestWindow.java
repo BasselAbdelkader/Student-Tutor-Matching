@@ -1,9 +1,9 @@
 
 public class RequestWindow {
 	
-	RequestWindow(User currentUser, String requestId){
-		RequestLayout window = new RequestLayout(currentUser,requestId);
-        window.setTitle("Request " + requestId);
+	RequestWindow(User currentUser, Bid request){
+		RequestLayout window = new RequestLayout(currentUser,request);
+        window.setTitle("Request " + request.getId());
         window.setVisible(true);
         window.setBounds(100, 100, 510, 700);
         window.setResizable(false);

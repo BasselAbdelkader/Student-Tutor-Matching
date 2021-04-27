@@ -13,11 +13,14 @@ public class BidsAPI extends APIWrapper {
 	}
 	
 	public String addBid(Bid bid) throws Exception{
+		
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		Instant instant = timestamp.toInstant(); 
 	
 		String jsonString = "{" +
 			      "\"type\":\"" + bid.getType() + "\"" + "," +
 			      "\"initiatorId\":\"" + bid.getInitiatorId() + "\"" + "," +
-			      "\"dateCreated\":\"" + bid.getDateCreated() + "\"" + "," +
+			      "\"dateCreated\":\"" + instant.toString() + "\"" + "," +
 			      "\"subjectId\":\"" + bid.getSubjectId() + "\"" + "," +
 			      "\"additionalInfo\":{" + 
 			      		"\"competency\":\""+ bid.getCompetency() + "\"" + "," +

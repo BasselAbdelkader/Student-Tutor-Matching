@@ -18,12 +18,11 @@ public class Bid {
 	private String sessionsPerWeek;
 	private String ratePerSession;
 	private ArrayList<String> contractIds = new ArrayList<String>();
-	public Bid(User user, String dateCreated, String type, String subjectId, String competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession) {
+	public Bid(User user, String type, String subjectId, String competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession) {
 
 		this.initiatorId = user.getId();
 		this.initiatorUserName = user.getUserName();
 		this.type = type;
-		this.dateCreated = dateCreated;
 		this.subjectId = subjectId;
 		this.competency = competency;
 		this.hoursPerSession = hrsPerSession;
@@ -111,7 +110,7 @@ public class Bid {
 
 	public String toString() {
 		String out  = "";
-	    out = out + type + " bid \n";
+	    out = out + type + " request \n";
 	    out = out + "Initiator: " + this.initiatorUserName + "\n";
 	    out = out + "Date Created: " + this.dateCreated + "\n";
 	    out = out + "Date Closed: " + this.dateClosedDown + "\n";

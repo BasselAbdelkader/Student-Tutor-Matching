@@ -140,15 +140,30 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 			requestDetails.setText("");
         }else if(e.getSource() == buyOutBtn) {
         	try {
+        		Contract contract = new Contract(currentUser, selectedBid);
+        		String id = Application.contracts.addContract(contract);
+        		System.out.println("CONTRACT ID " + id);
+        		Application.contracts.signContract(id);
 				Application.bids.closeBid(selectedBid);
 				JOptionPane.showMessageDialog(this, "Request bought out");
 			}catch (Exception e1) {
+				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Error buying out request");
 			}
-        }else if(e.getSource() == messageBtn) {
+        }else if (e.getSource() ==  createBidBtn) {
+        	try {
+        		Contract contract = new Contract(currentUser, selectedBid, hoursPerSessionInput.getSelectedItem().toString(), sessionsPerWeekInput.getSelectedItem().toString(), ratePerSessionInput.getText());
+        		String id = Application.contracts.addContract(contract);
+				JOptionPane.showMessageDialog(this, "Bid Added. You bid ID is : " + id);
+			}catch (Exception e1) {
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Error creating a bid");
+			}
+        }
+        else if(e.getSource() == messageBtn) {
         	new MessagesWindow(currentUser,selectedBid.getId());
         }else if(e.getSource() == seeBidsBtn) {
-        	new RequestWindow(currentUser,selectedBid.getId());
+        	new RequestWindow(currentUser,selectedBid);
         }
 
 	}
@@ -162,6 +177,11 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 				try {
 					selectedBid = Application.bids.getBid(id);
 					requestDetails.setText(selectedBid.toString());
+					boolean closed = selectedBid.getDateClosedDown() == null;
+					buyOutBtn.setEnabled(closed);
+					createBidBtn.setEnabled(closed);
+					messageBtn.setEnabled(closed);
+					seeBidsBtn.setEnabled(closed);
 
 				} catch (Exception e1) {
 					e1.printStackTrace();

@@ -50,8 +50,9 @@ public abstract class APIWrapper {
 
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-	    if (response.statusCode() != 200) {
+	    if (response.statusCode() != 200 && response.statusCode() != 201) {
 	    	System.out.print(response.statusCode());
+	    	throw new Exception("Bad Request");
 	    }
 
 	    return response.body();

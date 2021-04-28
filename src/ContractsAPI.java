@@ -32,7 +32,8 @@ public class ContractsAPI extends APIWrapper {
 			      "\"lessonInfo\":{" + 
 			      		"\"hoursPerSession\":\""+ contract.getHoursPerSession() + "\"" + "," +
 			      		"\"sessionsPerWeek\":\""+ contract.getSessionsPerWeek()+ "\"" + "," +
-			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" +
+			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" + "," +
+			      		"\"sessions\":[]" +
 			      	"}" + "," +
 			      "\"additionalInfo\":{" + 
 			      		"\"initialRequestId\":\""+ contract.initialRequestId() + "\"" + 
@@ -85,9 +86,14 @@ public class ContractsAPI extends APIWrapper {
 				"\"dateSigned\":\"" + instant.toString() + "\"" +
 			  "}";
 		if( getSignedContract(b) == null) {
-			String response = super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
+			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 			return true;
 		}
+		return false;
+	}
+	
+	public boolean addSessionToContract(Contract c, String s) throws Exception {
+		
 		return false;
 	}
 

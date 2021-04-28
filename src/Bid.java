@@ -6,22 +6,22 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Bid {
 	private String initiatorId;
-	private String initiatorUserName;
+	private String inititatorName;
 	private String id;
 	private String type;
 	private String dateCreated;
 	private String dateClosedDown;
 	private String subjectId;
 	private ArrayList<Message> messages = new ArrayList<Message>();
-	private String competency;
+	private int competency =0 ;
 	private String hoursPerSession;
 	private String sessionsPerWeek;
 	private String ratePerSession;
 	private ArrayList<String> contractIds = new ArrayList<String>();
-	public Bid(User user, String type, String subjectId, String competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession) {
+	public Bid(User user, String type, String subjectId, int competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession) {
 
 		this.initiatorId = user.getId();
-		this.initiatorUserName = user.getUserName();
+		this.inititatorName = user.getGivenName() + " " + user.getFamilyName();
 		this.type = type;
 		this.subjectId = subjectId;
 		this.competency = competency;
@@ -37,7 +37,7 @@ public class Bid {
 		this.type = jsonNode.get("type").textValue();
 		this.dateCreated = jsonNode.get("dateCreated").textValue();
 		this.initiatorId = jsonNode.get("initiator").get("id").textValue();
-		this.initiatorUserName = jsonNode.get("initiator").get("userName").textValue();
+		this.inititatorName = jsonNode.get("initiator").get("givenName").textValue() + " " + jsonNode.get("initiator").get("familyName").textValue();
 		this.subjectId = jsonNode.get("subject").get("id").textValue();
 		if (jsonNode.get("dateClosedDown") != null) {
 			this.dateClosedDown = jsonNode.get("dateClosedDown").textValue();
@@ -52,7 +52,7 @@ public class Bid {
 			this.ratePerSession = jsonNode.get("additionalInfo").get("ratePerSession").textValue();
 		}
 		if (jsonNode.get("additionalInfo").get("competency") != null) {
-			this.competency = jsonNode.get("additionalInfo").get("competency").textValue();
+			this.competency = jsonNode.get("additionalInfo").get("competency").intValue();
 		}
 		if (jsonNode.get("additionalInfo").get("contractIds") != null) {
 			JsonNode contracts = jsonNode.get("additionalInfo").get("contractIds");
@@ -70,6 +70,10 @@ public class Bid {
 	
 	public String getInitiatorId() {
 		return initiatorId;
+	}
+	
+	public String getInitiatorName() {
+		return inititatorName;
 	}
 	
 	public String getId() {
@@ -111,7 +115,7 @@ public class Bid {
 	public String toString() {
 		String out  = "";
 	    out = out + type + " request \n";
-	    out = out + "Initiator: " + this.initiatorUserName + "\n";
+	    out = out + "Initiator: " + this.inititatorName + "\n";
 	    out = out + "Date Created: " + this.dateCreated + "\n";
 	    out = out + "Date Closed: " + this.dateClosedDown + "\n";
 	    out = out + "Minimum Competency: " + this.competency + "\n";
@@ -121,7 +125,7 @@ public class Bid {
 	    return out;
 	}
 
-	public String getCompetency() {
+	public int getCompetency() {
 		return this.competency;
 	}
 	

@@ -1,5 +1,6 @@
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,8 +8,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Contract {
 	private String firstPartyId;
-	private String bidderName;
+	private String tutorName;
 	private String secondPartyId;
+	private String studentName;
 	private String id;
 	private String subjectId;
 	private String dateCreated;
@@ -18,11 +20,13 @@ public class Contract {
 	private String ratePerSession;
 	private String initialRequestId;
 	private String dateSigned;
+	private ArrayList<String> sessions = new ArrayList<String>();
 	
 	public Contract(User firstParty, Bid fromBid) {
 		this.firstPartyId = firstParty.getId();
-		this.bidderName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
+		this.tutorName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
 		this.secondPartyId = fromBid.getInitiatorId();
+		this.studentName = fromBid.getInitiatorName();
 		this.subjectId = fromBid.getSubjectId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Instant instant = timestamp.toInstant(); 
@@ -35,8 +39,9 @@ public class Contract {
 	
 	public Contract(User firstParty, Bid fromBid, String hoursPerSession, String sessionsPerWeek, String ratePerSession) {
 		this.firstPartyId = firstParty.getId();
-		this.bidderName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
+		this.tutorName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
 		this.secondPartyId = fromBid.getInitiatorId();
+		this.studentName = fromBid.getInitiatorName();
 		this.subjectId = fromBid.getSubjectId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Instant instant = timestamp.toInstant(); 
@@ -52,8 +57,9 @@ public class Contract {
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
 		this.id = jsonNode.get("id").textValue();
 		this.firstPartyId = jsonNode.get("firstParty").get("id").textValue();
-		this.bidderName = jsonNode.get("firstParty").get("givenName").textValue() + " " + jsonNode.get("firstParty").get("familyName").textValue();
+		this.tutorName = jsonNode.get("firstParty").get("givenName").textValue() + " " + jsonNode.get("firstParty").get("familyName").textValue();
 		this.secondPartyId = jsonNode.get("secondParty").get("id").textValue();
+		this.studentName = jsonNode.get("secondParty").get("givenName").textValue() + " " + jsonNode.get("secondParty").get("familyName").textValue();
 		this.subjectId = jsonNode.get("subject").get("id").textValue();
 		this.dateCreated = jsonNode.get("dateCreated").textValue();
 		this.expiryDate = jsonNode.get("expiryDate").textValue();
@@ -73,6 +79,13 @@ public class Contract {
 		if (jsonNode.get("lessonInfo").get("ratePerSession") != null) {
 			this.ratePerSession = jsonNode.get("lessonInfo").get("ratePerSession").textValue();
 		}
+		
+//		if (jsonNode.get("lessonInfo").get("sessions") != null) {
+//			ObjectNode sessionsNode = new ObjectMapper().readValue(jsonNode.get("lessonInfo").get("sessions").toString(), ObjectNode.class);
+//			for(JsonNode c : sessionsNode) {
+//				sessions.add(c.toString());
+//			}
+//		}
 		
 		if (jsonNode.get("additionalInfo").get("initialBidId") != null) {
 			this.initialRequestId = jsonNode.get("additionalInfo").get("initialRequestId").textValue();
@@ -124,15 +137,24 @@ public class Contract {
 		return dateSigned;
 	}
 	
+	public ArrayList<String> getSessions() {
+		return sessions;
+	}
+	
 	public String toString() {
 		String out  = "";
-	    out = out + "Bidder: " + this.bidderName + "\n";
+		out = out + "Student: " + this.studentName + "\n";
+	    out = out + "Tutor: " + this.tutorName + "\n";
 	    out = out + "Date Created: " + this.dateCreated + "\n";
+	    if(dateSigned != null) {
+	    	out = out + "Date Signed: " + this.dateSigned + "\n";
+	    }
 	    out = out + "Hours Per Session: " + this.hoursPerSession + "\n";
 	    out = out + "Sessions Per Week: " + this.sessionsPerWeek + "\n";
 	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";
 	    return out;
 	}
+	
 
 	
 

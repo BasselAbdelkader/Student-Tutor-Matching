@@ -172,15 +172,16 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 		if (e.getSource() == requestList) {
 			String id = requestList.getSelectedValue();
 			if(id != null) {
-				System.out.println(id);
 				try {
 					selectedBid = Application.bids.getBid(id);
 					requestDetails.setText(selectedBid.toString());
+					boolean qualified = selectedBid.getCompetency() <= currentUser.getCompetencyLevel(selectedSubject.getId());
 					boolean closed = selectedBid.getDateClosedDown() == null;
-					buyOutBtn.setEnabled(closed);
-					createBidBtn.setEnabled(closed);
-					messageBtn.setEnabled(closed);
-					seeBidsBtn.setEnabled(closed);
+					boolean check = closed && qualified;
+					buyOutBtn.setEnabled(check);
+					createBidBtn.setEnabled(check);
+					messageBtn.setEnabled(check);
+					seeBidsBtn.setEnabled(check);
 
 				} catch (Exception e1) {
 					e1.printStackTrace();

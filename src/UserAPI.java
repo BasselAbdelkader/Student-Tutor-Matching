@@ -21,7 +21,7 @@ public class UserAPI extends APIWrapper {
 		String jwt = super.postHttpRequest(jsonString, loginUrl);
 		
 		if (jwt != null) {
-			String response = super.getHttpRequest(url + "?fields=initiatedBids");
+			String response = super.getHttpRequest(url + "?fields=initiatedBids&fields=competencies.subject");
 
 		    ObjectNode[] jsonNodes = new ObjectMapper().readValue(response, ObjectNode[].class);
 
@@ -38,10 +38,10 @@ public class UserAPI extends APIWrapper {
 
 	}
 	
-	public User getUserById(String id) throws Exception {
-		String response = super.getHttpRequest(url + "/" + id + "?fields=inititatedBids");
-		return new User(response);
-	}
+//	public User getUserById(String id) throws Exception {
+//		String response = super.getHttpRequest(url + "/" + id + "?fields=inititatedBids&fields=competencies.subject");
+//		return new User(response);
+//	}
 	public User getCurrentUser() {
 		return currentUser;
 	}

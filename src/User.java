@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,7 +13,7 @@ public class User {
 	private boolean isTutor;
 	private boolean isStudent;
 	ArrayList<String> userBidIds = new ArrayList<String>();
-	
+	ArrayList<Competency> competencies =  new ArrayList<Competency>();
 	
 	public User(String jsonString) throws Exception{
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
@@ -29,6 +28,13 @@ public class User {
 		if(bidsNode != null) {
 			for (JsonNode b : bidsNode) {
 				this.userBidIds.add(b.get("id").textValue());
+			}
+		}
+		
+		JsonNode compNode =  jsonNode.get("competencies");
+		if(compNode != null) {
+			for (JsonNode c : compNode) {
+				this.competencies.add(new Competency(c.toString()));
 			}
 		}
 		
@@ -65,6 +71,14 @@ public class User {
 	}
 	public ArrayList<String> getUserBidIds(){
 		return userBidIds;
+	}
+	public int getCompetencyLevel(String subjectId) {
+		for(Competency c : competencies) {
+			if (c.getSubjectId().contentEquals(subjectId)) {
+				return c.getLevel();
+			}
+		}
+		return 0;
 	}
 	
 	

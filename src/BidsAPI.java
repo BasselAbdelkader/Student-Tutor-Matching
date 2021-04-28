@@ -23,7 +23,7 @@ public class BidsAPI extends APIWrapper {
 			      "\"dateCreated\":\"" + instant.toString() + "\"" + "," +
 			      "\"subjectId\":\"" + bid.getSubjectId() + "\"" + "," +
 			      "\"additionalInfo\":{" + 
-			      		"\"competency\":\""+ bid.getCompetency() + "\"" + "," +
+			      		"\"competency\":"+ bid.getCompetency() + "," +
 			      		"\"hoursPerSession\":\""+ bid.getHoursPerSession() + "\"" + "," +
 			      		"\"sessionsPerWeek\":\""+ bid.getSessionsPerWeek()+ "\"" + "," +
 			      		"\"ratePerSession\":\""+ bid.getRatePerSession()+ "\"" + "," +

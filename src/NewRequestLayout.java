@@ -101,7 +101,7 @@ public class NewRequestLayout extends JFrame implements ActionListener {
 			Bid b = new Bid(currentUser,
 					requestTypeInput.getSelectedItem().toString(),
 					subjects.get(subjectInput.getSelectedIndex()).getId(),
-					competencyInput.getSelectedItem().toString(),
+					Integer.parseInt(competencyInput.getSelectedItem().toString()),
 					hoursPerSessionInput.getSelectedItem().toString(),
 					sessionsPerWeekInput.getSelectedItem().toString(),
 					ratePerSessionInput.getText()

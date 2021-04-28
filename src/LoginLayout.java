@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 public class LoginLayout extends JFrame implements ActionListener {
 
-    Container container = getContentPane();
+	private static final long serialVersionUID = 1L;
+	
+	Container container = getContentPane();
     JLabel userLabel = new JLabel("USERNAME");
     JLabel passwordLabel = new JLabel("PASSWORD");
     JTextField userTextField = new JTextField();
@@ -22,8 +24,8 @@ public class LoginLayout extends JFrame implements ActionListener {
         passwordField.setBounds(150, 100, 150, 30);
         loginButton.setBounds(200, 150, 100, 30);
         
-        userTextField.setText("ronlow");
-        passwordField.setText("ronlow");
+        userTextField.setText("nishp94");
+        passwordField.setText("nishp94");
         
         container.add(userLabel);
         container.add(passwordLabel);
@@ -41,7 +43,7 @@ public class LoginLayout extends JFrame implements ActionListener {
             String userText;
             String pwdText;
             userText = userTextField.getText();
-            pwdText = passwordField.getText();
+            pwdText = new String(passwordField.getPassword());
             
             User currentUser = null;
 			try {

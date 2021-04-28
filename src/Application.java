@@ -12,10 +12,7 @@ public class Application {
 	public static final MessagesAPI messages= new MessagesAPI(myApiKey,rootUrl);
 	public static final ContractsAPI contracts= new ContractsAPI(myApiKey,rootUrl);
 	public static void main(String[] a) {
-        LoginWindow Auth = new LoginWindow();
-        
-
+        new LoginWindow();
     }
-
 
 }

@@ -141,9 +141,8 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
         }else if(e.getSource() == buyOutBtn) {
         	try {
         		Contract contract = new Contract(currentUser, selectedBid);
-        		String id = Application.contracts.addContract(contract);
-        		System.out.println("CONTRACT ID " + id);
-        		Application.contracts.signContract(id);
+        		Contract addedContract = Application.contracts.addContract(contract);
+        		Application.contracts.signContract(selectedBid,addedContract);
 				Application.bids.closeBid(selectedBid);
 				JOptionPane.showMessageDialog(this, "Request bought out");
 			}catch (Exception e1) {
@@ -153,8 +152,8 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
         }else if (e.getSource() ==  createBidBtn) {
         	try {
         		Contract contract = new Contract(currentUser, selectedBid, hoursPerSessionInput.getSelectedItem().toString(), sessionsPerWeekInput.getSelectedItem().toString(), ratePerSessionInput.getText());
-        		String id = Application.contracts.addContract(contract);
-				JOptionPane.showMessageDialog(this, "Bid Added. You bid ID is : " + id);
+        		Contract addedContract = Application.contracts.addContract(contract);
+				JOptionPane.showMessageDialog(this, "Bid Added. You bid ID is : " + addedContract.getId());
 			}catch (Exception e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Error creating a bid");

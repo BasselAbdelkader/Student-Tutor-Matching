@@ -17,7 +17,7 @@ public class ContractsAPI extends APIWrapper {
 		return new Contract(response);
 	}
 	
-	public String addContract(Contract contract) throws Exception{
+	public Contract addContract(Contract contract) throws Exception{
 		
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Timestamp expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30));
@@ -39,12 +39,12 @@ public class ContractsAPI extends APIWrapper {
 		      	   "}" + 
 			    "}";
 		String response = super.postHttpRequest(jsonString, url);
-		ObjectNode jsonNode = new ObjectMapper().readValue(response, ObjectNode.class);
 		
-		return jsonNode.get("id").textValue();
+		return new Contract(response);
 	}
 	
-	public ArrayList<Contract> getUnsignedContracts(String requestId) throws Exception{
+	public ArrayList<Contract> getUnsignedContracts(Bid request) throws Exception{
+		String requestId = request.getId();
 		String response = super.getHttpRequest(url);
 		ObjectNode[] jsonNodes = new ObjectMapper().readValue(response, ObjectNode[].class);
 		ArrayList<Contract> contracts = new ArrayList<Contract>();
@@ -60,7 +60,8 @@ public class ContractsAPI extends APIWrapper {
 	    return contracts;
 	}
 	
-	public Contract getSignedContract(String requestId) throws Exception {
+	public Contract getSignedContract(Bid request) throws Exception {
+		String requestId = request.getId();
 		String response = super.getHttpRequest(url);
 		ObjectNode[] jsonNodes = new ObjectMapper().readValue(response, ObjectNode[].class);
 	    for (ObjectNode node: jsonNodes) {
@@ -75,16 +76,15 @@ public class ContractsAPI extends APIWrapper {
 	    return null;
 	}
 	
-	public boolean signContract(String contractId) throws Exception {
-		
+	public boolean signContract(Bid b, Contract c) throws Exception {
+		String contractId = c.getId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Instant instant = timestamp.toInstant(); 
 		
 		String jsonString = "{" +
 				"\"dateSigned\":\"" + instant.toString() + "\"" +
 			  "}";
-
-		if( getSignedContract(contractId) == null) {
+		if( getSignedContract(b) == null) {
 			String response = super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 			return true;
 		}

@@ -47,6 +47,10 @@ public class BidsAPI extends APIWrapper {
 		return new Bid(response);
 	}
 	
+	public void deleteBid(Bid b) throws Exception{
+		super.deleteHttpRequest(url + "/" + b.getId());
+	}
+	
 	public ArrayList<Message> getBidMessages(String id) throws Exception{
 		String response = super.getHttpRequest(url + "/" + id + "?fields=messages");
 		ObjectNode jsonNode = new ObjectMapper().readValue(response, ObjectNode.class);

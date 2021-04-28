@@ -3,6 +3,10 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -34,6 +38,21 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
     JButton refreshBtn = new JButton("Refresh");
     JButton messageBtn = new JButton("Messages");
     JButton closeBidBtn = new JButton("Close this bid");
+    
+    Timer t = new Timer();
+    TimerTask tt = new TimerTask() {  
+	    @Override  
+	    public void run() {  
+	    	refresh(); 
+	    };  
+	};
+    TimerTask tt2 = new TimerTask() {  
+	    @Override  
+	    public void run() {  
+	    	refresh(); 
+			timeLimitReached(this);
+	    };  
+	};;
     
     
 	public RequestLayout(User currentUser, Bid request){
@@ -69,15 +88,17 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 		container.add(bidDetailsLabel);
 		container.add(bidDetails);
 		container.add(refreshBtn);
-		
-		
+
 		//TODO: Add condition, if currrentUser != requestor, disable closeBidBtn and messageBtn
 		if (currentUser.getId().contentEquals(request.getInitiatorId())) {
 			container.add(messageBtn);
 			container.add(closeBidBtn);
+			t.schedule(tt2, new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30))); 
 		}
 		
-		refresh();
+		//Run refresh every 30 seconds
+		t.schedule(tt, new Date(), 30000); 
+
 	}
 
 	@Override
@@ -93,9 +114,7 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 					JOptionPane.showMessageDialog(this, "Unable to get bid details");
 				}
 			}
-			
 		}
-		
 	}
 
 	@Override
@@ -105,7 +124,7 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 			new MessagesWindow(currentUser,request.getId());
 		}else if(e.getSource() == closeBidBtn) {
         	try {
-        		Application.contracts.signContract(selectedContract.getId());
+        		Application.contracts.signContract(request,selectedContract);
 				Application.bids.closeBid(request);
 				JOptionPane.showMessageDialog(this, "Bid closed");
 				dispose();
@@ -120,16 +139,17 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 
 	private void refresh() {
 		try {
-			if(Application.contracts.getSignedContract(request.getId()) != null) {
-				
-				JOptionPane.showMessageDialog(this, "This request has already been bought out. Check your contracts.");
+			
+			request = Application.bids.getBid(request.getId()); //Update the request
+			if(Application.contracts.getSignedContract(request) != null) {
+				JOptionPane.showMessageDialog(this, "This request has been bought out. Check your contracts.");
 				dispose();
 			}
 			
 			requestDetails.setText(request.toString());
 			
 			bidListModel.clear();
-			bids = Application.contracts.getUnsignedContracts(request.getId());
+			bids = Application.contracts.getUnsignedContracts(request);
 			for(int i = 0; i < bids.size(); i++) {
 				bidListModel.add(i,bids.get(i).getId());
 			}
@@ -139,8 +159,33 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error getting request details");
-//			dispose();
+			JOptionPane.showMessageDialog(this, "Error getting request details. This request may have already ended.");
+			dispose();
 		}
+	}
+	
+	private void timeLimitReached(TimerTask task) {
+		try {
+			ArrayList<Contract> contracts = Application.contracts.getUnsignedContracts(request);
+    		if(contracts.size() <= 0) {
+    			//no bids - delete the request and move on
+    			Application.bids.deleteBid(request);
+    			JOptionPane.showMessageDialog(this, "There are no bids for your request within time limit. Closing request.");
+    		}else {
+    			//select best bid
+    			Application.contracts.signContract(request,contracts.get(0));
+    			JOptionPane.showMessageDialog(this, "Your time limit is up. Best bidder was selected. Closing request");
+    		}
+			dispose();
+			task.cancel();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}  	
+	}
+	
+	public void dispose() {
+		tt.cancel();
+		tt2.cancel();
+		super.dispose();
 	}
 }

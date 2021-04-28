@@ -51,12 +51,36 @@ public abstract class APIWrapper {
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 	    if (response.statusCode() != 200 && response.statusCode() != 201) {
+	    	System.out.print("BAD REQUEST: " + jsonString);
 	    	System.out.print(response.statusCode());
 	    	throw new Exception("Bad Request");
 	    }
 
 	    return response.body();
 	}
+	
+	protected String deleteHttpRequest(String url) throws Exception{
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request;
+		HttpResponse<String> response;
+		
+	    request = HttpRequest.newBuilder(URI.create(url)) // Return a JWT so we can use it in Part 5 later.
+	      .setHeader("Authorization", api_key)
+	      .header("Content-Type","application/json") // This header needs to be set when sending a JSON request body.
+	      .DELETE()
+	      .build();
+
+	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+	    if (response.statusCode() != 204) {
+	    	System.out.print(response.statusCode());
+	    	throw new Exception("Bad Request");
+	    }
+
+	    return response.body();
+	}
+	
+	
 	
 
 }

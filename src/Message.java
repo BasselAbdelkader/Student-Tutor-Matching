@@ -22,7 +22,6 @@ public class Message {
 	
 	public Message(String jsonString) throws Exception {
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
-		System.out.println(jsonString);
 //		this.bidId = jsonNode.get("bidId").textValue();
 		this.posterId = jsonNode.get("poster").get("id").textValue();
 		this.posterUserName = jsonNode.get("poster").get("userName").textValue();

@@ -181,7 +181,7 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 					buyOutBtn.setEnabled(check);
 					createBidBtn.setEnabled(check);
 					messageBtn.setEnabled(check);
-					seeBidsBtn.setEnabled(check);
+					seeBidsBtn.setEnabled(check && selectedBid.getType().contentEquals("closed"));
 
 				} catch (Exception e1) {
 					e1.printStackTrace();

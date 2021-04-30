@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Message {
 	private String bidId;
 	private String posterId;
+	private String contractId;
+	
 	private String posterUserName;
 	private String datePosted;
 	private String dateLastEdited;
@@ -26,6 +28,9 @@ public class Message {
 		this.datePosted = jsonNode.get("datePosted").textValue();
 		if (jsonNode.get("dateLastEdited") != null) {
 			this.dateLastEdited = jsonNode.get("dateLastEdited").textValue();
+		}
+		if (jsonNode.get("additionalInfo").get("contractId") != null) {
+			this.contractId = jsonNode.get("additionalInfo").get("contractId").textValue();
 		}
 		
 		this.content = jsonNode.get("content").textValue();
@@ -57,5 +62,8 @@ public class Message {
 		return content;
 	}
 	
+	public String getContractId() {
+		return contractId;
+	}
 
 }

@@ -29,7 +29,7 @@ public abstract class APIWrapper {
 
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-	    if (response.statusCode() != 200) {
+	    if (response.statusCode() < 200 || response.statusCode() > 299) {
 	    	return null;
 	    }
 
@@ -49,7 +49,7 @@ public abstract class APIWrapper {
 
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-	    if (response.statusCode() != 200 && response.statusCode() != 201) {
+	    if (response.statusCode() < 200 || response.statusCode() > 299) {
 	    	System.out.print("BAD REQUEST: " + jsonString);
 	    	System.out.print(response.statusCode());
 	    	throw new Exception("Bad Request");
@@ -71,7 +71,7 @@ public abstract class APIWrapper {
 
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-	    if (response.statusCode() != 204) {
+	    if (response.statusCode() < 200 || response.statusCode() > 299) {
 	    	System.out.print(response.statusCode());
 	    	throw new Exception("Bad Request");
 	    }
@@ -79,6 +79,27 @@ public abstract class APIWrapper {
 	    return response.body();
 	}
 	
+	protected String updateHttpRequest(String jsonString, String url) throws Exception{
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request;
+		HttpResponse<String> response;
+		
+	    request = HttpRequest.newBuilder(URI.create(url)) // Return a JWT so we can use it in Part 5 later.
+	      .setHeader("Authorization", api_key)
+	      .header("Content-Type","application/json")
+	      .method("PATCH", HttpRequest.BodyPublishers.ofString(jsonString))// This header needs to be set when sending a JSON request body.)
+	      .build();
+
+	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+	    if (response.statusCode() < 200 || response.statusCode() > 299) {
+	    	System.out.print("BAD UPDATE: " + jsonString);
+	    	System.out.print(response.statusCode());
+	    	throw new Exception("Bad Request");
+	    }
+
+	    return response.body();
+	}
 	
 	
 

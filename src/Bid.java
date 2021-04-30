@@ -56,7 +56,6 @@ public class Bid {
 		}
 		if (jsonNode.get("additionalInfo").get("contractIds") != null) {
 			JsonNode contracts = jsonNode.get("additionalInfo").get("contractIds");
-			System.out.println(contracts);
 			for (JsonNode c :contracts ) {
 				this.contractIds.add(c.textValue());
 			}
@@ -96,8 +95,14 @@ public class Bid {
 		return subjectId;
 	}
 	
-	public ArrayList<Message> getMessageIds() {
-		return messages;
+	public ArrayList<Message> getMessagesForContract(String contractId) {
+		ArrayList<Message> out = new ArrayList<Message>();
+		for  (Message m : messages) {
+			if  (m.getContractId().contentEquals(contractId)) {
+				out.add(m);
+			}
+		}
+		return out;
 	}
 
 	public String getHoursPerSession() {

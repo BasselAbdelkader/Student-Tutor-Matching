@@ -79,6 +79,7 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 	        
 	    	requestDetails.setEditable(false);
 	    	
+	    	
 	    	searchSubjectLabel.setBounds(10, 10, 200, 30);
 	    	searchSubjectInput.setBounds(210, 10, 200, 30);
 	    	requestsLabel.setBounds(10, 50, 150, 30);
@@ -160,7 +161,14 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 			}
         }
         else if(e.getSource() == messageBtn) {
-        	new MessagesWindow(currentUser,selectedBid.getId());
+        	Contract contract = new Contract(currentUser, selectedBid);
+    		try {
+				Contract addedContract = Application.contracts.addContract(contract);
+				new MessagesWindow(currentUser,selectedBid.getId(),addedContract.getId());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+        	
         }else if(e.getSource() == seeBidsBtn) {
         	new RequestWindow(currentUser,selectedBid);
         }
@@ -178,11 +186,11 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 					boolean qualified = selectedBid.getCompetency() <= currentUser.getCompetencyLevel(selectedSubject.getId());
 					boolean closed = selectedBid.getDateClosedDown() == null;
 					boolean check = closed && qualified;
-					buyOutBtn.setEnabled(check);
-					createBidBtn.setEnabled(check);
-					messageBtn.setEnabled(check);
-					seeBidsBtn.setEnabled(check && selectedBid.getType().contentEquals("closed"));
-
+					buyOutBtn.setEnabled(check && selectedBid.getType().contentEquals("open") );
+					createBidBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
+					seeBidsBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
+					messageBtn.setEnabled(check && selectedBid.getType().contentEquals("closed"));
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, "Unable to get bid details");

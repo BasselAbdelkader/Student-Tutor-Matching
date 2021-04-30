@@ -8,9 +8,10 @@ public class MessagesAPI extends APIWrapper {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void sendMessage(Bid bid, User user, String content) throws Exception {
+	public void sendMessage(Bid bid, Contract contract, User user, String content) throws Exception {
 		String  bidId = bid.getId();
 		String userId = user.getId();
+		String contractId = contract.getId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Instant instant = timestamp.toInstant(); 
 		
@@ -19,7 +20,7 @@ public class MessagesAPI extends APIWrapper {
 				"\"posterId\":\"" + userId + "\"," +
 				"\"datePosted\":\"" + instant + "\"," +
 				"\"content\":\"" + content + "\"," +
-			    "\"additionalInfo\":{}" +
+			    "\"additionalInfo\":{" + "\"contractId\":\"" + contractId  + "\"}" +
 			 "}";
 		
 		super.postHttpRequest(jsonString,url);

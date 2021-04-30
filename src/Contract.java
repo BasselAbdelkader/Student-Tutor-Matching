@@ -1,6 +1,7 @@
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,14 +30,22 @@ public class Contract {
 		this.studentName = fromBid.getInitiatorName();
 		this.subjectId = fromBid.getSubjectId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		Instant instant = timestamp.toInstant(); 
-		this.dateCreated = instant.toString();
+		this.dateCreated = timestamp.toInstant().toString();
+		Timestamp expTimestamp = null;
+		if (fromBid.getType().contentEquals("closed")) {
+			expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7));
+		}else if (fromBid.getType().contentEquals("open")) {
+			expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30));
+		}
+		this.expiryDate = expTimestamp.toInstant().toString();;
 		this.hoursPerSession = fromBid.getHoursPerSession();
 		this.sessionsPerWeek = fromBid.getSessionsPerWeek();
 		this.ratePerSession = fromBid.getRatePerSession();
 		this.initialRequestId = fromBid.getId();
 	}
 	
+	
+
 	public Contract(User firstParty, Bid fromBid, String hoursPerSession, String sessionsPerWeek, String ratePerSession) {
 		this.firstPartyId = firstParty.getId();
 		this.tutorName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
@@ -44,8 +53,14 @@ public class Contract {
 		this.studentName = fromBid.getInitiatorName();
 		this.subjectId = fromBid.getSubjectId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		Instant instant = timestamp.toInstant(); 
-		this.dateCreated = instant.toString();
+		this.dateCreated = timestamp.toInstant().toString();
+		Timestamp expTimestamp = null;
+		if (fromBid.getType().contentEquals("closed")) {
+			expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7));
+		}else if (fromBid.getType().contentEquals("open")) {
+			expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30));
+		}
+		this.expiryDate = expTimestamp.toInstant().toString();
 		this.hoursPerSession = hoursPerSession;
 		this.sessionsPerWeek = sessionsPerWeek;
 		this.ratePerSession = ratePerSession;
@@ -139,6 +154,18 @@ public class Contract {
 	
 	public ArrayList<String> getSessions() {
 		return sessions;
+	}
+	
+	public void setHoursPerSession(String hoursPerSession) {
+		this.hoursPerSession = hoursPerSession;
+	}
+
+	public void setSessionsPerWeek(String sessionsPerWeek) {
+		this.sessionsPerWeek = sessionsPerWeek;
+	}
+
+	public void setRatePerSession(String ratePerSession) {
+		this.ratePerSession = ratePerSession;
 	}
 	
 	public String toString() {

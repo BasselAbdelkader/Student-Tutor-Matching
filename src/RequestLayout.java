@@ -2,6 +2,10 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -91,9 +95,17 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 
 		//TODO: Add condition, if currrentUser != requestor, disable closeBidBtn and messageBtn
 		if (currentUser.getId().contentEquals(request.getInitiatorId())) {
-			container.add(messageBtn);
-			container.add(closeBidBtn);
-			t.schedule(tt2, new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30))); 
+			if(request.getType().contentEquals("closed")) {
+				long total = Instant.parse(request.getDateCreated()).toEpochMilli() + TimeUnit.DAYS.toMillis(7);				
+				t.schedule(tt2, new Date(total)); 
+				messageBtn.setEnabled(false);
+				container.add(messageBtn);
+			}
+			else if(request.getType().contentEquals("open")) {
+				container.add(closeBidBtn);
+				t.schedule(tt2, new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30))); 
+			}
+			
 		}
 		
 		//Run refresh every 30 seconds
@@ -109,6 +121,7 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 				try {
 					selectedContract = Application.contracts.getContract(id);
 					bidDetails.setText(selectedContract.toString());
+					messageBtn.setEnabled(true);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(this, "Unable to get bid details");
@@ -121,7 +134,7 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == messageBtn) {
-			new MessagesWindow(currentUser,request.getId());
+			new MessagesWindow(currentUser,request.getId(),selectedContract.getId());
 		}else if(e.getSource() == closeBidBtn) {
         	try {
         		Application.contracts.signContract(request,selectedContract);

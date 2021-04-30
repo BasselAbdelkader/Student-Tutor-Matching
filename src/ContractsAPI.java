@@ -19,16 +19,12 @@ public class ContractsAPI extends APIWrapper {
 	
 	public Contract addContract(Contract contract) throws Exception{
 		
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		Timestamp expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30));
-		Instant instant = timestamp.toInstant(); 
-		Instant expInstant = expTimestamp.toInstant();
 		String jsonString = "{" +
 			      "\"firstPartyId\":\"" + contract.getFirstPartyId() + "\"" + "," +
 			      "\"secondPartyId\":\"" + contract.getSecondPartyId() + "\"" + "," +
 			      "\"subjectId\":\"" + contract.getSubjectId() + "\"" + "," +
-			      "\"dateCreated\":\"" + instant.toString() + "\"" + "," +
-			      "\"expiryDate\":\"" + expInstant.toString() + "\"" + "," +
+			      "\"dateCreated\":\"" + contract.getDateCreated() + "\"" + "," +
+			      "\"expiryDate\":\"" + contract.getExpiryDate() + "\"" + "," +
 			      "\"lessonInfo\":{" + 
 			      		"\"hoursPerSession\":\""+ contract.getHoursPerSession() + "\"" + "," +
 			      		"\"sessionsPerWeek\":\""+ contract.getSessionsPerWeek()+ "\"" + "," +
@@ -51,7 +47,7 @@ public class ContractsAPI extends APIWrapper {
 		ArrayList<Contract> contracts = new ArrayList<Contract>();
 	    for (ObjectNode node: jsonNodes) {
 	    	
-	    	if( node.get("additionalInfo").get("initialRequestId") != null) {
+	    	if( node.get("additionalInfo").get("initialRequestId") != null && node.get("dateSigned").isNull()) {
 	    		if( node.get("additionalInfo").get("initialRequestId").textValue().contentEquals(requestId)) {
 	   	    	  contracts.add(new Contract(node.toString()));
 	   	      	}
@@ -78,6 +74,7 @@ public class ContractsAPI extends APIWrapper {
 	}
 	
 	public boolean signContract(Bid b, Contract c) throws Exception {
+		//TODO : update expiry
 		String contractId = c.getId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Instant instant = timestamp.toInstant(); 
@@ -87,14 +84,35 @@ public class ContractsAPI extends APIWrapper {
 			  "}";
 		if( getSignedContract(b) == null) {
 			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
+			Thread.sleep(5000);
+			deleteUnsignedContracts(b);
+			System.out.println(getSignedContract(b).toString());
 			return true;
 		}
 		return false;
 	}
 	
-	public boolean addSessionToContract(Contract c, String s) throws Exception {
+	public Contract updateContract(Contract contract) throws Exception {
 		
-		return false;
+		String jsonString = "{" +
+			      "\"lessonInfo\":{" + 
+			      		"\"hoursPerSession\":\""+ contract.getHoursPerSession() + "\"" + "," +
+			      		"\"sessionsPerWeek\":\""+ contract.getSessionsPerWeek()+ "\"" + "," +
+			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" + "," +
+			      		"\"sessions\":[]" +
+			      	"}" + 
+			    "}";
+		String response = super.updateHttpRequest(jsonString,url + "/" + contract.getId());
+		
+		return new Contract(response);
+	}
+
+	public void deleteUnsignedContracts(Bid bid) throws Exception {
+		ArrayList<Contract> unsigned = this.getUnsignedContracts(bid);
+		
+		for(Contract c : unsigned) {
+			super.deleteHttpRequest( url + "/" + c.getId());
+		}
 	}
 
 

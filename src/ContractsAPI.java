@@ -12,6 +12,22 @@ public class ContractsAPI extends APIWrapper {
 		super(api_key, url+ "/contract");
 	}
 	
+	public ArrayList<Contract> getContractsForUser(User u) throws Exception{
+		String userID = u.getId();
+		String response = super.getHttpRequest(url);
+		ObjectNode[] jsonNodes = new ObjectMapper().readValue(response, ObjectNode[].class);
+		ArrayList<Contract> contracts = new ArrayList<Contract>();
+	    for (ObjectNode node: jsonNodes) {
+	    	
+	    	if( node.get("firstParty").get("id").textValue().contentEquals(userID) || node.get("secondParty").get("id").textValue().contentEquals(userID) ) {
+	    		contracts.add(new Contract(node.toString()));
+	    	}
+	     
+	    }
+	    return contracts;
+		
+	}
+	
 	public Contract getContract(String id) throws Exception{
 		String response =  super.getHttpRequest(url + "/" + id );
 		return new Contract(response);
@@ -85,7 +101,7 @@ public class ContractsAPI extends APIWrapper {
 		if( getSignedContract(b) == null) {
 			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 			deleteUnsignedContracts(b);
-			System.out.println(getSignedContract(b).toString());
+			Application.bids.closeBid(b);
 			return true;
 		}
 		return false;

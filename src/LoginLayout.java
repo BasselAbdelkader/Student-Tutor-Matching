@@ -3,40 +3,70 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LoginLayout extends JFrame implements ActionListener {
+public class LoginLayout extends WindowLayout implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	Container container = getContentPane();
-    JLabel userLabel = new JLabel("USERNAME");
-    JLabel passwordLabel = new JLabel("PASSWORD");
-    JTextField userTextField = new JTextField();
-    JPasswordField passwordField = new JPasswordField();
-    JButton loginButton = new JButton("LOGIN");
+	//Labels
+    JLabel userLabel;
+    JLabel passwordLabel;
+    
+    //Inputs
+    JTextField userTextField;
+    JPasswordField passwordField;
+    
+    //Buttons
+    JButton loginButton;
 
 
     LoginLayout() {
-    	container.setLayout(null);
+    	super();
+    }    
+    
+    @Override
+    protected void initElements() {
     	
+    	userLabel = new JLabel("USERNAME");
+    	passwordLabel = new JLabel("PASSWORD");
+    	
+    	userTextField = new JTextField();
+    	passwordField = new JPasswordField();
+    	
+    	loginButton = new JButton("LOGIN");
+    	
+    }
+
+	@Override
+	protected void setElementBounds() {
+		container.setLayout(null);
     	userLabel.setBounds(50, 50, 100, 30);
         passwordLabel.setBounds(50, 100, 100, 30);
         userTextField.setBounds(150, 50, 150, 30);
         passwordField.setBounds(150, 100, 150, 30);
         loginButton.setBounds(200, 150, 100, 30);
-        
-        userTextField.setText("nishp94");
-        passwordField.setText("nishp94");
-        
-        container.add(userLabel);
+	}
+
+	@Override
+	protected void addToContainer() {
+		container.add(userLabel);
         container.add(passwordLabel);
         container.add(userTextField);
         container.add(passwordField);
         container.add(loginButton);
-        
-        loginButton.addActionListener(this);
-    }
+	}
 
-    @Override
+	@Override
+	protected void bindActionListeners() {
+		loginButton.addActionListener(this);
+	}
+	
+	@Override
+	protected void init() {
+		 userTextField.setText("nishp94");
+		 passwordField.setText("nishp94");
+	}
+	
+	@Override
     public void actionPerformed(ActionEvent e) {
         //Coding Part of LOGIN button
         if (e.getSource() == loginButton) {
@@ -64,6 +94,8 @@ public class LoginLayout extends JFrame implements ActionListener {
 
         }
     }
+
+	
 
 }
 

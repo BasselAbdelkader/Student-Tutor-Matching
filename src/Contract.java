@@ -20,6 +20,10 @@ public class Contract {
 	private String sessionsPerWeek;
 	private String ratePerSession;
 	private String initialRequestId;
+	public String getInitialRequestId() {
+		return initialRequestId;
+	}
+
 	private String dateSigned;
 	private ArrayList<String> sessions = new ArrayList<String>();
 	
@@ -102,7 +106,7 @@ public class Contract {
 //			}
 //		}
 		
-		if (jsonNode.get("additionalInfo").get("initialBidId") != null) {
+		if (jsonNode.get("additionalInfo").get("initialRequestId") != null) {
 			this.initialRequestId = jsonNode.get("additionalInfo").get("initialRequestId").textValue();
 		}
 		

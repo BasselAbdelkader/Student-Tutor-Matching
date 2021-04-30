@@ -1,0 +1,212 @@
+import java.awt.Container;
+import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class ViewContractLayout extends RefreshableLayout implements ActionListener{
+
+	User currentUser;
+	Contract contract;
+	Bid bid;
+
+	//Labels
+	JLabel contractDetailsLabel;
+	JLabel adjustContractLabel;
+	JLabel hoursPerSessionLabel;
+	JLabel sessionsPerWeekLabel;
+	JLabel ratePerSessionLabel;
+	JLabel messagesLabel;
+	
+	//Outputs 
+	JTextArea contractDetails;
+		
+	//Inputs
+	JComboBox<String> hoursPerSessionInput;
+	JComboBox<String> sessionsPerWeekInput ;
+	JTextField ratePerSessionInput;
+	JTextField chatInput;
+	
+	//Lists
+	DefaultListModel<Message> msgListModel;
+	JList<Message> msgList;
+	
+	//Buttons
+	JButton refreshBtn;
+	JButton updateContractBtn;
+	JButton signContractBtn;
+	JButton sendChatBtn;
+	
+	public ViewContractLayout(User currentUser, Contract contract) {
+		super();
+		this.currentUser = currentUser;
+		this.contract = contract;
+		refresh();
+	}
+	
+	@Override
+	protected void initElements() {
+		//Labels
+		contractDetailsLabel = new JLabel("Details of the contract.");
+		adjustContractLabel = new JLabel("Adjust details of the contract.");
+		hoursPerSessionLabel = new JLabel("Hours per session :");
+		sessionsPerWeekLabel = new JLabel("Sessions per week :");
+		ratePerSessionLabel = new JLabel("Rate per session :");
+		messagesLabel = new JLabel("Chat");
+		
+		//Outputs 
+		contractDetails = new JTextArea();
+			
+		//Inputs
+		String[] numbers = {"1","2","3","4","5","6","7"};
+		hoursPerSessionInput = new JComboBox<String>(numbers);
+		sessionsPerWeekInput = new JComboBox<String>(numbers);
+		ratePerSessionInput = new JTextField();
+		chatInput = new JTextField();
+		
+		//Lists
+		msgListModel = new DefaultListModel<Message>();
+		msgList = new JList<Message>(msgListModel);
+		
+		//Buttons
+		refreshBtn = new JButton("Refresh");
+		updateContractBtn = new JButton("Update Contract");
+		signContractBtn = new JButton("Sign Contract");
+		sendChatBtn = new JButton("Send");
+	}
+	
+
+	@Override
+	protected void setElementBounds() {
+		contractDetailsLabel.setBounds(10,10,300,30);
+		contractDetails.setBounds(10,50,460,150);
+		adjustContractLabel.setBounds(10,210,300,30);
+		hoursPerSessionLabel.setBounds(10,250,200,30);
+		hoursPerSessionInput.setBounds(210,250,200,30);
+		sessionsPerWeekLabel.setBounds(10,290,200,30);
+		sessionsPerWeekInput.setBounds(210,290,200,30);
+		ratePerSessionLabel.setBounds(10,330,200,30);
+		ratePerSessionInput.setBounds(210,330,200,30);
+		signContractBtn.setBounds(100,370,150,30);
+		updateContractBtn.setBounds(260,370,150,30);
+		messagesLabel.setBounds(10, 410, 300, 30);
+		refreshBtn.setBounds(370, 10, 100, 30);
+    	msgList.setBounds(10, 450, 460, 300);
+        chatInput.setBounds(10,760, 350, 30);
+        sendChatBtn.setBounds(370, 760, 100, 30);
+	}
+
+
+	@Override
+	protected void addToContainer() {
+		container.add(messagesLabel);
+        container.add(msgList);
+        container.add(chatInput);
+        container.add(sendChatBtn);
+        container.add(refreshBtn);
+        container.add(contractDetailsLabel);
+        container.add(contractDetails);
+        container.add(adjustContractLabel);
+        container.add(hoursPerSessionLabel);
+        container.add(hoursPerSessionInput);
+        container.add(sessionsPerWeekLabel);
+        container.add(sessionsPerWeekInput);
+        container.add(ratePerSessionLabel);
+        container.add(ratePerSessionInput);
+        container.add(signContractBtn);
+        container.add(updateContractBtn);
+	}
+
+
+	@Override
+	protected void bindActionListeners() {
+		signContractBtn.addActionListener(this);
+        updateContractBtn.addActionListener(this);
+        sendChatBtn.addActionListener(this);
+        refreshBtn.addActionListener(this);
+	}
+
+
+	@Override
+	protected void init() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+      if(e.getSource() == sendChatBtn) {
+    	if (chatInput.getText().length() > 0) {
+    		try {
+				Application.messages.sendMessage(bid, contract, currentUser, chatInput.getText());
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, "Unable to send message");
+			}
+    		refresh();
+    	}
+      }
+      else if(e.getSource() == refreshBtn) {
+    	  refresh();
+      } 
+      else if(e.getSource() == updateContractBtn) {
+    	  
+    	  contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
+    	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
+    	  contract.setRatePerSession(ratePerSessionInput.getText());
+    	  try {
+    		  Application.contracts.updateContract(contract);
+    	  } catch (Exception e1) {
+    		  JOptionPane.showMessageDialog(this, "Failed to update contract details. Try again.");
+    		  e1.printStackTrace();
+    	  }
+    	  refresh();
+      } 
+      else if(e.getSource() == signContractBtn) {
+    	  try {
+    		  Application.contracts.signContract(bid,contract);
+    	  } catch (Exception e1) {
+    		  JOptionPane.showMessageDialog(this, "Cannot Sign Contract");
+    		  e1.printStackTrace();
+    	  }
+    	  refresh();
+      }
+	}
+
+
+	@Override
+	protected void refresh() {
+		try {
+			contract = Application.contracts.getContract(contract.getId());
+			contractDetails.setText(contract.toString());
+			bid = Application.bids.getBid(contract.getInitialRequestId());
+			msgListModel.clear();
+			msgListModel.addAll(bid.getMessagesForContract(contract.getId()));
+			
+			boolean userIsRequestor = currentUser.getId().contentEquals(contract.getSecondPartyId());
+			boolean userIsBidder = currentUser.getId().contentEquals(contract.getFirstPartyId());
+			boolean notsigned = contract.getDateSigned() == null ;
+			signContractBtn.setEnabled(notsigned && userIsRequestor );
+			updateContractBtn.setEnabled(notsigned && userIsBidder);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Failed to get contract details. The request may have ended.");
+			dispose();
+		}
+	}
+
+	
+}

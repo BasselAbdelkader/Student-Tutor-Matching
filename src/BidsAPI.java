@@ -33,7 +33,6 @@ public class BidsAPI extends APIWrapper {
 
 		
 		String response = super.postHttpRequest(jsonString, url);
-		System.out.println(response);
 		ObjectNode jsonNode = new ObjectMapper().readValue(response, ObjectNode.class);
 		
 		return jsonNode.get("id").textValue();
@@ -50,18 +49,6 @@ public class BidsAPI extends APIWrapper {
 	public void deleteBid(Bid b) throws Exception{
 		super.deleteHttpRequest(url + "/" + b.getId());
 	}
-//	
-//	public ArrayList<Message> getBidMessages(String id) throws Exception{
-//		String response = super.getHttpRequest(url + "/" + id + "?fields=messages");
-//		ObjectNode jsonNode = new ObjectMapper().readValue(response, ObjectNode.class);
-//		JsonNode jsonNodeMsg = jsonNode.get("messages");
-//		ArrayList<Message> messages = new ArrayList<Message>();
-//		for (JsonNode each : jsonNodeMsg) {
-//			messages.add(new Message(each.textValue()));
-//		}
-//		return messages;
-//		
-//	}
 	
 	public String closeBid(Bid bid) throws Exception{
 		String id = bid.getId();

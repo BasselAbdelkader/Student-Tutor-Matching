@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class UserAPI extends APIWrapper {
 	
 	private User currentUser = null;
+	private String currentUserJWT = null;
 	
 	public UserAPI(String api_key, String rootUrl) {
 		super(api_key, rootUrl + "/user");
@@ -18,9 +19,9 @@ public class UserAPI extends APIWrapper {
 	      "\"password\":\"" + pwrd + "\"" +
 	      "}";
 		
-		String jwt = super.postHttpRequest(jsonString, loginUrl);
+		currentUserJWT = super.postHttpRequest(jsonString, loginUrl);
 		
-		if (jwt != null) {
+		if (currentUserJWT != null) {
 			String response = super.getHttpRequest(url + "?fields=initiatedBids&fields=competencies.subject");
 
 		    ObjectNode[] jsonNodes = new ObjectMapper().readValue(response, ObjectNode[].class);

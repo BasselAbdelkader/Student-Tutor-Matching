@@ -24,138 +24,179 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class OpenBidsLayout extends JFrame implements ActionListener, ListSelectionListener {
+public class OpenBidsLayout extends RefreshableLayout implements ActionListener, ListSelectionListener {
 	
 	 	ArrayList<Subject> subjects;
-	    Bid selectedBid = null;
-	    Subject selectedSubject = null;
-	    User currentUser = null;
+	    Bid selectedBid;
+	    Subject selectedSubject;
+	    User currentUser;
+	    
+	    
+	    
+	    //Labels
+	    JLabel searchSubjectLabel;
+	    JLabel requestsLabel;
+	    JLabel requestDetailsLabel;
+	    JLabel createBidLabel;
+	    JLabel hoursPerSessionLabel;
+		JLabel sessionsPerWeekLabel;
+		JLabel ratePerSessionLabel;
+		JLabel orLabel;
+		
+		//Lists
+	    DefaultListModel<String> requestListModel;
+	    JList<String> requestList;  
+	    
+	    //Outputs
+	    JTextArea requestDetails;
+	    
+	    //Inputs
+	    JComboBox searchSubjectInput;
+		JComboBox hoursPerSessionInput;
+		JComboBox sessionsPerWeekInput;
+		JTextField ratePerSessionInput;
+		
+		//Buttons
+		JButton createBidBtn;
+		JButton seeBidsBtn;
+		JButton buyOutBtn;
+		JButton messageBtn;
+		JButton refreshBtn;
+	    
+	public OpenBidsLayout(User currentUser) {
+		this.currentUser = currentUser;
+	}
+									
+	@Override
+	protected void initElements() {
+		//Labels
+	    searchSubjectLabel = new JLabel("Subject:");
+	    requestsLabel = new JLabel("Available requests:");
+	    requestDetailsLabel = new JLabel("Request Details:");
+	    createBidLabel = new JLabel("Create a bid");
+	    hoursPerSessionLabel = new JLabel("Hours per session :");
+		sessionsPerWeekLabel = new JLabel("Sessions per week :");
+		ratePerSessionLabel = new JLabel("Rate per session :");
+		orLabel = new JLabel("OR");
+		
+		//Lists
+	    requestListModel = new DefaultListModel<String>();
+	    requestList = new JList<String>(requestListModel);  
+	    
+	    //Outputs
+	    requestDetails = new JTextArea();
+	    
+	    //Inputs
 	    String[] numbers = {"1","2","3","4","5","6","7"};
-	    
-	 	Container container = getContentPane();
-	    JLabel searchSubjectLabel = new JLabel("Search request for subject:");
-	    JComboBox searchSubjectInput = null;
-	    JLabel requestsLabel = new JLabel("Available requests:");
-	    DefaultListModel<String> requestListModel = new DefaultListModel<String>();
-	    JList<String> requestList = new JList<String>(requestListModel);  
-	    JLabel requestDetailsLabel = new JLabel("Request Details:");
-	    JTextArea requestDetails = new JTextArea();
-	    
-	    
-	    JLabel createBidLabel = new JLabel("Create a bid");
-	   
-		JLabel hoursPerSessionLabel = new JLabel("Hours per session :");
-		JLabel sessionsPerWeekLabel = new JLabel("Sessions per week :");
-		JLabel ratePerSessionLabel = new JLabel("Rate per session :");
-		JComboBox hoursPerSessionInput = new JComboBox(numbers);
-		JComboBox sessionsPerWeekInput = new JComboBox(numbers);
-		JTextField ratePerSessionInput = new JTextField("",50);
-		JButton createBidBtn = new JButton("Create Bid");
-		JButton seeBidsBtn = new JButton("See All Bids");
+	    searchSubjectInput = new JComboBox();
+		hoursPerSessionInput = new JComboBox(numbers);
+		sessionsPerWeekInput = new JComboBox(numbers);
+		ratePerSessionInput = new JTextField("",50);
 		
-		JLabel orLabel = new JLabel("OR");
-		JButton buyOutBtn = new JButton("Buy Out Request");
-		JButton messageBtn = new JButton("Message Student");
+		//Buttons
+		refreshBtn = new JButton("Refresh");
+		createBidBtn = new JButton("Create Bid");
+		seeBidsBtn = new JButton("See All Bids");
+		buyOutBtn = new JButton("Buy Out Request");
+		messageBtn = new JButton("Message Student");
+
+	}
+	
+	@Override
+	protected void setElementBounds() {
+		searchSubjectLabel.setBounds(10, 10, 100, 30);
+    	searchSubjectInput.setBounds(110, 10, 200, 30);
+    	refreshBtn.setBounds(340, 10, 100, 30);
+    	requestsLabel.setBounds(10, 50, 150, 30);
+    	requestList.setBounds(10,90, 460,200);
+    	requestDetailsLabel.setBounds(10, 300, 150, 30);
+    	requestDetails.setBounds(10, 340, 460, 150);
+    	createBidLabel.setBounds(10, 500, 150, 30);
+    	hoursPerSessionLabel.setBounds(10, 540, 150, 30);
+    	sessionsPerWeekLabel.setBounds(10, 580, 150, 30);
+    	ratePerSessionLabel.setBounds(10, 620, 150, 30);
+    	hoursPerSessionInput.setBounds(160, 540, 100, 30);
+    	sessionsPerWeekInput.setBounds(160, 580, 100, 30);
+    	ratePerSessionInput.setBounds(160, 620, 100, 30);
+    	seeBidsBtn.setBounds(10, 660, 120, 30);
+    	createBidBtn.setBounds(140, 660, 120, 30);
+    	orLabel.setBounds(290, 580, 30,30);
+    	buyOutBtn.setBounds(330, 540, 140, 50);
+    	messageBtn.setBounds(330, 600, 140, 50);
 		
+	}
 
-	    
-	   
-	    
-	    OpenBidsLayout(User currentUser) {
-	    	this.currentUser = currentUser;
-			try {
-				subjects = Application.subjects.getAllSubjects();
-				ArrayList<String> names = new ArrayList<String>();
-				for (Subject s : subjects) {
-					names.add(s.getName());
-				}
-				searchSubjectInput = new JComboBox(names.toArray());
-			} catch (Exception e) {
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Error getting subjects");
-			}
-	          
-	    	container.setLayout(null);
-	        
-	    	requestDetails.setEditable(false);
-	    	
-	    	
-	    	searchSubjectLabel.setBounds(10, 10, 200, 30);
-	    	searchSubjectInput.setBounds(210, 10, 200, 30);
-	    	requestsLabel.setBounds(10, 50, 150, 30);
-	    	requestList.setBounds(10,90, 460,200);
-	    	requestDetailsLabel.setBounds(10, 300, 150, 30);
-	    	requestDetails.setBounds(10, 340, 460, 150);
-	    	createBidLabel.setBounds(10, 500, 150, 30);
-	    	hoursPerSessionLabel.setBounds(10, 540, 150, 30);
-	    	sessionsPerWeekLabel.setBounds(10, 580, 150, 30);
-	    	ratePerSessionLabel.setBounds(10, 620, 150, 30);
-	    	hoursPerSessionInput.setBounds(160, 540, 100, 30);
-	    	sessionsPerWeekInput.setBounds(160, 580, 100, 30);
-	    	ratePerSessionInput.setBounds(160, 620, 100, 30);
-	    	seeBidsBtn.setBounds(10, 660, 120, 30);
-	    	createBidBtn.setBounds(140, 660, 120, 30);
-	    	orLabel.setBounds(290, 580, 30,30);
-	    	buyOutBtn.setBounds(330, 540, 140, 50);
-	    	messageBtn.setBounds(330, 600, 140, 50);
+	@Override
+	protected void addToContainer() {
+		container.add(searchSubjectLabel);
+        container.add(searchSubjectInput);
+        container.add(requestsLabel);
+        container.add(requestList);
+        container.add(requestDetailsLabel);
+        container.add(requestDetails);
+        container.add(createBidLabel);
+        container.add(hoursPerSessionLabel);
+        container.add(sessionsPerWeekLabel);
+        container.add(ratePerSessionLabel);
+        container.add(hoursPerSessionInput);
+        container.add(sessionsPerWeekInput);
+        container.add(ratePerSessionInput);
+        container.add(seeBidsBtn);
+        container.add(createBidBtn);
+        container.add(orLabel);
+        container.add(buyOutBtn);
+        container.add(messageBtn);
+        container.add(refreshBtn);
+	}
 
-	        searchSubjectInput.addActionListener(this);
-	        buyOutBtn.addActionListener(this);
-	        requestList.addListSelectionListener(this);
-	        messageBtn.addActionListener(this);
-	        seeBidsBtn.addActionListener(this);
-	        createBidBtn.addActionListener(this);
-	        
-	        container.add(searchSubjectLabel);
-	        container.add(searchSubjectInput);
-	        container.add(requestsLabel);
-	        container.add(requestList);
-	        container.add(requestDetailsLabel);
-	        container.add(requestDetails);
-	        container.add(createBidLabel);
-	        container.add(hoursPerSessionLabel);
-	        container.add(sessionsPerWeekLabel);
-	        container.add(ratePerSessionLabel);
-	        container.add(hoursPerSessionInput);
-	        container.add(sessionsPerWeekInput);
-	        container.add(ratePerSessionInput);
-	        container.add(seeBidsBtn);
-	        container.add(createBidBtn);
-	        container.add(orLabel);
-	        container.add(buyOutBtn);
-	        container.add(messageBtn);
-	        
+	@Override
+	protected void bindActionListeners() {
+		 searchSubjectInput.addActionListener(this);
+	     buyOutBtn.addActionListener(this);
+	     requestList.addListSelectionListener(this);
+	     messageBtn.addActionListener(this);
+	     seeBidsBtn.addActionListener(this);
+	     createBidBtn.addActionListener(this);
+	     refreshBtn.addActionListener(this);
+	}
 
-
-
-	    }
-
+	@Override
+	protected void init() {
+		requestDetails.setEditable(false);
+		buyOutBtn.setEnabled(false);
+		createBidBtn.setEnabled(false);
+		seeBidsBtn.setEnabled(false);
+		messageBtn.setEnabled(false);
+		loadSubjects();
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == searchSubjectInput) {
-			requestListModel.clear();
-			selectedSubject = subjects.get(searchSubjectInput.getSelectedIndex());
-			ArrayList<String> bids = selectedSubject.getBidIds();
-			requestListModel.addAll(bids);
-			requestDetails.setText("");
-        }else if(e.getSource() == buyOutBtn) {
+			loadRequests();
+        }
+		else if(e.getSource() == buyOutBtn) {
         	try {
-        		Contract contract = new Contract(currentUser, selectedBid);
-        		Contract addedContract = Application.contracts.addContract(contract);
-        		Application.contracts.signContract(selectedBid,addedContract);
-				Application.bids.closeBid(selectedBid);
-				JOptionPane.showMessageDialog(this, "Request bought out");
-			}catch (Exception e1) {
+        		Contract contract = Application.contracts.addContract(new Contract(currentUser, selectedBid));
+        		Application.contracts.signContract(selectedBid,contract);
+				new ViewContractWindow(currentUser,contract);
+				dispose();
+			}
+        	catch (Exception e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Error buying out request");
 			}
-        }else if (e.getSource() ==  createBidBtn) {
+        }
+		else if (e.getSource() ==  createBidBtn) {
         	try {
-        		Contract contract = new Contract(currentUser, selectedBid, hoursPerSessionInput.getSelectedItem().toString(), sessionsPerWeekInput.getSelectedItem().toString(), ratePerSessionInput.getText());
-        		Contract addedContract = Application.contracts.addContract(contract);
-				JOptionPane.showMessageDialog(this, "Bid Added. You bid ID is : " + addedContract.getId());
-			}catch (Exception e1) {
+        		Contract contract = new Contract(currentUser, selectedBid);
+        		contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
+        		contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
+        		contract.setRatePerSession(ratePerSessionInput.getText());
+        		Application.contracts.addContract(contract);
+        		new RequestWindow(currentUser,selectedBid);
+			}
+        	catch (Exception e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Error creating a bid");
 			}
@@ -164,13 +205,18 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
         	Contract contract = new Contract(currentUser, selectedBid);
     		try {
 				Contract addedContract = Application.contracts.addContract(contract);
-				new MessagesWindow(currentUser,selectedBid.getId(),addedContract.getId());
+				new ViewContractWindow(currentUser,addedContract);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
         	
-        }else if(e.getSource() == seeBidsBtn) {
+        }
+        else if(e.getSource() == seeBidsBtn) {
         	new RequestWindow(currentUser,selectedBid);
+        }
+        else if(e.getSource() == refreshBtn) {
+        	loadSubjects();
+        	refresh();
         }
 
 	}
@@ -178,26 +224,62 @@ public class OpenBidsLayout extends JFrame implements ActionListener, ListSelect
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getSource() == requestList) {
-			String id = requestList.getSelectedValue();
-			if(id != null) {
-				try {
-					selectedBid = Application.bids.getBid(id);
-					requestDetails.setText(selectedBid.toString());
-					boolean qualified = selectedBid.getCompetency() <= currentUser.getCompetencyLevel(selectedSubject.getId());
-					boolean closed = selectedBid.getDateClosedDown() == null;
-					boolean check = closed && qualified;
-					buyOutBtn.setEnabled(check && selectedBid.getType().contentEquals("open") );
-					createBidBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
-					seeBidsBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
-					messageBtn.setEnabled(check && selectedBid.getType().contentEquals("closed"));
-					
-				} catch (Exception e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Unable to get bid details");
-				}
-			}
-			
+			loadRequestDetails();
 		}
 	}
 
+	@Override
+	protected void refresh() {
+		if(selectedBid != null) {
+			loadRequestDetails();
+		}
+		loadRequests();
+	}
+	
+	private void loadSubjects() {
+		searchSubjectInput.removeAll();
+		searchSubjectInput.removeAllItems();
+		try {
+			subjects = Application.subjects.getAllSubjects();
+			for (Subject s : subjects) {
+				searchSubjectInput.addItem(s.getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error getting subjects");
+		}
+	}
+	private void loadRequests() {
+		requestListModel.clear();
+		if(searchSubjectInput.getSelectedIndex() > 0) {
+			selectedSubject = subjects.get(searchSubjectInput.getSelectedIndex());
+			requestListModel.addAll(selectedSubject.getOpenRequestIds());
+			requestDetails.setText("");
+		}
+	}
+	
+	private void loadRequestDetails() {
+		String id = requestList.getSelectedValue();
+		if(id != null) {
+			try {
+				selectedBid = Application.bids.getBid(id);
+				requestDetails.setText(selectedBid.toString());
+				boolean qualified = selectedBid.getCompetency() <= currentUser.getCompetencyLevel(selectedSubject.getId());
+				boolean closed = selectedBid.getDateClosedDown() == null;
+				boolean check = closed && qualified;
+				buyOutBtn.setEnabled(check && selectedBid.getType().contentEquals("open") );
+				createBidBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
+				seeBidsBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
+				messageBtn.setEnabled(check && selectedBid.getType().contentEquals("closed"));
+				
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, "No longer able to get bid details");
+				requestDetails.setText("");
+				loadRequests();
+			}
+		}
+	}
+
+	
 }

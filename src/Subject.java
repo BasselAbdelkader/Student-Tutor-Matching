@@ -9,8 +9,8 @@ public class Subject {
 	private String id;
 	private String name;
 	private String description;
-	private ArrayList<String> bidIds = new ArrayList<String>();
-	
+	private ArrayList<String> allRequestsIds = new ArrayList<String>();
+	private ArrayList<String> openRequestIds = new ArrayList<String>();
 
 	private String competencies;
 	
@@ -27,12 +27,19 @@ public class Subject {
 		JsonNode bidsNode =  jsonNode.get("bids");
 		if (bidsNode != null) {
 			for (JsonNode b : bidsNode) {
-				this.bidIds.add(b.get("id").textValue());
+				if(b.get("dateClosedDown").isNull()) {
+					this.openRequestIds.add(b.get("id").textValue());
+				}
+				this.allRequestsIds.add(b.get("id").textValue());
 			}
 		}
 		
 	}
 	
+	public ArrayList<String> getOpenRequestIds() {
+		return openRequestIds;
+	}
+
 	public String toString() {
 		String out = "";
 		out = out + this.name + "\n";
@@ -64,8 +71,8 @@ public class Subject {
 		this.description = description;
 	}
 
-	public ArrayList<String> getBidIds() {
-		return bidIds;
+	public ArrayList<String> getAllRequestIds() {
+		return allRequestsIds;
 	}
 
 

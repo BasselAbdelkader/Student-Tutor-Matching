@@ -22,53 +22,93 @@ import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class RequestLayout extends JFrame implements ActionListener, ListSelectionListener{
+public class RequestLayout extends RefreshableLayout implements ActionListener, ListSelectionListener{
 	
-	User currentUser = null;
-	Bid request = null;
-	ArrayList<Contract> bids = null;
-	Contract selectedContract = null;
+	private static final long serialVersionUID = 1L;
 	
-	Container container = getContentPane();
-	JLabel requestDetailsLabel = new JLabel("Details of the request.");
-	JLabel bidListLabel = new JLabel("Current bids for the request");
-	JLabel bidDetailsLabel = new JLabel("Bid details");
+	//Instance Vars
+	User currentUser;
+	Bid request;
+	ArrayList<Contract> bids;
+	Contract selectedContract;
+	long dueTimeMillis;
 	
-	JTextArea requestDetails = new JTextArea();
-    DefaultListModel<String> bidListModel = new DefaultListModel<String>();
-    JList<String> bidsList = new JList<String>(bidListModel);  
-    JTextArea bidDetails = new JTextArea();
+	
+	
+	//Labels
+	JLabel requestDetailsLabel;
+	JLabel bidListLabel;
+	JLabel bidDetailsLabel;
+	
+	//Outputs
+	JTextArea requestDetails;
+	JTextArea bidDetails;
+	
+	//Lists
+    DefaultListModel<String> bidListModel;
+    JList<String> bidsList;  
     
-    JButton refreshBtn = new JButton("Refresh");
-    JButton messageBtn = new JButton("Messages");
-    JButton closeBidBtn = new JButton("Close this bid");
+    //Buttons
+    JButton refreshBtn;
+    JButton messageBtn;
+    JButton closeBidBtn; 
     
-    Timer t = new Timer();
-    TimerTask tt = new TimerTask() {  
-	    @Override  
-	    public void run() {  
-	    	refresh(); 
-	    };  
-	};
-    TimerTask tt2 = new TimerTask() {  
+    //Timers
+    private Timer timer = new Timer();
+    private TimerTask checkTimeLimit = new TimerTask() {  
 	    @Override  
 	    public void run() {  
 	    	refresh(); 
 			timeLimitReached(this);
 	    };  
-	};;
-    
+	};
     
 	public RequestLayout(User currentUser, Bid request){
+		super();
+		
 		this.currentUser = currentUser;
 		this.request = request;
+		boolean userIsIntiator = currentUser.getId().contentEquals(request.getInitiatorId());
 		
+		if(request.getType().contentEquals("closed")) {
+			dueTimeMillis = Instant.parse(request.getDateCreated()).toEpochMilli() + (int) TimeUnit.DAYS.toMillis(7);	
+			container.add(messageBtn);
+		}
+		else if(request.getType().contentEquals("open")) {
+			dueTimeMillis = Instant.parse(request.getDateCreated()).toEpochMilli() + (int) TimeUnit.MINUTES.toMillis(30);
+			if (userIsIntiator) {
+				container.add(closeBidBtn);
+			}
+		}
+		System.out.println(dueTimeMillis);
+		timer.schedule(checkTimeLimit, new Date(dueTimeMillis)); 
+		refresh();
+	}
+
+	@Override
+	protected void initElements() {
+
+		//Labels
+		requestDetailsLabel = new JLabel("Details of the request.");
+		bidListLabel = new JLabel("Current bids for the request");
+		bidDetailsLabel = new JLabel("Bid details");
 		
-		container.setLayout(null);
+		//Outputs
+		requestDetails = new JTextArea();
+		bidDetails = new JTextArea();
 		
-		requestDetails.setEditable(false);
-		bidDetails.setEditable(false);
-		
+		//Lists
+	    bidListModel = new DefaultListModel<String>();
+	    bidsList = new JList<String>(bidListModel);  
+	    
+	    //Buttons
+	    refreshBtn = new JButton("Refresh");
+	    messageBtn = new JButton("Messages");
+	    closeBidBtn = new JButton("Close this bid");
+	}
+	
+	@Override
+	protected void setElementBounds() {
 		requestDetailsLabel.setBounds(10, 10, 300, 30);
 		requestDetails.setBounds(10, 50, 470, 150);
 		bidListLabel.setBounds(10, 210, 300, 30);
@@ -78,13 +118,10 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 		refreshBtn.setBounds(10, 610, 150, 30);
 		messageBtn.setBounds(170, 610, 150, 30);
 		closeBidBtn.setBounds(330, 610, 150, 30);
-		
-		refreshBtn.addActionListener(this);
-		messageBtn.addActionListener(this);
-		closeBidBtn.addActionListener(this);
-		bidsList.addListSelectionListener(this);
-		
-		
+	}
+
+	@Override
+	protected void addToContainer() {
 		container.add(requestDetailsLabel);
 		container.add(requestDetails);
 		container.add(bidListLabel);
@@ -93,26 +130,51 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 		container.add(bidDetails);
 		container.add(refreshBtn);
 
-		//TODO: Add condition, if currrentUser != requestor, disable closeBidBtn and messageBtn
-		if (currentUser.getId().contentEquals(request.getInitiatorId())) {
-			if(request.getType().contentEquals("closed")) {
-				long total = Instant.parse(request.getDateCreated()).toEpochMilli() + TimeUnit.DAYS.toMillis(7);				
-				t.schedule(tt2, new Date(total)); 
-				messageBtn.setEnabled(false);
-				container.add(messageBtn);
-			}
-			else if(request.getType().contentEquals("open")) {
-				container.add(closeBidBtn);
-				t.schedule(tt2, new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30))); 
-			}
-			
-		}
-		
-		//Run refresh every 30 seconds
-		t.schedule(tt, new Date(), 30000); 
-
 	}
 
+	@Override
+	protected void bindActionListeners() {
+		refreshBtn.addActionListener(this);
+		messageBtn.addActionListener(this);
+		closeBidBtn.addActionListener(this);
+		bidsList.addListSelectionListener(this);
+	}
+
+	@Override
+	protected void init() {
+		requestDetails.setEditable(false);
+		bidDetails.setEditable(false);
+		messageBtn.setEnabled(false);
+	}
+	
+	@Override
+	protected void refresh() {
+		try {
+			request = Application.bids.getBid(request.getId()); //Update the request
+			Contract contract = Application.contracts.getSignedContract(request);
+			if( contract != null) {
+				JOptionPane.showMessageDialog(this, "This request has been bought out.");
+				if(contract.getFirstPartyId().contentEquals(currentUser.getId()) || contract.getSecondPartyId().contentEquals(currentUser.getId())) {
+					new ViewContractWindow(currentUser,contract);
+				}
+				dispose();
+				return;
+			}
+			
+			requestDetails.setText(request.toString());
+			bidListModel.clear();
+			bids = Application.contracts.getUnsignedContracts(request);
+			for(int i = 0; i < bids.size(); i++) {
+				bidListModel.add(i,bids.get(i).getId());
+			}
+			bidDetails.setText("");
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error getting request details. This request may have already ended.");
+			dispose();
+		}
+	}
+	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getSource() == bidsList) {
@@ -130,51 +192,32 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 		}
 	}
 
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == messageBtn) {
-			new MessagesWindow(currentUser,request.getId(),selectedContract.getId());
-		}else if(e.getSource() == closeBidBtn) {
+			new ViewContractWindow(currentUser,selectedContract);
+		}
+		else if(e.getSource() == closeBidBtn) {
         	try {
         		Application.contracts.signContract(request,selectedContract);
-				Application.bids.closeBid(request);
-				JOptionPane.showMessageDialog(this, "Bid closed");
+				new ViewContractWindow(currentUser,Application.contracts.getContract(selectedContract.getId()));
 				dispose();
 			}catch (Exception e1) {
 				JOptionPane.showMessageDialog(this, "Error buying out request");
+				refresh();
 			}
-        }else if(e.getSource() == refreshBtn) {
+        }
+		else if(e.getSource() == refreshBtn) {
     		refresh();
     	}
-		
 	}
-
-	private void refresh() {
-		try {
-			
-			request = Application.bids.getBid(request.getId()); //Update the request
-			if(Application.contracts.getSignedContract(request) != null) {
-				JOptionPane.showMessageDialog(this, "This request has been bought out. Check your contracts.");
-				dispose();
-			}
-			
-			requestDetails.setText(request.toString());
-			
-			bidListModel.clear();
-			bids = Application.contracts.getUnsignedContracts(request);
-			for(int i = 0; i < bids.size(); i++) {
-				bidListModel.add(i,bids.get(i).getId());
-			}
-			bidDetails.setText("");
-			
-			
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error getting request details. This request may have already ended.");
-			dispose();
-		}
+	
+	@Override
+	public void dispose() {
+		checkTimeLimit.cancel();
+		super.dispose();
 	}
 	
 	private void timeLimitReached(TimerTask task) {
@@ -182,6 +225,7 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
 			ArrayList<Contract> contracts = Application.contracts.getUnsignedContracts(request);
     		if(contracts.size() <= 0) {
     			//no bids - delete the request and move on
+    			Application.contracts.deleteUnsignedContracts(request);
     			Application.bids.deleteBid(request);
     			JOptionPane.showMessageDialog(this, "There are no bids for your request within time limit. Closing request.");
     		}else {
@@ -190,15 +234,11 @@ public class RequestLayout extends JFrame implements ActionListener, ListSelecti
     			JOptionPane.showMessageDialog(this, "Your time limit is up. Best bidder was selected. Closing request");
     		}
 			dispose();
-			task.cancel();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}  	
 	}
+
 	
-	public void dispose() {
-		tt.cancel();
-		tt2.cancel();
-		super.dispose();
-	}
+
 }

@@ -14,67 +14,85 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-public class NewRequestLayout extends JFrame implements ActionListener {
-	User currentUser = null;
-	ArrayList<Subject> subjects = null;
+public class NewRequestLayout extends WindowLayout implements ActionListener {
 	
-	Container container = getContentPane();
+	private static final long serialVersionUID = 1L;
 	
-	JLabel requestTypeLabel = new JLabel("Bid Type:");
-	JLabel subjectLabel = new JLabel("Subject :");
-	JLabel competencyLabel = new JLabel("Competency :");
-	JLabel hoursPerSessionLabel = new JLabel("Hours per session :");
-	JLabel sessionsPerWeekLabel = new JLabel("Sessions per week :");
-	JLabel ratePerSessionLabel = new JLabel("Rate per session :");
+	//Instance Vars
+	private User currentUser;
+	private ArrayList<Subject> subjects;
 	
-	String[] type = {"open","closed"};
-	String[] numbers = {"1","2","3","4","5","6","7"};
+	//Labels
+	private JLabel requestTypeLabel ;
+	private JLabel subjectLabel;
+	private JLabel competencyLabel;
+	private JLabel hoursPerSessionLabel;
+	private JLabel sessionsPerWeekLabel;
+	private JLabel ratePerSessionLabel;
 	
-	JComboBox requestTypeInput = new JComboBox(type) ;
-	JComboBox subjectInput = null;
-	JComboBox competencyInput = new JComboBox(numbers);
-	JComboBox hoursPerSessionInput = new JComboBox(numbers);
-	JComboBox sessionsPerWeekInput = new JComboBox(numbers);
+	//Inputs
+	private JComboBox<String> requestTypeInput;
+	private JComboBox subjectInput;
+	private JComboBox<String> competencyInput;
+	private JComboBox<String> hoursPerSessionInput;
+	private JComboBox<String> sessionsPerWeekInput;
+	private JTextField ratePerSessionInput;
 	
-	JTextField ratePerSessionInput = new JTextField();
-	JButton createRequestBtn = new JButton("Create Request");
+	//Buttons
+	private JButton createRequestBtn;
 	
 	public NewRequestLayout(User currentUser) {
+		super();
 		this.currentUser = currentUser;
-		try {
-			subjects = Application.subjects.getAllSubjects();
-			ArrayList<String> names = new ArrayList<String>();
-			for (Subject s : subjects) {
-				names.add(s.getName());
-			}
-			subjectInput = new JComboBox(names.toArray());
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error getting subjects");
-		}
+	}
+	
+	@Override
+	protected void initElements() {
+
+		//Labels
+		requestTypeLabel = new JLabel("Bid Type:");
+		subjectLabel = new JLabel("Subject :");
+		competencyLabel = new JLabel("Competency :");
+		hoursPerSessionLabel = new JLabel("Hours per session :");
+		sessionsPerWeekLabel = new JLabel("Sessions per week :");
+		ratePerSessionLabel = new JLabel("Rate per session :");
 		
-		container.setLayout(null);
+		//Constants
+		String[] type = {"open","closed"};
+		String[] numbers = {"1","2","3","4","5","6","7"};
 		
+		//Inputs
+		requestTypeInput = new JComboBox<String>(type) ;
+		subjectInput = new JComboBox<>();
+		competencyInput = new JComboBox<String>(numbers);
+		hoursPerSessionInput = new JComboBox<String>(numbers);
+		sessionsPerWeekInput = new JComboBox<String>(numbers);
+		ratePerSessionInput = new JTextField();
+		
+		//Buttons
+		createRequestBtn = new JButton("Create Request");
+	}
+
+	@Override
+	protected void setElementBounds() {
 		requestTypeLabel.setBounds(10, 10, 150, 30);
 		subjectLabel.setBounds(10, 50, 150, 30);
 		competencyLabel.setBounds(10, 90, 150, 30);
 		hoursPerSessionLabel.setBounds(10, 130, 150, 30);
 		sessionsPerWeekLabel.setBounds(10, 170, 150, 30);
 		ratePerSessionLabel.setBounds(10, 210, 150, 30);
-		
 		requestTypeInput.setBounds(160, 10, 250, 30);
 		subjectInput.setBounds(160, 50, 250, 30);
 		competencyInput.setBounds(160, 90, 250, 30);
 		hoursPerSessionInput.setBounds(160, 130, 250, 30);
 		sessionsPerWeekInput.setBounds(160, 170, 250, 30);
 		ratePerSessionInput.setBounds(160, 210, 250, 30);
-		
 		createRequestBtn.setBounds(10, 250, 400, 30);
+	}
 
-		
-		createRequestBtn.addActionListener(this);
 
-		
+	@Override
+	protected void addToContainer() {
 		container.add(requestTypeLabel);
         container.add(subjectLabel);
         container.add(competencyLabel);
@@ -93,11 +111,27 @@ public class NewRequestLayout extends JFrame implements ActionListener {
 
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-		if(e.getSource() == createRequestBtn) {
+	protected void bindActionListeners() {
+		createRequestBtn.addActionListener(this);
+	}
+	
+	
+	@Override
+	protected void init() {
+		try {
+			subjects = Application.subjects.getAllSubjects();
+			for (Subject s : subjects) {
+				subjectInput.addItem(s.getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error getting subjects");
+		}
+	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == createRequestBtn) {
 			Bid b = new Bid(currentUser,
 					requestTypeInput.getSelectedItem().toString(),
 					subjects.get(subjectInput.getSelectedIndex()).getId(),
@@ -113,10 +147,11 @@ public class NewRequestLayout extends JFrame implements ActionListener {
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-			
-			
 		}
-
 	}
+
+
+
+	
 
 }

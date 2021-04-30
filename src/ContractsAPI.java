@@ -84,7 +84,6 @@ public class ContractsAPI extends APIWrapper {
 			  "}";
 		if( getSignedContract(b) == null) {
 			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
-			Thread.sleep(5000);
 			deleteUnsignedContracts(b);
 			System.out.println(getSignedContract(b).toString());
 			return true;

@@ -46,8 +46,8 @@ public class Subject {
 	}
 	
 	/**
-	 * Get the request id for the subject that are stil not yet closed 
-	 * @return Lsi t of request ids
+	 * Get the request id for the subject that are not yet closed 
+	 * @return list of request IDs
 	 */
 	public ArrayList<String> getOpenRequestIds() {
 		return openRequestIds;

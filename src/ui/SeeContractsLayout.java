@@ -14,6 +14,12 @@ import apiservices.ContractsAPI;
 import model.Contract;
 import model.User;
 
+/**
+ * This is the layout for a see my contracts window. 
+ * This window is opened when the user selects the see my contracts option and want to his/her contracts as a tutor or student
+ * @author Andrew Pang
+ *
+ */
 public class SeeContractsLayout extends RefreshableLayout implements ActionListener, ListSelectionListener {
 
 	private static final long serialVersionUID = 1L;
@@ -37,7 +43,9 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 	}
 	
 	
-
+	/**
+     * Instantiate the View Elements to be added to the Layout
+     */
 	@Override
 	protected void initElements() {
 		contractsLabel = new JLabel("Your contracts");
@@ -48,6 +56,10 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		refreshBtn =  new JButton("Refresh");
 		viewContractBtn = new JButton("View");
 	}
+	
+	/**
+	 * Set the positions of the View elements to be added
+	*/
 
 	@Override
 	protected void setElementBounds() {
@@ -56,6 +68,10 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		refreshBtn.setBounds(10,260,195,30);
 		viewContractBtn.setBounds(205,260,195,30);
 	}
+
+	/**
+	 * Add the elements to the view container
+	 */
 
 	@Override
 	protected void addToContainer() {
@@ -66,20 +82,29 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		
 
 	}
-
+	
+	/**
+	 * Bind elements that interacts with the user with their respective action listeners
+	 */
 	@Override
 	protected void bindActionListeners() {
 		viewContractBtn.addActionListener(this);
 		refreshBtn.addActionListener(this);
 		contractsList.addListSelectionListener(this);
 	}
-
+	
+	/**
+	 * Initialize the elements properties
+	 */
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
 		viewContractBtn.setEnabled(false);
 	}
-
+	
+	/**
+	 * Default actions to perform on an auto refresh call
+	 */
 	@Override
 	protected void refresh() {
 		// TODO Auto-generated method stub
@@ -99,7 +124,11 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		}
 		
 	}
-
+	
+	/**
+	 * Actions to be performed in the case of a user induced events for list views
+	 * @param e The action event
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() == contractsList) {
@@ -113,7 +142,11 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		}
 		
 	}
-
+	
+	/**
+	 * Actions to be performed in the case of a user induced events
+	 * @param e The action event
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == viewContractBtn) {

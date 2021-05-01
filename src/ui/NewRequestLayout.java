@@ -15,6 +15,12 @@ import model.Request;
 import model.Subject;
 import model.User;
 
+/**
+ * This is the layout for a new request window. 
+ * This window is opened when the user selects the new request option and want to input his/her requirements for the request
+ * @author Andrew Pang
+ *
+ */
 public class NewRequestLayout extends WindowLayout implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
@@ -166,9 +172,5 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 			}
 		}
 	}
-
-
-
 	
-
 }

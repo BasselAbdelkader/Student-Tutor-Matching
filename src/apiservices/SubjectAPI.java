@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import model.Subject;
 
 /**
- * MessagesAPI Class
+ * SubjectAPI Class
  * @author Andrew Pang
  * This is the API class responsible for connecting to the API and performing operation for subjects requests.
  * This class contain the methods to get subjects and its details in a controlled manner. 
@@ -18,7 +18,7 @@ public class SubjectAPI extends APIWrapper {
 	private static SubjectAPI instance;
 	
 	/**
-	 * Only ONE SubjectAPI class can exist as we only need one connection for messages to the API Service
+	 * Only ONE SubjectAPI class can exist as we only need one connection for subejcts to the API Service
 	 */
 	public static SubjectAPI getInstance() {
 		if(instance == null) { 

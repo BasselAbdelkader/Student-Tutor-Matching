@@ -1,8 +1,8 @@
 package ui;
 
 /**
- * This is boot-strapper class for the Login Window
- * it specifeis the properties of the login window such as dimensions, visibility and properties
+ * This is boot-strapper class for the Login Layout
+ * it specifies the properties of the login window such as dimensions, visibility and properties
  * @author Andrew Pang
  *
  */

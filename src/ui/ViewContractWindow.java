@@ -1,3 +1,6 @@
+package ui;
+import model.Contract;
+import model.User;
 
 public class ViewContractWindow {
 	

@@ -1,4 +1,9 @@
+package ui;
 import javax.swing.*;
+
+import apiservices.UserAPI;
+import model.User;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -77,7 +82,7 @@ public class LoginLayout extends WindowLayout implements ActionListener {
             
             User currentUser = null;
 			try {
-				currentUser = Application.users.login(userText, pwdText);
+				currentUser = UserAPI.getInstance().login(userText, pwdText);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Some error coccured when connecting to t he API");

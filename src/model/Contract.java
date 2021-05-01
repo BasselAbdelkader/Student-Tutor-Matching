@@ -1,3 +1,4 @@
+package model;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -48,29 +49,6 @@ public class Contract {
 		this.initialRequestId = fromBid.getId();
 	}
 	
-	
-
-	public Contract(User firstParty, Bid fromBid, String hoursPerSession, String sessionsPerWeek, String ratePerSession) {
-		this.firstPartyId = firstParty.getId();
-		this.tutorName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
-		this.secondPartyId = fromBid.getInitiatorId();
-		this.studentName = fromBid.getInitiatorName();
-		this.subjectId = fromBid.getSubjectId();
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		this.dateCreated = timestamp.toInstant().toString();
-		Timestamp expTimestamp = null;
-		if (fromBid.getType().contentEquals("closed")) {
-			expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7));
-		}else if (fromBid.getType().contentEquals("open")) {
-			expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30));
-		}
-		this.expiryDate = expTimestamp.toInstant().toString();
-		this.hoursPerSession = hoursPerSession;
-		this.sessionsPerWeek = sessionsPerWeek;
-		this.ratePerSession = ratePerSession;
-		this.initialRequestId = fromBid.getId();
-	}
-	
 	public Contract(String jsonString) throws Exception
 	{
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
@@ -98,13 +76,6 @@ public class Contract {
 		if (jsonNode.get("lessonInfo").get("ratePerSession") != null) {
 			this.ratePerSession = jsonNode.get("lessonInfo").get("ratePerSession").textValue();
 		}
-		
-//		if (jsonNode.get("lessonInfo").get("sessions") != null) {
-//			ObjectNode sessionsNode = new ObjectMapper().readValue(jsonNode.get("lessonInfo").get("sessions").toString(), ObjectNode.class);
-//			for(JsonNode c : sessionsNode) {
-//				sessions.add(c.toString());
-//			}
-//		}
 		
 		if (jsonNode.get("additionalInfo").get("initialRequestId") != null) {
 			this.initialRequestId = jsonNode.get("additionalInfo").get("initialRequestId").textValue();

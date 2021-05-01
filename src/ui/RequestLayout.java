@@ -1,3 +1,4 @@
+package ui;
 import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -21,6 +22,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import apiservices.BidsAPI;
+import apiservices.ContractsAPI;
+import model.Bid;
+import model.Contract;
+import model.User;
 
 public class RequestLayout extends RefreshableLayout implements ActionListener, ListSelectionListener{
 	
@@ -150,8 +157,8 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 	@Override
 	protected void refresh() {
 		try {
-			request = Application.bids.getBid(request.getId()); //Update the request
-			Contract contract = Application.contracts.getSignedContract(request);
+			request = BidsAPI.getInstance().getBid(request.getId()); //Update the request
+			Contract contract = ContractsAPI.getInstance().getSignedContract(request);
 			if( contract != null) {
 				JOptionPane.showMessageDialog(this, "This request has been bought out.");
 				if(contract.getFirstPartyId().contentEquals(currentUser.getId()) || contract.getSecondPartyId().contentEquals(currentUser.getId())) {
@@ -163,7 +170,7 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 			
 			requestDetails.setText(request.toString());
 			bidListModel.clear();
-			bids = Application.contracts.getUnsignedContracts(request);
+			bids = ContractsAPI.getInstance().getUnsignedContracts(request);
 			for(int i = 0; i < bids.size(); i++) {
 				bidListModel.add(i,bids.get(i).getId());
 			}
@@ -181,7 +188,7 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 			String id = bidsList.getSelectedValue();
 			if(id != null) {
 				try {
-					selectedContract = Application.contracts.getContract(id);
+					selectedContract = ContractsAPI.getInstance().getContract(id);
 					bidDetails.setText(selectedContract.toString());
 					messageBtn.setEnabled(true);
 				} catch (Exception e1) {
@@ -201,8 +208,8 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 		}
 		else if(e.getSource() == closeBidBtn) {
         	try {
-        		Application.contracts.signContract(request,selectedContract);
-				new ViewContractWindow(currentUser,Application.contracts.getContract(selectedContract.getId()));
+        		ContractsAPI.getInstance().signContract(request,selectedContract);
+				new ViewContractWindow(currentUser,ContractsAPI.getInstance().getContract(selectedContract.getId()));
 				dispose();
 			}catch (Exception e1) {
 				JOptionPane.showMessageDialog(this, "Error buying out request");
@@ -222,15 +229,15 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 	
 	private void timeLimitReached(TimerTask task) {
 		try {
-			ArrayList<Contract> contracts = Application.contracts.getUnsignedContracts(request);
+			ArrayList<Contract> contracts = ContractsAPI.getInstance().getUnsignedContracts(request);
     		if(contracts.size() <= 0) {
     			//no bids - delete the request and move on
-    			Application.contracts.deleteUnsignedContracts(request);
-    			Application.bids.deleteBid(request);
+    			ContractsAPI.getInstance().deleteUnsignedContracts(request);
+    			BidsAPI.getInstance().deleteBid(request);
     			JOptionPane.showMessageDialog(this, "There are no bids for your request within time limit. Closing request.");
     		}else {
     			//select best bid
-    			Application.contracts.signContract(request,contracts.get(0));
+    			ContractsAPI.getInstance().signContract(request,contracts.get(0));
     			JOptionPane.showMessageDialog(this, "Your time limit is up. Best bidder was selected. Closing request");
     		}
 			dispose();

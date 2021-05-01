@@ -1,15 +1,27 @@
+package apiservices;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class BidsAPI extends APIWrapper {
+import model.Bid;
 
-	public BidsAPI(String api_key,String rootUrl) {
-		super(api_key, rootUrl + "/bid");
+public class BidsAPI extends APIWrapper {
+	
+	private static BidsAPI instance;
+	
+	public static BidsAPI getInstance() {
+		if(instance == null) { 
+			instance = new BidsAPI();
+		}
+		return instance;
+	}
+
+	private BidsAPI() {
+		super(rootUrl + "/bid");
 	}
 	
 	public String addBid(Bid bid) throws Exception{

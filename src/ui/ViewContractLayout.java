@@ -1,3 +1,4 @@
+package ui;
 import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,14 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import apiservices.BidsAPI;
+import apiservices.ContractsAPI;
+import apiservices.MessagesAPI;
+import model.Bid;
+import model.Contract;
+import model.Message;
+import model.User;
 
 public class ViewContractLayout extends RefreshableLayout implements ActionListener{
 
@@ -150,7 +159,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
       if(e.getSource() == sendChatBtn) {
     	if (chatInput.getText().length() > 0) {
     		try {
-				Application.messages.sendMessage(bid, contract, currentUser, chatInput.getText());
+    			Message m = new Message(bid, currentUser, contract, chatInput.getText());
+    			
+				MessagesAPI.getInstance().sendMessage(m);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				JOptionPane.showMessageDialog(this, "Unable to send message");
@@ -167,7 +178,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
     	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
     	  contract.setRatePerSession(ratePerSessionInput.getText());
     	  try {
-    		  Application.contracts.updateContract(contract);
+    		  ContractsAPI.getInstance().updateContract(contract);
     	  } catch (Exception e1) {
     		  JOptionPane.showMessageDialog(this, "Failed to update contract details. Try again.");
     		  e1.printStackTrace();
@@ -176,7 +187,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
       } 
       else if(e.getSource() == signContractBtn) {
     	  try {
-    		  Application.contracts.signContract(bid,contract);
+    		  ContractsAPI.getInstance().signContract(bid,contract);
     	  } catch (Exception e1) {
     		  JOptionPane.showMessageDialog(this, "Cannot Sign Contract");
     		  e1.printStackTrace();
@@ -189,9 +200,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	@Override
 	protected void refresh() {
 		try {
-			contract = Application.contracts.getContract(contract.getId());
+			contract = ContractsAPI.getInstance().getContract(contract.getId());
 			contractDetails.setText(contract.toString());
-			bid = Application.bids.getBid(contract.getInitialRequestId());
+			bid = BidsAPI.getInstance().getBid(contract.getInitialRequestId());
 			msgListModel.clear();
 			msgListModel.addAll(bid.getMessagesForContract(contract.getId()));
 			

@@ -1,3 +1,4 @@
+package apiservices;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -6,11 +7,25 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class ContractsAPI extends APIWrapper {
+import model.Bid;
+import model.Contract;
+import model.User;
 
-	public ContractsAPI(String api_key, String url) {
-		super(api_key, url+ "/contract");
+public class ContractsAPI extends APIWrapper {
+	
+	private static ContractsAPI instance;
+	
+	public static ContractsAPI getInstance() {
+		if(instance == null) { 
+			instance = new ContractsAPI();
+		}
+		return instance;
 	}
+
+	private ContractsAPI() {
+		super(rootUrl + "/contract");
+	}
+	
 	
 	public ArrayList<Contract> getContractsForUser(User u) throws Exception{
 		String userID = u.getId();
@@ -101,7 +116,7 @@ public class ContractsAPI extends APIWrapper {
 		if( getSignedContract(b) == null) {
 			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 			deleteUnsignedContracts(b);
-			Application.bids.closeBid(b);
+			BidsAPI.getInstance().closeBid(b);
 			return true;
 		}
 		return false;

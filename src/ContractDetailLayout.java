@@ -12,6 +12,10 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
+import apiservices.ContractsAPI;
+import model.Contract;
+import model.User;
+
 public class ContractDetailLayout extends JFrame implements ActionListener{
 
 	User currentUser = null;
@@ -101,7 +105,7 @@ public class ContractDetailLayout extends JFrame implements ActionListener{
 	private void refresh() {
 		try {
 			
-			contract = Application.contracts.getContract(contract.getId());
+			contract = ContractsAPI.getInstance().getContract(contract.getId());
 			contractDetails.setText(contract.toString());
 			sessions = contract.getSessions();
 			sessionListModel.clear();

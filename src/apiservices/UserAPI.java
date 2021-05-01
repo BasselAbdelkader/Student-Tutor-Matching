@@ -1,13 +1,25 @@
+package apiservices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import model.User;
 
 public class UserAPI extends APIWrapper {
 	
 	private User currentUser = null;
 	private String currentUserJWT = null;
 	
-	public UserAPI(String api_key, String rootUrl) {
-		super(api_key, rootUrl + "/user");
+	private static UserAPI instance;
+	
+	public static UserAPI getInstance() {
+		if(instance == null) { 
+			instance = new UserAPI();
+		}
+		return instance;
+	}
+
+	private UserAPI() {
+		super(rootUrl + "/user");
 	}
 	
 	public User login(String uname, String pwrd) throws Exception {

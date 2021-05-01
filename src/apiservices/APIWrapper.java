@@ -1,3 +1,4 @@
+package apiservices;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -6,13 +7,13 @@ import java.net.http.HttpResponse;
 
 public abstract class APIWrapper {
 	
-	private String api_key;
+	private final static String api_key = "nwPqJThKp7jwCtf8McjrgTfWkdFmnJ";
+	protected final static String rootUrl = "https://fit3077.com/api/v1";
+	
 	protected String url;
 	
-	
 
-	public APIWrapper(String api_key, String url) {
-		this.api_key = api_key;
+	public APIWrapper(String url) {
 		this.url = url;
 	}
 	

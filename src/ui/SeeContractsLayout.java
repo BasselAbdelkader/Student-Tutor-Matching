@@ -1,3 +1,4 @@
+package ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -9,6 +10,10 @@ import javax.swing.JList;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import apiservices.ContractsAPI;
+import model.Contract;
+import model.User;
 
 public class SeeContractsLayout extends RefreshableLayout implements ActionListener, ListSelectionListener {
 
@@ -83,7 +88,7 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		try {
 			viewContractBtn.setEnabled(false);
 			contractsListModel.clear();
-			contracts = Application.contracts.getContractsForUser(currentUser);
+			contracts = ContractsAPI.getInstance().getContractsForUser(currentUser);
 			ArrayList<String> contractIds = new ArrayList<String>();
 			for (Contract c : contracts) {
 				contractIds.add(c.getId());

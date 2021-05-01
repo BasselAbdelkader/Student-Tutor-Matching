@@ -1,3 +1,6 @@
+package model;
+import java.sql.Timestamp;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -11,18 +14,19 @@ public class Message {
 	private String dateLastEdited;
 	private String content;
 	
-	public Message(String bidId, User poster, String datePosted, String dateLastEdited, String content) {
-		this.bidId = bidId;
+	public Message(Bid b, User poster, Contract c, String content) {
+		this.bidId = b.getId();
 		this.posterId = poster.getId();
+		this.contractId = c.getId();
 		this.posterUserName = poster.getUserName();
-		this.datePosted = datePosted;
-		this.dateLastEdited = dateLastEdited;
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		this.datePosted = timestamp.toInstant().toString();
+		this.dateLastEdited = this.datePosted;
 		this.content = content;
 	}
 	
 	public Message(String jsonString) throws Exception {
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
-//		this.bidId = jsonNode.get("bidId").textValue();
 		this.posterId = jsonNode.get("poster").get("id").textValue();
 		this.posterUserName = jsonNode.get("poster").get("userName").textValue();
 		this.datePosted = jsonNode.get("datePosted").textValue();

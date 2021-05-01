@@ -1,3 +1,5 @@
+package ui;
+import model.User;
 
 public class NewRequestWindow {
 

@@ -1,3 +1,4 @@
+package ui;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -23,6 +24,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import apiservices.BidsAPI;
+import apiservices.ContractsAPI;
+import apiservices.SubjectAPI;
+import model.Bid;
+import model.Contract;
+import model.Subject;
+import model.User;
 
 public class OpenBidsLayout extends RefreshableLayout implements ActionListener, ListSelectionListener {
 	
@@ -177,8 +186,8 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
         }
 		else if(e.getSource() == buyOutBtn) {
         	try {
-        		Contract contract = Application.contracts.addContract(new Contract(currentUser, selectedBid));
-        		Application.contracts.signContract(selectedBid,contract);
+        		Contract contract = ContractsAPI.getInstance().addContract(new Contract(currentUser, selectedBid));
+        		ContractsAPI.getInstance().signContract(selectedBid,contract);
 				new ViewContractWindow(currentUser,contract);
 				dispose();
 			}
@@ -193,7 +202,7 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
         		contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
         		contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
         		contract.setRatePerSession(ratePerSessionInput.getText());
-        		Application.contracts.addContract(contract);
+        		ContractsAPI.getInstance().addContract(contract);
         		new RequestWindow(currentUser,selectedBid);
 			}
         	catch (Exception e1) {
@@ -204,7 +213,7 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
         else if(e.getSource() == messageBtn) {
         	Contract contract = new Contract(currentUser, selectedBid);
     		try {
-				Contract addedContract = Application.contracts.addContract(contract);
+				Contract addedContract = ContractsAPI.getInstance().addContract(contract);
 				new ViewContractWindow(currentUser,addedContract);
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -240,7 +249,7 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		searchSubjectInput.removeAll();
 		searchSubjectInput.removeAllItems();
 		try {
-			subjects = Application.subjects.getAllSubjects();
+			subjects = SubjectAPI.getInstance().getAllSubjects();
 			for (Subject s : subjects) {
 				searchSubjectInput.addItem(s.getName());
 			}
@@ -262,7 +271,7 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		String id = requestList.getSelectedValue();
 		if(id != null) {
 			try {
-				selectedBid = Application.bids.getBid(id);
+				selectedBid = BidsAPI.getInstance().getBid(id);
 				requestDetails.setText(selectedBid.toString());
 				boolean qualified = selectedBid.getCompetency() <= currentUser.getCompetencyLevel(selectedSubject.getId());
 				boolean closed = selectedBid.getDateClosedDown() == null;

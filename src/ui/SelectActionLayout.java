@@ -1,3 +1,4 @@
+package ui;
 import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -9,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import model.User;
 
 public class SelectActionLayout extends WindowLayout implements ActionListener {
 	 

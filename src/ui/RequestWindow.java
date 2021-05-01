@@ -1,3 +1,6 @@
+package ui;
+import model.Bid;
+import model.User;
 
 public class RequestWindow {
 	

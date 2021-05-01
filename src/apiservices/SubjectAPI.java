@@ -1,14 +1,26 @@
+package apiservices;
 import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import model.Subject;
+
 
 public class SubjectAPI extends APIWrapper {
 	
-	public SubjectAPI(String api_key, String rootUrl) {
-		super(api_key, rootUrl + "/subject");
+	private static SubjectAPI instance;
+	
+	public static SubjectAPI getInstance() {
+		if(instance == null) { 
+			instance = new SubjectAPI();
+		}
+		return instance;
+	}
+
+	private SubjectAPI() {
+		super(rootUrl + "/subject");
 	}
 	
 	public ArrayList<Subject> getAllSubjects() throws Exception {

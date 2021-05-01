@@ -1,3 +1,4 @@
+package ui;
 import java.awt.Container;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import apiservices.BidsAPI;
+import apiservices.SubjectAPI;
+import model.Bid;
+import model.Subject;
+import model.User;
 
 public class NewRequestLayout extends WindowLayout implements ActionListener {
 	
@@ -119,7 +126,7 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 	@Override
 	protected void init() {
 		try {
-			subjects = Application.subjects.getAllSubjects();
+			subjects = SubjectAPI.getInstance().getAllSubjects();
 			for (Subject s : subjects) {
 				subjectInput.addItem(s.getName());
 			}
@@ -141,8 +148,8 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 					ratePerSessionInput.getText()
 					);
 			try {
-				String id = Application.bids.addBid(b);
-				new RequestWindow(currentUser, Application.bids.getBid(id));
+				String id = BidsAPI.getInstance().addBid(b);
+				new RequestWindow(currentUser, BidsAPI.getInstance().getBid(id));
 				dispose();
 			} catch (Exception e1) {
 				e1.printStackTrace();

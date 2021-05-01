@@ -4,8 +4,17 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-public class Bid {
+/**
+ * Request Class
+ * @author Andrew Pang
+ * This class represents a bid request. 
+ * Whenever a student posts a request, a Request instance is created.
+ * IMPORTANT: A request is sent to the APi as a "Bid" when it really should mean a bid request. 
+ * This is done because the API do not have a dedicated end point for requests. 
+ *
+ */
+public class Request {
+	
 	private String initiatorId;
 	private String inititatorName;
 	private String id;
@@ -19,7 +28,19 @@ public class Bid {
 	private String sessionsPerWeek;
 	private String ratePerSession;
 	private ArrayList<String> contractIds = new ArrayList<String>();
-	public Bid(User user, String type, String subjectId, int competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession) {
+	
+	/**
+	 * This constructor creates a new bid request.
+	 * It sets the dateCreated of the request to the date it is created and sets the expiry date based on the type of request. (30 minutes for open request, 7 dyas for closed)
+	 * @param user User instance of the requestor
+	 * @param type Type of the request, open or closed
+	 * @param subjectId id of the subject that the requestor is interested in
+	 * @param competency Minimum competency level constraint of the bidder
+	 * @param hrsPerSession number of hours per session that the requestor needs
+	 * @param sessionsPerWeek number of sessions per week that the requestor needs
+	 * @param ratePerSession rate per session that the requestor offers the tutor
+	 */
+	public Request(User user, String type, String subjectId, int competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession) {
 
 		this.initiatorId = user.getId();
 		this.inititatorName = user.getGivenName() + " " + user.getFamilyName();
@@ -32,7 +53,12 @@ public class Bid {
 		
 	}
 
-	public Bid(String jsonString) throws Exception {
+	/**
+	 * This constructor constructs a Request instance from a JSON string
+	 * @param jsonString JSON String
+	 * @throws Exception There is an error parsing the JSONS String
+	 */
+	public Request(String jsonString) throws Exception {
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
 		this.id = jsonNode.get("id").textValue();
 		this.type = jsonNode.get("type").textValue();
@@ -68,34 +94,67 @@ public class Bid {
 		}
 	}
 	
+	/**
+	 * Get the user id of the request initiator
+	 * @return Requestor's user id
+	 */
 	public String getInitiatorId() {
 		return initiatorId;
 	}
 	
+	/**
+	 * Get the name of the request initiator
+	 * @return Requestor's name
+	 */
 	public String getInitiatorName() {
 		return inititatorName;
 	}
 	
+	/**
+	 * Get the id of the request 
+	 * @return Request's ID
+	 */
 	public String getId() {
 		return id;
 	}
 	
+	/**
+	 * Get the type of the request
+	 * @return "open" or "closed", depending on the request type
+	 */
 	public String getType() {
 		return type;
 	}
 	
+	/**
+	 * Get the date that the request was created 
+	 * @return ISO 8601 date string of the request creation date
+	 */
 	public String getDateCreated() {
 		return dateCreated;
 	}
 	
+	/**
+	 * Get the date that the request was closed down
+	 * @return ISO 8601 date string of the request closed date
+	 */
 	public String getDateClosedDown() {
 		return dateClosedDown;
 	}
 	
+	/**
+	 * Get the subject id that the request is involved in
+	 * @return Subject ID of the subject involved in the Request
+	 */
 	public String getSubjectId() {
 		return subjectId;
 	}
 	
+	/** 
+	 * Get the messages instances for the contracts ( i.e. bids on the reqeust) based on the request
+	 * @param contractId ID of the contract 
+	 * @return List of messages of the contract
+	 */
 	public ArrayList<Message> getMessagesForContract(String contractId) {
 		ArrayList<Message> out = new ArrayList<Message>();
 		for  (Message m : messages) {
@@ -106,14 +165,26 @@ public class Bid {
 		return out;
 	}
 
+	/**
+	 * Get the number of hours per session that the requestor needs
+	 * @return number of hours per session
+	 */
 	public String getHoursPerSession() {
 		return hoursPerSession;
 	}
 
+	/**
+	 * Get the number of sessions per week that the requestor needs
+	 * @return number of sessions per week
+	 */
 	public String getSessionsPerWeek() {
 		return sessionsPerWeek;
 	}
 
+	/**
+	 * Get the rate per session that the requestor needs
+	 * @return rate per session
+	 */
 	public String getRatePerSession() {
 		return ratePerSession;
 	}
@@ -130,7 +201,11 @@ public class Bid {
 	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";
 	    return out;
 	}
-
+	
+	/**
+	 * Get the minimum competency level of the request
+	 * @return minimum competency level of the request
+	 */
 	public int getCompetency() {
 		return this.competency;
 	}

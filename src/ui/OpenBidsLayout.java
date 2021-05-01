@@ -1,25 +1,15 @@
 package ui;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.HeadlessException;
-import java.awt.Insets;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
@@ -28,15 +18,23 @@ import javax.swing.event.ListSelectionListener;
 import apiservices.BidsAPI;
 import apiservices.ContractsAPI;
 import apiservices.SubjectAPI;
-import model.Bid;
+import model.Request;
 import model.Contract;
 import model.Subject;
 import model.User;
 
+/**
+ * This is the layout for a new open bidding window. 
+ * This window is opened when the tutor selects the bid on student request option and want to look for student request to bid on
+ * @author Andrew Pang
+ *
+ */
 public class OpenBidsLayout extends RefreshableLayout implements ActionListener, ListSelectionListener {
 	
-	 	ArrayList<Subject> subjects;
-	    Bid selectedBid;
+	 
+	private static final long serialVersionUID = 1L;
+		ArrayList<Subject> subjects;
+	    Request selectedBid;
 	    Subject selectedSubject;
 	    User currentUser;
 	    
@@ -75,7 +73,10 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 	public OpenBidsLayout(User currentUser) {
 		this.currentUser = currentUser;
 	}
-									
+	
+	/**
+     * Instantiate the View Elements to be added to the Layout
+     */				
 	@Override
 	protected void initElements() {
 		//Labels
@@ -111,6 +112,9 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 
 	}
 	
+	/**
+	* Set the positions of the View elements to be added
+	*/
 	@Override
 	protected void setElementBounds() {
 		searchSubjectLabel.setBounds(10, 10, 100, 30);
@@ -135,6 +139,9 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		
 	}
 
+	/**
+	 * Add the elements to the view container
+	 */
 	@Override
 	protected void addToContainer() {
 		container.add(searchSubjectLabel);
@@ -158,6 +165,9 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
         container.add(refreshBtn);
 	}
 
+	/**
+	 * Bind elements that interacts with the user with their respective action listeners
+	 */
 	@Override
 	protected void bindActionListeners() {
 		 searchSubjectInput.addActionListener(this);
@@ -168,7 +178,10 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 	     createBidBtn.addActionListener(this);
 	     refreshBtn.addActionListener(this);
 	}
-
+	
+	/**
+	 * Initialize the elements properties
+	 */
 	@Override
 	protected void init() {
 		requestDetails.setEditable(false);
@@ -178,6 +191,11 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		messageBtn.setEnabled(false);
 		loadSubjects();
 	}
+	
+	/**
+	 * Actions to be performed in the case of a user induced events
+	 * @param e The action event
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -230,6 +248,10 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 
 	}
 
+	/**
+	 * Actions to be performed in the case of a user induced events for list views
+	 * @param e The action event
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getSource() == requestList) {
@@ -237,6 +259,9 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		}
 	}
 
+	/**
+	 * Default actions to perform on an auto refresh call
+	 */
 	@Override
 	protected void refresh() {
 		if(selectedBid != null) {
@@ -245,6 +270,9 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		loadRequests();
 	}
 	
+	/**
+	 * Reload the list of subjects available
+	 */
 	private void loadSubjects() {
 		searchSubjectInput.removeAll();
 		searchSubjectInput.removeAllItems();
@@ -258,6 +286,10 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 			JOptionPane.showMessageDialog(this, "Error getting subjects");
 		}
 	}
+	
+	/**
+	 * Reload the list of requests available for that subject
+	 */
 	private void loadRequests() {
 		requestListModel.clear();
 		if(searchSubjectInput.getSelectedIndex() > 0) {
@@ -267,6 +299,9 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		}
 	}
 	
+	/**
+	 * Reload the details of the request
+	 */
 	private void loadRequestDetails() {
 		String id = requestList.getSelectedValue();
 		if(id != null) {

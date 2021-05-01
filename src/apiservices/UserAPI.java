@@ -4,6 +4,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import model.User;
 
+/**
+ * UserAPI Class
+ * @author Andrew Pang
+ * This is the API class responsible for connecting to the API and performing operation for user related requests.
+ * This class contain the methods to log users in, in a controlled manner. 
+ */
 public class UserAPI extends APIWrapper {
 	
 	private User currentUser = null;
@@ -11,6 +17,9 @@ public class UserAPI extends APIWrapper {
 	
 	private static UserAPI instance;
 	
+	/**
+	 * Only ONE UserAPI class can exist as we only need one connection for users to the API Service
+	 */
 	public static UserAPI getInstance() {
 		if(instance == null) { 
 			instance = new UserAPI();
@@ -22,6 +31,14 @@ public class UserAPI extends APIWrapper {
 		super(rootUrl + "/user");
 	}
 	
+	/**
+	 * Login method
+	 * This method allows the user to log in and returns a user instance token that can be used to identify the user
+	 * @param uname Username of the user
+	 * @param pwrd Password of the user
+	 * @return User instance that can be used to identify the current Logged in user
+	 * @throws Exception There is an error wioth the HTTP request.
+	 */
 	public User login(String uname, String pwrd) throws Exception {
 		
 		String loginUrl = url + "/login?jwt=true";
@@ -55,9 +72,9 @@ public class UserAPI extends APIWrapper {
 //		String response = super.getHttpRequest(url + "/" + id + "?fields=inititatedBids&fields=competencies.subject");
 //		return new User(response);
 //	}
-	public User getCurrentUser() {
-		return currentUser;
-	}
+//	public User getCurrentUser() {
+//		return currentUser;
+//	}
 	
 	
 	

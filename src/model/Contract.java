@@ -1,14 +1,19 @@
 package model;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * Contract class
+ * @author Andrew Pang
+ * This class is used to represent a Contract that is created from a bid request.
+ * For the purposes of this project, an unsigned contract is a bid for a bid request.
+ * A signed contract is a successful bid that is closed by the requestor. 
+ */
 public class Contract {
+	
 	private String firstPartyId;
 	private String tutorName;
 	private String secondPartyId;
@@ -21,14 +26,16 @@ public class Contract {
 	private String sessionsPerWeek;
 	private String ratePerSession;
 	private String initialRequestId;
-	public String getInitialRequestId() {
-		return initialRequestId;
-	}
-
 	private String dateSigned;
 	private ArrayList<String> sessions = new ArrayList<String>();
 	
-	public Contract(User firstParty, Bid fromBid) {
+	/**
+	 * This constructor creates a new unsigned contract (i.e. a bid) instance and sets the date created to the time the instance was created 
+	 * It also sets the expiry date based on the type of bid request the initial request was (30 minutes for open request, 7 dyas for closed)
+	 * @param firstParty The bidder's user instance
+	 * @param fromBid The bid request the bidder is interested in
+	 */
+	public Contract(User firstParty, Request fromBid) {
 		this.firstPartyId = firstParty.getId();
 		this.tutorName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
 		this.secondPartyId = fromBid.getInitiatorId();
@@ -49,6 +56,11 @@ public class Contract {
 		this.initialRequestId = fromBid.getId();
 	}
 	
+	/**
+	 * This constructor constructs a Contract instance based on a JSON string that it is given
+	 * @param jsonString The JSON String 
+	 * @throws Exception There is an erorr in parsing the JSON string
+	 */
 	public Contract(String jsonString) throws Exception
 	{
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
@@ -82,63 +94,117 @@ public class Contract {
 		}
 		
 	}
-
+	
+	/**
+	 * Get the user id for the first party (Bidder or Tutor)
+	 * @return id of the first party user
+	 */
 	public String getFirstPartyId() {
 		return firstPartyId;
 	}
 
+	/**
+	 * Get the user id for the second party (Requestor or Student)
+	 * @return id of the second party user
+	 */
 	public String getSecondPartyId() {
 		return secondPartyId;
 	}
-
+	
+	/**
+	 * Get the  id of the contract
+	 * @return id of the current contract
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Get the id of the subject that the contract is involved in
+	 * @return subject id of the current contract
+	 */
 	public String getSubjectId() {
 		return subjectId;
 	}
-
+	
+	/**
+	 * Get the date the contract was created 
+	 * @return ISO8601 date that that the contract is created
+	 */
 	public String getDateCreated() {
 		return dateCreated;
 	}
-
+	
+	/**
+	 * Get the expiry date of the contract
+	 * Usually 30 minutes pass the created date for open bid request
+	 * 7 days pass the created date for closed  bid request 
+	 * @return ISO8601 date that that the contract expires
+	 */
 	public String getExpiryDate() {
 		return expiryDate;
 	}
-
+	
+	/**
+	 * Get the agreed upon hours per session in the contract
+	 * @return number of hours per session agreed in the contract
+	 */
 	public String getHoursPerSession() {
 		return hoursPerSession;
 	}
-
+	
+	/**
+	 * Get the agreed upon sessions per week in the contract
+	 * @return number of sessions per week agreed in the contract
+	 */
 	public String getSessionsPerWeek() {
 		return sessionsPerWeek;
 	}
-
+	
+	/**
+	 * Get the agreed upon rate per session in the contract
+	 * @return rate per session agreed in the contract
+	 */
 	public String getRatePerSession() {
 		return ratePerSession;
 	}
-
-	public String initialRequestId() {
+	
+	/**
+	 * Get the id of the initial bid request that led to this contract
+	 * @return id of initial request
+	 */
+	public String getInitialRequestId() {
 		return initialRequestId;
 	}
 
+	/**
+	 * Get the date the contract was signed
+	 * @return ISO 8601 format of the sugned date
+	 */
 	public String getDateSigned() {
 		return dateSigned;
 	}
 	
-	public ArrayList<String> getSessions() {
-		return sessions;
-	}
-	
+	/**
+	 * Amend the number of hours per session in the UNSIGNED contract
+	 * @return null
+	 */
 	public void setHoursPerSession(String hoursPerSession) {
 		this.hoursPerSession = hoursPerSession;
 	}
-
+	
+	/**
+	 * Amend the number of sessions per session in the UNSIGNED contract
+	 * @return null
+	 */
 	public void setSessionsPerWeek(String sessionsPerWeek) {
 		this.sessionsPerWeek = sessionsPerWeek;
 	}
-
+	
+	/**
+	 * Amend the number rate per session in the UNSIGNED contract
+	 * @return null
+	 */
 	public void setRatePerSession(String ratePerSession) {
 		this.ratePerSession = ratePerSession;
 	}

@@ -1,6 +1,11 @@
 package ui;
 import model.User;
-
+/**
+ * This is boot-strapper class for the New Request Layout
+ * it specifies the properties of the new request window such as dimensions, visibility and properties
+ * @author Andrew Pang
+ *
+ */
 public class NewRequestWindow {
 
 

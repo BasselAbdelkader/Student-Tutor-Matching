@@ -4,7 +4,6 @@ import javax.swing.*;
 import apiservices.UserAPI;
 import model.User;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

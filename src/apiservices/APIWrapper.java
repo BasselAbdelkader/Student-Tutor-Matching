@@ -4,19 +4,29 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-
+/**
+ * API Wrapper Class
+ * Authored by: Andrew Pang
+ * This is the parent class for all API Services.
+ * It contains code required for HTTP GET, POST, PUT, PATCH, DELETE requests
+ */
 public abstract class APIWrapper {
 	
 	private final static String api_key = "nwPqJThKp7jwCtf8McjrgTfWkdFmnJ";
 	protected final static String rootUrl = "https://fit3077.com/api/v1";
-	
 	protected String url;
 	
-
 	public APIWrapper(String url) {
 		this.url = url;
 	}
 	
+	/**
+	 * GET HTTP Request.
+	 * This function performs a get request to the url specified and returns a JSON string response
+	 * @param url to perform GET request
+	 * @return JSON string response
+	 * @throws Exception when the status code does not begin in 2xx
+	 */
 	protected String getHttpRequest(String url) throws Exception {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request;
@@ -37,14 +47,22 @@ public abstract class APIWrapper {
 	    return response.body();
 	}
 	
+	/**
+	 * POST HTTP Request.
+	 * This function performs a POST request to the url specified and returns a JSON string response
+	 * @param url to perform POST request
+	 * @param jsonString payload data in the form of JSON string
+	 * @return JSON string response
+	 * @throws Exception when the status code does not begin in 2xx
+	 */
 	protected String postHttpRequest(String jsonString,String url) throws Exception{
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request;
 		HttpResponse<String> response;
 		
-	    request = HttpRequest.newBuilder(URI.create(url)) // Return a JWT so we can use it in Part 5 later.
+	    request = HttpRequest.newBuilder(URI.create(url)) 
 	      .setHeader("Authorization", api_key)
-	      .header("Content-Type","application/json") // This header needs to be set when sending a JSON request body.
+	      .header("Content-Type","application/json") 
 	      .POST(HttpRequest.BodyPublishers.ofString(jsonString))
 	      .build();
 
@@ -59,6 +77,13 @@ public abstract class APIWrapper {
 	    return response.body();
 	}
 	
+	/**
+	 * DELETE HTTP Request
+	 * This function performs a DELETE request to the url specified and returns a JSON string response
+	 * @param url to perform DELETE request
+	 * @return jsonString returned data in the form of JSON string
+	 * @throws Exception when the status code does not begin in 2xx
+	 */
 	protected String deleteHttpRequest(String url) throws Exception{
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request;
@@ -80,6 +105,14 @@ public abstract class APIWrapper {
 	    return response.body();
 	}
 	
+	/**
+	 * UPDATE HTTP Request.
+	 * This function performs a UPDATE request to the url specified and returns a JSON string response
+	 * @param url to perform UPDATE request
+	 * @param jsonString payload data in the form of JSON string
+	 * @return JSON string response
+	 * @throws Exception when the status code does not begin in 2xx
+	 */
 	protected String updateHttpRequest(String jsonString, String url) throws Exception{
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request;

@@ -1,18 +1,23 @@
 package ui;
-import java.awt.Container;
-import java.awt.HeadlessException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+
 
 import model.User;
-
+/**
+ * This is the layout for a select action or main menu window. 
+ * This window is opened when the user first logs in. It then present sthe users with 3 options that fcan be selected by the user
+ * 1. Create a new request
+ * 2. Bid on student's request
+ * 3. See my contracts
+ * 
+ * @author Andrew Pang
+ *
+ */
 public class SelectActionLayout extends WindowLayout implements ActionListener {
 	 
 	private static final long serialVersionUID = 1L;
@@ -36,7 +41,10 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 			biddingPageBtn.setEnabled(false);
 		}
 	}
-
+	
+	/**
+     * Instantiate the View Elements to be added to the Layout
+     */
 	@Override
 	protected void initElements() {
 		
@@ -47,6 +55,10 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 		seeContractBtn = new JButton("See my contracts");
 	}
 	
+	/**
+	 * Set the positions of the View elements to be added
+	*/
+
 	@Override
 	protected void setElementBounds() {
 		userLabel.setBounds(10, 10, 380, 30);
@@ -55,7 +67,9 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 		seeContractBtn.setBounds(10, 170, 380, 50);
 	}
 
-
+	/**
+	 * Add the elements to the view container
+	 */
 	@Override
 	protected void addToContainer() {
 		container.add(userLabel);
@@ -63,7 +77,10 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
         container.add(biddingPageBtn);
         container.add(seeContractBtn);
 	}
-
+	
+	/**
+	 * Bind elements that interacts with the user with their respective action listeners
+	 */
 	@Override
 	protected void bindActionListeners() {
 		newRequestBtn.addActionListener(this);
@@ -71,11 +88,19 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 		seeContractBtn.addActionListener(this);
 	}
 	
+	/**
+	 * Initialize the elements properties
+	 */
+
 	@Override
 	protected void init() {
 		
 	}
-
+	
+	/**
+	 * Actions to be performed in the case of a user induced events
+	 * @param e The action event
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == newRequestBtn) {

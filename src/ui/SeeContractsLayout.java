@@ -7,7 +7,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -26,7 +25,7 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 	JLabel contractsLabel;
 	
 	DefaultListModel<String> contractsListModel;
-	JList contractsList;
+	JList<String> contractsList;
 	
 	JButton refreshBtn;
 	JButton viewContractBtn;

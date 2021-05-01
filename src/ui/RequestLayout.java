@@ -1,11 +1,8 @@
 package ui;
-import java.awt.Container;
-import java.awt.HeadlessException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -25,17 +22,24 @@ import javax.swing.event.ListSelectionListener;
 
 import apiservices.BidsAPI;
 import apiservices.ContractsAPI;
-import model.Bid;
+import model.Request;
 import model.Contract;
 import model.User;
 
+/**
+ * This is the layout for a request window. 
+ * This window is opened after the user has created a new request and is waiting to see the bids on his/her request 
+ * This window is also used for bidders to see other bidder's requests in open bidding
+ * @author Andrew Pang
+ *
+ */
 public class RequestLayout extends RefreshableLayout implements ActionListener, ListSelectionListener{
 	
 	private static final long serialVersionUID = 1L;
 	
 	//Instance Vars
 	User currentUser;
-	Bid request;
+	Request request;
 	ArrayList<Contract> bids;
 	Contract selectedContract;
 	long dueTimeMillis;
@@ -70,7 +74,7 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 	    };  
 	};
     
-	public RequestLayout(User currentUser, Bid request){
+	public RequestLayout(User currentUser, Request request){
 		super();
 		
 		this.currentUser = currentUser;
@@ -91,7 +95,10 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 		timer.schedule(checkTimeLimit, new Date(dueTimeMillis)); 
 		refresh();
 	}
-
+	
+	/**
+     * Instantiate the View Elements to be added to the Layout
+     */
 	@Override
 	protected void initElements() {
 
@@ -114,6 +121,9 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 	    closeBidBtn = new JButton("Close this bid");
 	}
 	
+	/**
+	 * Set the positions of the View elements to be added
+	*/
 	@Override
 	protected void setElementBounds() {
 		requestDetailsLabel.setBounds(10, 10, 300, 30);
@@ -126,7 +136,10 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 		messageBtn.setBounds(170, 610, 150, 30);
 		closeBidBtn.setBounds(330, 610, 150, 30);
 	}
-
+	
+	/**
+	 * Add the elements to the view container
+	 */
 	@Override
 	protected void addToContainer() {
 		container.add(requestDetailsLabel);
@@ -139,6 +152,11 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 
 	}
 
+
+	
+	/**
+	 * Bind elements that interacts with the user with their respective action listeners
+	 */
 	@Override
 	protected void bindActionListeners() {
 		refreshBtn.addActionListener(this);
@@ -146,7 +164,10 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 		closeBidBtn.addActionListener(this);
 		bidsList.addListSelectionListener(this);
 	}
-
+	
+	/**
+	 * Initialize the elements properties
+	 */
 	@Override
 	protected void init() {
 		requestDetails.setEditable(false);
@@ -154,6 +175,9 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 		messageBtn.setEnabled(false);
 	}
 	
+	/**
+	 * Default actions to perform on an auto refresh call
+	 */
 	@Override
 	protected void refresh() {
 		try {
@@ -182,6 +206,10 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 		}
 	}
 	
+	/**
+	 * Actions to be performed in the case of a user induced events on list views
+	 * @param e The action event
+	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getSource() == bidsList) {
@@ -199,7 +227,10 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 		}
 	}
 
-	
+	/**
+	 * Actions to be performed in the case of a user induced events
+	 * @param e The action event
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -221,12 +252,22 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
     	}
 	}
 	
+	/**
+	 * Default actions to perform before closing the window
+	 */
 	@Override
 	public void dispose() {
 		checkTimeLimit.cancel();
 		super.dispose();
 	}
 	
+	/**
+	 * Actions to perform when the request time limit has been reached
+	 * This method will close the request, delete it if there are no bids on it by the time limit is reacehd
+	 * This method will also automatically choose the first bid for the requestor if there are bid but not yet closed 
+	 * After that it closes the window and exits
+	 * @param task The timer task
+	 */
 	private void timeLimitReached(TimerTask task) {
 		try {
 			ArrayList<Contract> contracts = ContractsAPI.getInstance().getUnsignedContracts(request);

@@ -1,23 +1,17 @@
 package ui;
-import java.awt.Container;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import apiservices.BidsAPI;
 import apiservices.SubjectAPI;
-import model.Bid;
+import model.Request;
 import model.Subject;
 import model.User;
 
@@ -53,6 +47,9 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 		this.currentUser = currentUser;
 	}
 	
+	/**
+     * Instantiate the View Elements to be added to the Layout
+     */
 	@Override
 	protected void initElements() {
 
@@ -79,7 +76,10 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 		//Buttons
 		createRequestBtn = new JButton("Create Request");
 	}
-
+	
+	/**
+    * Set the positions of the View elements to be added
+    */
 	@Override
 	protected void setElementBounds() {
 		requestTypeLabel.setBounds(10, 10, 150, 30);
@@ -97,7 +97,9 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 		createRequestBtn.setBounds(10, 250, 400, 30);
 	}
 
-
+	/**
+	 * Add the elements to the view container
+	 */
 	@Override
 	protected void addToContainer() {
 		container.add(requestTypeLabel);
@@ -116,13 +118,17 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
         container.add(createRequestBtn);
 	}
 
-
+	/**
+	 * Bid elements that interacts with the user with their respective action listeners
+	 */
 	@Override
 	protected void bindActionListeners() {
 		createRequestBtn.addActionListener(this);
 	}
 	
-	
+	/**
+	 * Initialize the elements properties
+	 */
 	@Override
 	protected void init() {
 		try {
@@ -135,11 +141,15 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 			JOptionPane.showMessageDialog(this, "Error getting subjects");
 		}
 	}
-
+	
+	/**
+	 * Actions to be performed in the case of a user induced events
+	 * @param e The action event
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == createRequestBtn) {
-			Bid b = new Bid(currentUser,
+			Request b = new Request(currentUser,
 					requestTypeInput.getSelectedItem().toString(),
 					subjects.get(subjectInput.getSelectedIndex()).getId(),
 					Integer.parseInt(competencyInput.getSelectedItem().toString()),

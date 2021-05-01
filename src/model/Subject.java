@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
+/**
+ * Request Class
+ * @author Andrew Pang
+ * This class represents a subject and contain detailed info on the subject including its active requests. 
+ *
+ */
 public class Subject {
 	
 	private String id;
@@ -12,9 +17,13 @@ public class Subject {
 	private String description;
 	private ArrayList<String> allRequestsIds = new ArrayList<String>();
 	private ArrayList<String> openRequestIds = new ArrayList<String>();
-
 	private String competencies;
 	
+	/**
+	 * This constructor construct a subject instance from a JSON String
+	 * @param jsonString JSON String
+	 * @throws Exception There is a n error parsing the JSON String
+	 */
 	public Subject(String jsonString) throws Exception{
 		
 		ObjectNode jsonNode = new ObjectMapper().readValue(jsonString, ObjectNode.class);
@@ -34,9 +43,12 @@ public class Subject {
 				this.allRequestsIds.add(b.get("id").textValue());
 			}
 		}
-		
 	}
 	
+	/**
+	 * Get the request id for the subject that are stil not yet closed 
+	 * @return Lsi t of request ids
+	 */
 	public ArrayList<String> getOpenRequestIds() {
 		return openRequestIds;
 	}
@@ -48,30 +60,34 @@ public class Subject {
 		return out;
 	}
 	
+	/**
+	 * Get the id of the subject
+	 * @return subject ID
+	 */
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
+	/**
+	 * Get the name of the subject
+	 * @return subject name
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	/**
+	 * Get the description fo the subject
+	 * @return subject description
+	 */
 	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
+	/**
+	 * Get all the request IDs for the subject (including closed request)
+	 * @return List of request id of all requests
+	 */
 	public ArrayList<String> getAllRequestIds() {
 		return allRequestsIds;
 	}
@@ -79,10 +95,6 @@ public class Subject {
 
 	public String getCompetencies() {
 		return competencies;
-	}
-
-	public void setCompetencies(String competencies) {
-		this.competencies = competencies;
 	}
 
 }

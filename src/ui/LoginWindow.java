@@ -1,5 +1,11 @@
 package ui;
 
+/**
+ * This is boot-strapper class for the Login Window
+ * it specifeis the properties of the login window such as dimensions, visibility and properties
+ * @author Andrew Pang
+ *
+ */
 public class LoginWindow {
 	
     public LoginWindow() {

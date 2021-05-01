@@ -1,15 +1,11 @@
 package ui;
-import java.awt.Container;
-import java.awt.HeadlessException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -19,16 +15,25 @@ import javax.swing.JTextField;
 import apiservices.BidsAPI;
 import apiservices.ContractsAPI;
 import apiservices.MessagesAPI;
-import model.Bid;
+import model.Request;
 import model.Contract;
 import model.Message;
 import model.User;
-
+/**
+ * This is the layout for a view contract window. 
+ * This window is opened when the user has selected a contract to view, so the user can view the contract details and message the other party.
+ * This window will also open when the requestor wants selected a bid to view in close bidding to message the bidder.
+ * In closed bidding, the bidder will also see this window after pressing the message seller button to message the seller. 
+ * @author Andrew Pang
+ *
+ */
 public class ViewContractLayout extends RefreshableLayout implements ActionListener{
 
+	
+	private static final long serialVersionUID = 1L;
 	User currentUser;
 	Contract contract;
-	Bid bid;
+	Request bid;
 
 	//Labels
 	JLabel contractDetailsLabel;
@@ -64,6 +69,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		refresh();
 	}
 	
+	/**
+     * Instantiate the View Elements to be added to the Layout
+     */
 	@Override
 	protected void initElements() {
 		//Labels
@@ -95,7 +103,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		sendChatBtn = new JButton("Send");
 	}
 	
-
+	/**
+	 * Set the positions of the View elements to be added
+	*/
 	@Override
 	protected void setElementBounds() {
 		contractDetailsLabel.setBounds(10,10,300,30);
@@ -116,7 +126,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
         sendChatBtn.setBounds(370, 760, 100, 30);
 	}
 
-
+	/**
+	 * Add the elements to the view container
+	 */
 	@Override
 	protected void addToContainer() {
 		container.add(messagesLabel);
@@ -137,7 +149,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
         container.add(updateContractBtn);
 	}
 
-
+	/**
+	 * Bind elements that interacts with the user with their respective action listeners
+	 */
 	@Override
 	protected void bindActionListeners() {
 		signContractBtn.addActionListener(this);
@@ -146,13 +160,19 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
         refreshBtn.addActionListener(this);
 	}
 
-
+	/**
+	 * Initialize the elements properties
+	 */
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
 		
 	}
 	
+	/**
+	 * Actions to be performed in the case of a user induced events
+	 * @param e The action event
+	 */	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -197,6 +217,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	}
 
 
+	/**
+	 * Default actions to perform on an auto refresh call
+	 */
 	@Override
 	protected void refresh() {
 		try {

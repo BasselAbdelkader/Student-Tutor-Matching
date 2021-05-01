@@ -7,11 +7,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import model.Subject;
 
-
+/**
+ * MessagesAPI Class
+ * @author Andrew Pang
+ * This is the API class responsible for connecting to the API and performing operation for subjects requests.
+ * This class contain the methods to get subjects and its details in a controlled manner. 
+ */
 public class SubjectAPI extends APIWrapper {
 	
 	private static SubjectAPI instance;
 	
+	/**
+	 * Only ONE SubjectAPI class can exist as we only need one connection for messages to the API Service
+	 */
 	public static SubjectAPI getInstance() {
 		if(instance == null) { 
 			instance = new SubjectAPI();
@@ -23,6 +31,12 @@ public class SubjectAPI extends APIWrapper {
 		super(rootUrl + "/subject");
 	}
 	
+	/**
+	 * Get all available subjects
+	 * This function gets all the subjects available in teh API and converts them to Subject instances
+	 * @return A list of Subject instance 
+	 * @throws Exception There is an error with the HTTP request
+	 */
 	public ArrayList<Subject> getAllSubjects() throws Exception {
 
 	    String response = super.getHttpRequest(url + "?fields=bids&fields=competencies");
@@ -36,7 +50,15 @@ public class SubjectAPI extends APIWrapper {
 		return names;
 	}
 	
-	public ArrayList<String> getBidIDsForSubject(String subjectID) throws Exception {
+	/**
+	 * Get all the bid request IDs
+	 * This function gets all the Bid requests that are currently open for the subject.
+	 * Remember a bid request is not a bid. A bid is an unsigned contract. A bidder places bids on a bid request. 
+	 * @param subjectID the subject ID fo the subject
+	 * @return A list of bid request IDs for the subject
+	 * @throws Exception There is an error with the HTTP request
+	 */
+	public ArrayList<String> getRequestIDsForSubject(String subjectID) throws Exception {
 
 	    String response = super.getHttpRequest(url + "/" + subjectID + "?fields=bids&fields=competencies");
 	    System.out.println(response);

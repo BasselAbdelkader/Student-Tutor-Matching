@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import apiservices.BidsAPI;
+import apiservices.RequestAPI;
 import apiservices.ContractsAPI;
 import apiservices.SubjectAPI;
 import model.Request;
@@ -306,7 +306,7 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		String id = requestList.getSelectedValue();
 		if(id != null) {
 			try {
-				selectedBid = BidsAPI.getInstance().getBid(id);
+				selectedBid = RequestAPI.getInstance().getRequest(id);
 				requestDetails.setText(selectedBid.toString());
 				boolean qualified = selectedBid.getCompetency() <= currentUser.getCompetencyLevel(selectedSubject.getId());
 				boolean closed = selectedBid.getDateClosedDown() == null;

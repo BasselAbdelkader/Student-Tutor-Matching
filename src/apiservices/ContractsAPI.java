@@ -173,7 +173,7 @@ public class ContractsAPI extends APIWrapper {
 		if( getSignedContract(bid) == null) {
 			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 			deleteUnsignedContracts(bid);
-			BidsAPI.getInstance().closeBid(bid);
+			RequestAPI.getInstance().closeRequest(bid);
 			return true;
 		}
 		return false;

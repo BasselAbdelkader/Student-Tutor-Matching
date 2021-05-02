@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import apiservices.BidsAPI;
+import apiservices.RequestAPI;
 import apiservices.SubjectAPI;
 import model.Request;
 import model.Subject;
@@ -164,8 +164,8 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 					ratePerSessionInput.getText()
 					);
 			try {
-				String id = BidsAPI.getInstance().addBid(b);
-				new RequestWindow(currentUser, BidsAPI.getInstance().getBid(id));
+				String id = RequestAPI.getInstance().addRequest(b);
+				new RequestWindow(currentUser, RequestAPI.getInstance().getRequest(id));
 				dispose();
 			} catch (Exception e1) {
 				e1.printStackTrace();

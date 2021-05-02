@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import apiservices.BidsAPI;
+import apiservices.RequestAPI;
 import apiservices.ContractsAPI;
 import apiservices.MessagesAPI;
 import model.Request;
@@ -225,7 +225,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		try {
 			contract = ContractsAPI.getInstance().getContract(contract.getId());
 			contractDetails.setText(contract.toString());
-			bid = BidsAPI.getInstance().getBid(contract.getInitialRequestId());
+			bid = RequestAPI.getInstance().getRequest(contract.getInitialRequestId());
 			msgListModel.clear();
 			msgListModel.addAll(bid.getMessagesForContract(contract.getId()));
 			

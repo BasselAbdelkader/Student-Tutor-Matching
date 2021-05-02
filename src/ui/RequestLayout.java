@@ -20,7 +20,7 @@ import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import apiservices.BidsAPI;
+import apiservices.RequestAPI;
 import apiservices.ContractsAPI;
 import model.Request;
 import model.Contract;
@@ -181,7 +181,7 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 	@Override
 	protected void refresh() {
 		try {
-			request = BidsAPI.getInstance().getBid(request.getId()); //Update the request
+			request = RequestAPI.getInstance().getRequest(request.getId()); //Update the request
 			Contract contract = ContractsAPI.getInstance().getSignedContract(request);
 			if( contract != null) {
 				JOptionPane.showMessageDialog(this, "This request has been bought out.");
@@ -274,7 +274,7 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
     		if(contracts.size() <= 0) {
     			//no bids - delete the request and move on
     			ContractsAPI.getInstance().deleteUnsignedContracts(request);
-    			BidsAPI.getInstance().deleteBid(request);
+    			RequestAPI.getInstance().deleteRequest(request);
     			JOptionPane.showMessageDialog(this, "There are no bids for your request within time limit. Closing request.");
     		}else {
     			//select best bid

@@ -42,6 +42,8 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	JLabel sessionsPerWeekLabel;
 	JLabel ratePerSessionLabel;
 	JLabel messagesLabel;
+	JLabel contractDurationLabel;
+	
 	
 	//Outputs 
 	JTextArea contractDetails;
@@ -50,6 +52,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	JComboBox<String> hoursPerSessionInput;
 	JComboBox<String> sessionsPerWeekInput ;
 	JTextField ratePerSessionInput;
+	JComboBox<String> contractDurationInput;
 	JTextField chatInput;
 	
 	//Lists
@@ -60,7 +63,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	JButton refreshBtn;
 	JButton updateContractBtn;
 	JButton signContractBtn;
+	JButton renewContractBtn;
 	JButton sendChatBtn;
+	
 	
 	public ViewContractLayout(User currentUser, Contract contract) {
 		super();
@@ -80,16 +85,19 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		hoursPerSessionLabel = new JLabel("Hours per session :");
 		sessionsPerWeekLabel = new JLabel("Sessions per week :");
 		ratePerSessionLabel = new JLabel("Rate per session :");
+		contractDurationLabel =  new JLabel("Duration of contract:");
 		messagesLabel = new JLabel("Chat");
 		
 		//Outputs 
 		contractDetails = new JTextArea();
 			
 		//Inputs
-		String[] numbers = {"1","2","3","4","5","6","7"};
+		String[] numbers = {"1","2","3","4","5","6","7","8","9","10","11","12"};
+		String[] months = {"6","3","9","12"};
 		hoursPerSessionInput = new JComboBox<String>(numbers);
 		sessionsPerWeekInput = new JComboBox<String>(numbers);
 		ratePerSessionInput = new JTextField();
+		contractDurationInput = new JComboBox<String>(months);
 		chatInput = new JTextField();
 		
 		//Lists
@@ -101,6 +109,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		updateContractBtn = new JButton("Update Contract");
 		signContractBtn = new JButton("Sign Contract");
 		sendChatBtn = new JButton("Send");
+		renewContractBtn = new JButton("Renew Contract");
 	}
 	
 	/**
@@ -117,13 +126,16 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		sessionsPerWeekInput.setBounds(210,290,200,30);
 		ratePerSessionLabel.setBounds(10,330,200,30);
 		ratePerSessionInput.setBounds(210,330,200,30);
-		signContractBtn.setBounds(100,370,150,30);
-		updateContractBtn.setBounds(260,370,150,30);
-		messagesLabel.setBounds(10, 410, 300, 30);
+		contractDurationLabel.setBounds(10,370,200,30);
+		contractDurationInput.setBounds(210,370,200,30);
+		renewContractBtn.setBounds(10, 410, 140, 30);
+		signContractBtn.setBounds(160,410,140,30);
+		updateContractBtn.setBounds(310,410,140,30);
+		messagesLabel.setBounds(10, 450, 300, 30);
 		refreshBtn.setBounds(370, 10, 100, 30);
-    	msgList.setBounds(10, 450, 460, 300);
-        chatInput.setBounds(10,760, 350, 30);
-        sendChatBtn.setBounds(370, 760, 100, 30);
+    	msgList.setBounds(10, 490, 460, 300);
+        chatInput.setBounds(10,800, 350, 30);
+        sendChatBtn.setBounds(370, 800, 100, 30);
 	}
 
 	/**
@@ -145,6 +157,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
         container.add(sessionsPerWeekInput);
         container.add(ratePerSessionLabel);
         container.add(ratePerSessionInput);
+        container.add(contractDurationLabel);
+        container.add(contractDurationInput);
+        container.add(renewContractBtn);
         container.add(signContractBtn);
         container.add(updateContractBtn);
 	}
@@ -213,6 +228,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
     		  e1.printStackTrace();
     	  }
     	  refresh();
+      }
+      else if (e.getSource() == renewContractBtn) {
+    	  
       }
 	}
 

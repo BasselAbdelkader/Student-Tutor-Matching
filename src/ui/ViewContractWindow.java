@@ -13,7 +13,7 @@ public class ViewContractWindow {
 		ViewContractLayout window = new ViewContractLayout(currentUser, contract);
         window.setTitle("View contract  " + contract.getId());
         window.setVisible(true);
-        window.setBounds(100, 100, 500, 840);
+        window.setBounds(100, 100, 500, 880);
         window.setResizable(false);
 	}
 	

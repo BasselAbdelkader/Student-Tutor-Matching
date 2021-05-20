@@ -28,10 +28,16 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 	ArrayList<Contract> contracts;
 	Contract selectedContract;
 	
+	JLabel bidsLabel;
 	JLabel contractsLabel;
+	JLabel pastContractsLabel;
 	
 	DefaultListModel<String> contractsListModel;
 	JList<String> contractsList;
+	DefaultListModel<String> bidsListModel;
+	JList<String> bidsList;
+	DefaultListModel<String> pastContractListModel;
+	JList<String> pastContractList;
 	
 	JButton refreshBtn;
 	JButton viewContractBtn;
@@ -49,9 +55,17 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 	@Override
 	protected void initElements() {
 		contractsLabel = new JLabel("Your contracts");
+		bidsLabel = new JLabel("Your bids");
+		pastContractsLabel = new JLabel("Your past contracts");
 		
 		contractsListModel = new DefaultListModel<String>();
-		contractsList = new JList<String>(contractsListModel);  
+		contractsList = new JList<String>(contractsListModel);
+		
+		bidsListModel =  new DefaultListModel<String>();
+		bidsList =  new JList<String>(bidsListModel);
+		
+		pastContractListModel =  new DefaultListModel<String>();
+		pastContractList =  new JList<String>(pastContractListModel);
 		
 		refreshBtn =  new JButton("Refresh");
 		viewContractBtn = new JButton("View");

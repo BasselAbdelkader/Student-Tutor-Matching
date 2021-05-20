@@ -242,7 +242,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	protected void refresh() {
 		try {
 			contract = ContractsAPI.getInstance().getContract(contract.getId());
-			contractDetails.setText(contract.toString());
+			contractDetails.setText(contract.getContractDetails());
 			bid = RequestAPI.getInstance().getRequest(contract.getInitialRequestId());
 			msgListModel.clear();
 			msgListModel.addAll(bid.getMessagesForContract(contract.getId()));

@@ -1,7 +1,9 @@
 package ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -25,23 +27,16 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 	private static final long serialVersionUID = 1L;
 	
 	User currentUser;
-	ArrayList<Contract> contracts;
+	
 	Contract selectedContract;
 	
-	JLabel bidsLabel;
-	JLabel contractsLabel;
-	JLabel pastContractsLabel;
+	JLabel bidsLabel, contractsLabel, pastContractsLabel;
 	
-	DefaultListModel<String> contractsListModel;
-	JList<String> contractsList;
-	DefaultListModel<String> bidsListModel;
-	JList<String> bidsList;
-	DefaultListModel<String> pastContractListModel;
-	JList<String> pastContractList;
+	DefaultListModel<Contract> contractsListModel, bidsListModel, pastContractListModel;
+	JList<Contract> contractsList, bidsList, pastContractsList;
 	
-	JButton refreshBtn;
-	JButton viewContractBtn;
-	
+	JButton refreshBtn, viewContractBtn;
+
 	
 	public SeeContractsLayout(User currentUser) {
 		this.currentUser = currentUser;
@@ -54,18 +49,18 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
      */
 	@Override
 	protected void initElements() {
-		contractsLabel = new JLabel("Your contracts");
 		bidsLabel = new JLabel("Your bids");
+		contractsLabel = new JLabel("Your contracts");
 		pastContractsLabel = new JLabel("Your past contracts");
 		
-		contractsListModel = new DefaultListModel<String>();
-		contractsList = new JList<String>(contractsListModel);
+		contractsListModel = new DefaultListModel<Contract>();
+		contractsList = new JList<Contract>(contractsListModel);
 		
-		bidsListModel =  new DefaultListModel<String>();
-		bidsList =  new JList<String>(bidsListModel);
+		bidsListModel =  new DefaultListModel<Contract>();
+		bidsList =  new JList<Contract>(bidsListModel);
 		
-		pastContractListModel =  new DefaultListModel<String>();
-		pastContractList =  new JList<String>(pastContractListModel);
+		pastContractListModel =  new DefaultListModel<Contract>();
+		pastContractsList =  new JList<Contract>(pastContractListModel);
 		
 		refreshBtn =  new JButton("Refresh");
 		viewContractBtn = new JButton("View");
@@ -77,10 +72,14 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 
 	@Override
 	protected void setElementBounds() {
-		contractsLabel.setBounds(10,10,200,30);
-		contractsList.setBounds(10,50,400,200);
-		refreshBtn.setBounds(10,260,195,30);
-		viewContractBtn.setBounds(205,260,195,30);
+		bidsLabel.setBounds(10,10,200,30);
+		bidsList.setBounds(10,50,400,150);
+		contractsLabel.setBounds(10,210,200,30);
+		contractsList.setBounds(10,250,400,150);
+		pastContractsLabel.setBounds(10,410,200,30);
+		pastContractsList.setBounds(10,450,400,150);
+		refreshBtn.setBounds(10,610,195,30);
+		viewContractBtn.setBounds(205,610,195,30);
 	}
 
 	/**
@@ -89,8 +88,12 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 
 	@Override
 	protected void addToContainer() {
+		container.add(bidsLabel);
+		container.add(bidsList);
 		container.add(contractsLabel);
 		container.add(contractsList);
+		container.add(pastContractsLabel);
+		container.add(pastContractsList);
 		container.add(viewContractBtn);
 		container.add(refreshBtn);
 		
@@ -105,6 +108,8 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		viewContractBtn.addActionListener(this);
 		refreshBtn.addActionListener(this);
 		contractsList.addListSelectionListener(this);
+		bidsList.addListSelectionListener(this);
+		pastContractsList.addListSelectionListener(this);
 	}
 	
 	/**
@@ -125,13 +130,21 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		
 		try {
 			viewContractBtn.setEnabled(false);
+			bidsListModel.clear();
 			contractsListModel.clear();
-			contracts = ContractsAPI.getInstance().getContractsForUser(currentUser);
-			ArrayList<String> contractIds = new ArrayList<String>();
-			for (Contract c : contracts) {
-				contractIds.add(c.getId());
+			pastContractListModel.clear();
+			for (Contract c :  ContractsAPI.getInstance().getContractsForUser(currentUser)) {
+				if (c.getDateSigned() == null) {
+					bidsListModel.add(bidsListModel.getSize(), c);
+				}else { 
+					if(Instant.parse(c.getExpiryDate()).toEpochMilli() > System.currentTimeMillis()) {
+						contractsListModel.add(contractsListModel.getSize(),c);
+					}else {
+						pastContractListModel.add(pastContractListModel.getSize(),c);
+					}
+					
+				}
 			}
-			contractsListModel.addAll(contractIds);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -145,16 +158,17 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 	 */
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if(e.getSource() == contractsList) {
-			if(contractsList.getSelectedIndex() >= 0) {
-				selectedContract = contracts.get(contractsList.getSelectedIndex());
+		if(e.getSource() instanceof JList ) {
+			JList<Contract> list = (JList<Contract>) e.getSource();
+			
+			if(list.getSelectedIndex() >= 0) {
+				selectedContract = list.getSelectedValue();
 				viewContractBtn.setEnabled(true);
 			}
 			else {
 				viewContractBtn.setEnabled(false);
 			}
-		}
-		
+		}		
 	}
 	
 	/**

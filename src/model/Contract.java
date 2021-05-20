@@ -20,6 +20,7 @@ public class Contract {
 	private String studentName;
 	private String id;
 	private String subjectId;
+	private String subjectName;
 	private String dateCreated;
 	private String expiryDate;
 	private String hoursPerSession;
@@ -70,6 +71,7 @@ public class Contract {
 		this.secondPartyId = jsonNode.get("secondParty").get("id").textValue();
 		this.studentName = jsonNode.get("secondParty").get("givenName").textValue() + " " + jsonNode.get("secondParty").get("familyName").textValue();
 		this.subjectId = jsonNode.get("subject").get("id").textValue();
+		this.subjectName = jsonNode.get("subject").get("name").textValue();
 		this.dateCreated = jsonNode.get("dateCreated").textValue();
 		this.expiryDate = jsonNode.get("expiryDate").textValue();
 		
@@ -211,6 +213,15 @@ public class Contract {
 	
 	public String toString() {
 		String out  = "";
+		out = out + this.subjectName + " - ";
+		out = out + this.studentName + "(S) and ";
+	    out = out + this.tutorName + "(T)";
+	    return out;
+	}
+
+	public String getContractDetails() {
+		String out  = "";
+		out = out + "Subject: " + this.subjectName + "\n";
 		out = out + "Student: " + this.studentName + "\n";
 	    out = out + "Tutor: " + this.tutorName + "\n";
 	    out = out + "Date Created: " + this.dateCreated + "\n";

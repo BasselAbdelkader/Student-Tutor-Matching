@@ -91,6 +91,7 @@ public class ContractsAPI extends APIWrapper {
 			      		"\"hoursPerSession\":\""+ contract.getHoursPerSession() + "\"" + "," +
 			      		"\"sessionsPerWeek\":\""+ contract.getSessionsPerWeek()+ "\"" + "," +
 			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" + "," +
+			      		"\"contractDuration\":\""+ contract.getContractDuration()+ "\"" + "," +
 			      		"\"sessions\":[]" +
 			      	"}" + "," +
 			      "\"additionalInfo\":{" + 
@@ -163,19 +164,23 @@ public class ContractsAPI extends APIWrapper {
 	 */
 	public boolean signContract(Request bid, Contract contract) throws Exception {
 		//TODO : update expiry
+		if (contract.getDateSigned() == null) {
+			throw new Exception("Contract instance not signed");
+		}
 		String contractId = contract.getId();
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		Instant instant = timestamp.toInstant(); 
-		
-		String jsonString = "{" +
-				"\"dateSigned\":\"" + instant.toString() + "\"" +
+		String updateString = "{" +
+				"\"expiryDate\":\"" + contract.getExpiryDate() + "\"" +
 			  "}";
+		String jsonString = "{" +
+				"\"dateSigned\":\"" + contract.getDateSigned() + "\"" +
+			  "}";
+		
 		if( getSignedContract(bid) == null) {
-			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 			deleteUnsignedContracts(bid);
 			RequestAPI.getInstance().closeRequest(bid);
-			return true;
 		}
+		super.updateHttpRequest(updateString, url + "/" + contractId);
+		super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 		return false;
 	}
 	
@@ -194,6 +199,7 @@ public class ContractsAPI extends APIWrapper {
 			      		"\"hoursPerSession\":\""+ contract.getHoursPerSession() + "\"" + "," +
 			      		"\"sessionsPerWeek\":\""+ contract.getSessionsPerWeek()+ "\"" + "," +
 			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" + "," +
+			      		"\"contractDuration\":\""+ contract.getContractDuration()+ "\"" + "," +
 			      		"\"sessions\":[]" +
 			      	"}" + 
 			    "}";

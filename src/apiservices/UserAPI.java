@@ -67,11 +67,15 @@ public class UserAPI extends APIWrapper {
 	    return  currentUser;
 
 	}
+
+	public User getUserByID(String id) throws Exception{
+		String response = super.getHttpRequest(url + "/" + id + "?fields=initiatedBids&fields=competencies.subject");
+		return new User(response);
+	}
+
+
+
 	
-//	public User getUserById(String id) throws Exception {
-//		String response = super.getHttpRequest(url + "/" + id + "?fields=inititatedBids&fields=competencies.subject");
-//		return new User(response);
-//	}
 //	public User getCurrentUser() {
 //		return currentUser;
 //	}

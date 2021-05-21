@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -13,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import apiservices.RequestAPI;
+import apiservices.UserAPI;
 import apiservices.ContractsAPI;
 import apiservices.MessagesAPI;
 import model.Request;
@@ -43,6 +45,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	JLabel ratePerSessionLabel;
 	JLabel messagesLabel;
 	JLabel contractDurationLabel;
+	JLabel newTutorIDLabel;
 	
 	
 	//Outputs 
@@ -54,6 +57,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	JTextField ratePerSessionInput;
 	JComboBox<String> contractDurationInput;
 	JTextField chatInput;
+	JTextField newTutorIDInput;
 	
 	//Lists
 	DefaultListModel<Message> msgListModel;
@@ -86,6 +90,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		sessionsPerWeekLabel = new JLabel("Sessions per week :");
 		ratePerSessionLabel = new JLabel("Rate per session :");
 		contractDurationLabel =  new JLabel("Duration of contract:");
+		newTutorIDLabel = new JLabel("New Tutor's ID: ");
 		messagesLabel = new JLabel("Chat");
 		
 		//Outputs 
@@ -99,6 +104,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		ratePerSessionInput = new JTextField();
 		contractDurationInput = new JComboBox<String>(months);
 		chatInput = new JTextField();
+		newTutorIDInput =  new JTextField();
 		
 		//Lists
 		msgListModel = new DefaultListModel<Message>();
@@ -128,14 +134,17 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		ratePerSessionInput.setBounds(210,330,200,30);
 		contractDurationLabel.setBounds(10,370,200,30);
 		contractDurationInput.setBounds(210,370,200,30);
-		renewContractBtn.setBounds(10, 410, 140, 30);
-		signContractBtn.setBounds(160,410,140,30);
-		updateContractBtn.setBounds(310,410,140,30);
-		messagesLabel.setBounds(10, 450, 300, 30);
+		newTutorIDLabel.setBounds(10, 410, 200, 30);
+		newTutorIDInput.setBounds(210, 410, 200, 30);
+		
+		renewContractBtn.setBounds(10, 450, 140, 30);
+		signContractBtn.setBounds(160,450,140,30);
+		updateContractBtn.setBounds(310,450,140,30);
+		messagesLabel.setBounds(10, 490, 300, 30);
 		refreshBtn.setBounds(370, 10, 100, 30);
-    	msgList.setBounds(10, 490, 460, 300);
-        chatInput.setBounds(10,800, 350, 30);
-        sendChatBtn.setBounds(370, 800, 100, 30);
+    	msgList.setBounds(10, 530, 460, 300);
+        chatInput.setBounds(10,840, 350, 30);
+        sendChatBtn.setBounds(370, 840, 100, 30);
 	}
 
 	/**
@@ -159,6 +168,8 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
         container.add(ratePerSessionInput);
         container.add(contractDurationLabel);
         container.add(contractDurationInput);
+        container.add(newTutorIDLabel);
+        container.add(newTutorIDInput);
         container.add(renewContractBtn);
         container.add(signContractBtn);
         container.add(updateContractBtn);
@@ -173,6 +184,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
         updateContractBtn.addActionListener(this);
         sendChatBtn.addActionListener(this);
         refreshBtn.addActionListener(this);
+        renewContractBtn.addActionListener(this);
 	}
 
 	/**
@@ -181,7 +193,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
-		
+		signContractBtn.setEnabled(false);
+		updateContractBtn.setEnabled(false);
+		renewContractBtn.setEnabled(false);
 	}
 	
 	/**
@@ -212,6 +226,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
     	  contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
     	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
     	  contract.setRatePerSession(ratePerSessionInput.getText());
+    	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
     	  try {
     		  ContractsAPI.getInstance().updateContract(contract);
     	  } catch (Exception e1) {
@@ -222,6 +237,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
       } 
       else if(e.getSource() == signContractBtn) {
     	  try {
+    		  contract.sign();
     		  ContractsAPI.getInstance().signContract(bid,contract);
     	  } catch (Exception e1) {
     		  JOptionPane.showMessageDialog(this, "Cannot Sign Contract");
@@ -231,6 +247,29 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
       }
       else if (e.getSource() == renewContractBtn) {
     	  
+    	  try {
+    		  User tutor = UserAPI.getInstance().getUserByID(newTutorIDInput.getText());
+    		  if (tutor.getCompetencyLevel(contract.getSubjectId()) > currentUser.getCompetencyLevel(contract.getSubjectId()) + 2) {
+    			  contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
+    	    	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
+    	    	  contract.setRatePerSession(ratePerSessionInput.getText());
+    	    	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
+    	    	  Contract newcontract = new Contract(tutor, contract);
+        		  Contract renewed = ContractsAPI.getInstance().addContract(newcontract);
+        		  renewed.sign();
+        		  ContractsAPI.getInstance().signContract(RequestAPI.getInstance().getRequest(renewed.getInitialRequestId()), renewed);
+        		  new ViewContractWindow(this.currentUser,renewed);
+        		  this.dispose();
+    		  }else {
+    			  JOptionPane.showMessageDialog(this, "Tutor is incompetent!");
+    		  }
+    		  
+    		  
+    	  }catch (Exception e1) {
+    		  JOptionPane.showMessageDialog(this, "Cannot Sign Contract");
+    		  e1.printStackTrace();
+    	  }
+    	  refresh();
       }
 	}
 
@@ -243,6 +282,7 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 		try {
 			contract = ContractsAPI.getInstance().getContract(contract.getId());
 			contractDetails.setText(contract.getContractDetails());
+			newTutorIDInput.setText(contract.getFirstPartyId());
 			bid = RequestAPI.getInstance().getRequest(contract.getInitialRequestId());
 			msgListModel.clear();
 			msgListModel.addAll(bid.getMessagesForContract(contract.getId()));
@@ -250,8 +290,13 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 			boolean userIsRequestor = currentUser.getId().contentEquals(contract.getSecondPartyId());
 			boolean userIsBidder = currentUser.getId().contentEquals(contract.getFirstPartyId());
 			boolean notsigned = contract.getDateSigned() == null ;
+			boolean isExpired = Instant.parse(contract.getExpiryDate()).toEpochMilli() < System.currentTimeMillis();
 			signContractBtn.setEnabled(notsigned && userIsRequestor );
 			updateContractBtn.setEnabled(notsigned && userIsBidder);
+			
+			renewContractBtn.setEnabled(!notsigned && isExpired && userIsRequestor);
+			newTutorIDInput.setEnabled(!notsigned && isExpired && userIsRequestor );
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();

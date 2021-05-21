@@ -1,5 +1,6 @@
 package model;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +19,10 @@ public class Contract {
 	private String tutorName;
 	private String secondPartyId;
 	private String studentName;
+	public String getStudentName() {
+		return studentName;
+	}
+
 	private String id;
 	private String subjectId;
 	private String subjectName;
@@ -26,6 +31,9 @@ public class Contract {
 	private String hoursPerSession;
 	private String sessionsPerWeek;
 	private String ratePerSession;
+	private String contractDuration;
+	
+
 	private String initialRequestId;
 	private String dateSigned;
 	private ArrayList<String> sessions = new ArrayList<String>();
@@ -54,7 +62,24 @@ public class Contract {
 		this.hoursPerSession = fromBid.getHoursPerSession();
 		this.sessionsPerWeek = fromBid.getSessionsPerWeek();
 		this.ratePerSession = fromBid.getRatePerSession();
+		this.contractDuration = fromBid.getContractDuration();
 		this.initialRequestId = fromBid.getId();
+	}
+	
+	public Contract(User firstParty, Contract fromContract) {
+		this.firstPartyId = firstParty.getId();
+		this.tutorName = firstParty.getGivenName() + " " + firstParty.getFamilyName();
+		this.secondPartyId = fromContract.getSecondPartyId();
+		this.studentName = fromContract.getStudentName();
+		this.subjectId = fromContract.getSubjectId();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		this.dateCreated = timestamp.toInstant().toString();
+		this.initialRequestId = fromContract.getInitialRequestId();
+		this.hoursPerSession = fromContract.getHoursPerSession();
+		this.sessionsPerWeek = fromContract.getSessionsPerWeek();
+		this.ratePerSession = fromContract.getRatePerSession();
+		this.contractDuration = fromContract.getContractDuration();
+		this.sign();	
 	}
 	
 	/**
@@ -89,6 +114,12 @@ public class Contract {
 		
 		if (jsonNode.get("lessonInfo").get("ratePerSession") != null) {
 			this.ratePerSession = jsonNode.get("lessonInfo").get("ratePerSession").textValue();
+		}
+		
+		if (jsonNode.get("lessonInfo").get("contractDuration") != null) {
+			this.contractDuration = jsonNode.get("lessonInfo").get("contractDuration").textValue();
+		}else {
+			this.contractDuration = "6";
 		}
 		
 		if (jsonNode.get("additionalInfo").get("initialRequestId") != null) {
@@ -187,6 +218,21 @@ public class Contract {
 		return dateSigned;
 	}
 	
+	public String getContractDuration() {
+		return contractDuration;
+	}
+
+	
+	
+	public void sign() {
+		if(this.dateSigned == null) {
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			this.dateSigned = timestamp.toInstant().toString();
+			Timestamp exptimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(Integer.parseInt(this.contractDuration) * 30));
+			this.expiryDate = exptimestamp.toInstant().toString(); 
+		}
+	}
+	
 	/**
 	 * Amend the number of hours per session in the UNSIGNED contract
 	 * @return null
@@ -211,6 +257,10 @@ public class Contract {
 		this.ratePerSession = ratePerSession;
 	}
 	
+	public void setContractDuration(String contractDuration) {
+		this.contractDuration = contractDuration;
+	}
+	
 	public String toString() {
 		String out  = "";
 		out = out + this.subjectName + " - ";
@@ -227,7 +277,9 @@ public class Contract {
 	    out = out + "Date Created: " + this.dateCreated + "\n";
 	    if(dateSigned != null) {
 	    	out = out + "Date Signed: " + this.dateSigned + "\n";
+	    	out = out + "Contract Expiry: " + this.expiryDate + "\n";
 	    }
+	    out = out + "Contract duration: " + this.contractDuration + "\n";
 	    out = out + "Hours Per Session: " + this.hoursPerSession + "\n";
 	    out = out + "Sessions Per Week: " + this.sessionsPerWeek + "\n";
 	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";

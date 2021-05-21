@@ -41,6 +41,7 @@ public abstract class APIWrapper {
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 	    if (response.statusCode() < 200 || response.statusCode() > 299) {
+	    	System.out.println(response.body());
 	    	return null;
 	    }
 

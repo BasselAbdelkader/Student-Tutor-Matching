@@ -36,6 +36,7 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 	private JLabel hoursPerSessionLabel;
 	private JLabel sessionsPerWeekLabel;
 	private JLabel ratePerSessionLabel;
+	private JLabel contractDurationLabel;
 	
 	//Inputs
 	private JComboBox<String> requestTypeInput;
@@ -44,6 +45,7 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 	private JComboBox<String> hoursPerSessionInput;
 	private JComboBox<String> sessionsPerWeekInput;
 	private JTextField ratePerSessionInput;
+	private JComboBox<String> contractDurationInput;
 	
 	//Buttons
 	private JButton createRequestBtn;
@@ -66,10 +68,12 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 		hoursPerSessionLabel = new JLabel("Hours per session :");
 		sessionsPerWeekLabel = new JLabel("Sessions per week :");
 		ratePerSessionLabel = new JLabel("Rate per session :");
+		contractDurationLabel = new JLabel("Contract Duration (Months):");
 		
 		//Constants
 		String[] type = {"open","closed"};
 		String[] numbers = {"1","2","3","4","5","6","7"};
+		String[] months = {"6","3","12","24"};
 		
 		//Inputs
 		requestTypeInput = new JComboBox<String>(type) ;
@@ -78,6 +82,7 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 		hoursPerSessionInput = new JComboBox<String>(numbers);
 		sessionsPerWeekInput = new JComboBox<String>(numbers);
 		ratePerSessionInput = new JTextField();
+		contractDurationInput =  new JComboBox<String>(months);
 		
 		//Buttons
 		createRequestBtn = new JButton("Create Request");
@@ -94,13 +99,15 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 		hoursPerSessionLabel.setBounds(10, 130, 150, 30);
 		sessionsPerWeekLabel.setBounds(10, 170, 150, 30);
 		ratePerSessionLabel.setBounds(10, 210, 150, 30);
+		contractDurationLabel.setBounds(10, 250, 150, 30);
 		requestTypeInput.setBounds(160, 10, 250, 30);
 		subjectInput.setBounds(160, 50, 250, 30);
 		competencyInput.setBounds(160, 90, 250, 30);
 		hoursPerSessionInput.setBounds(160, 130, 250, 30);
 		sessionsPerWeekInput.setBounds(160, 170, 250, 30);
 		ratePerSessionInput.setBounds(160, 210, 250, 30);
-		createRequestBtn.setBounds(10, 250, 400, 30);
+		contractDurationInput.setBounds(160, 250, 150, 30);
+		createRequestBtn.setBounds(10, 290, 400, 30);
 	}
 
 	/**
@@ -115,12 +122,14 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
         container.add(sessionsPerWeekLabel);
         container.add(hoursPerSessionLabel);
         container.add(ratePerSessionLabel);
+        container.add(contractDurationLabel);
         container.add(requestTypeInput);
         container.add(subjectInput);
         container.add(competencyInput);
         container.add(hoursPerSessionInput);
         container.add(sessionsPerWeekInput);
         container.add(ratePerSessionInput);
+        container.add(contractDurationInput);
         container.add(createRequestBtn);
 	}
 
@@ -161,7 +170,8 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 					Integer.parseInt(competencyInput.getSelectedItem().toString()),
 					hoursPerSessionInput.getSelectedItem().toString(),
 					sessionsPerWeekInput.getSelectedItem().toString(),
-					ratePerSessionInput.getText()
+					ratePerSessionInput.getText(),
+					contractDurationInput.getSelectedItem().toString()
 					);
 			try {
 				String id = RequestAPI.getInstance().addRequest(b);

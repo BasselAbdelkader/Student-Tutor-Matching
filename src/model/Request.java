@@ -27,6 +27,9 @@ public class Request {
 	private String hoursPerSession;
 	private String sessionsPerWeek;
 	private String ratePerSession;
+	private String contractDuration;
+	
+
 	private ArrayList<String> contractIds = new ArrayList<String>();
 	
 	/**
@@ -40,7 +43,7 @@ public class Request {
 	 * @param sessionsPerWeek number of sessions per week that the requestor needs
 	 * @param ratePerSession rate per session that the requestor offers the tutor
 	 */
-	public Request(User user, String type, String subjectId, int competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession) {
+	public Request(User user, String type, String subjectId, int competency, String hrsPerSession, String sessionsPerWeek, String ratePerSession,String contractDuration) {
 
 		this.initiatorId = user.getId();
 		this.inititatorName = user.getGivenName() + " " + user.getFamilyName();
@@ -50,6 +53,7 @@ public class Request {
 		this.hoursPerSession = hrsPerSession;
 		this.sessionsPerWeek = sessionsPerWeek;
 		this.ratePerSession = ratePerSession;
+		this.contractDuration = contractDuration;
 		
 	}
 
@@ -77,6 +81,9 @@ public class Request {
 		}
 		if (jsonNode.get("additionalInfo").get("ratePerSession") != null) {
 			this.ratePerSession = jsonNode.get("additionalInfo").get("ratePerSession").textValue();
+		}
+		if (jsonNode.get("additionalInfo").get("contractDuration") != null) {
+			this.contractDuration = jsonNode.get("additionalInfo").get("contractDuration").textValue();
 		}
 		if (jsonNode.get("additionalInfo").get("competency") != null) {
 			this.competency = jsonNode.get("additionalInfo").get("competency").intValue();
@@ -196,6 +203,7 @@ public class Request {
 	    out = out + "Date Created: " + this.dateCreated + "\n";
 	    out = out + "Date Closed: " + this.dateClosedDown + "\n";
 	    out = out + "Minimum Competency: " + this.competency + "\n";
+	    out = out + "Contract duration: " + this.contractDuration + "\n";
 	    out = out + "Hours Per Session: " + this.hoursPerSession + "\n";
 	    out = out + "Sessions Per Week: " + this.sessionsPerWeek + "\n";
 	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";
@@ -208,6 +216,10 @@ public class Request {
 	 */
 	public int getCompetency() {
 		return this.competency;
+	}
+	
+	public String getContractDuration() {
+		return contractDuration;
 	}
 	
 }

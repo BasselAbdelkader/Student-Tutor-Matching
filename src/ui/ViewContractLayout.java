@@ -337,9 +337,9 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 			signContractBtn.setEnabled(notsigned && userIsRequestor );
 			updateContractBtn.setEnabled(notsigned && userIsBidder);
 			subscribeBox.setEnabled(isOpenRequest && notsigned && userIsBidder);
-			sendChatBtn.setEnabled(!isOpenRequest);
-			chatInput.setEnabled(!isOpenRequest);
-			seeOtherBidsBtn.setEnabled(isOpenRequest);
+			sendChatBtn.setEnabled(!isOpenRequest|| !notsigned);
+			chatInput.setEnabled(!isOpenRequest || !notsigned);
+			seeOtherBidsBtn.setEnabled(isOpenRequest && notsigned);
 			renewContractBtn.setEnabled(!notsigned && isExpired && userIsRequestor);
 			newTutorIDInput.setEnabled(!notsigned && isExpired && userIsRequestor );
 			

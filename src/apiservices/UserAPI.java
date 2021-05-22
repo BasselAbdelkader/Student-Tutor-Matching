@@ -2,6 +2,7 @@ package apiservices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import model.Contract;
 import model.User;
 
 /**
@@ -72,6 +73,8 @@ public class UserAPI extends APIWrapper {
 		String response = super.getHttpRequest(url + "/" + id + "?fields=initiatedBids&fields=competencies.subject");
 		return new User(response);
 	}
+	
+
 
 
 

@@ -32,6 +32,7 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 	JButton newRequestBtn;
 	JButton biddingPageBtn;
 	JButton seeContractBtn;
+	JButton bidsMonitorBtn;
 	 
 	public SelectActionLayout(User currentUser) {
 		super();
@@ -39,6 +40,7 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 		userLabel.setText("Hello " + currentUser.getGivenName() + ", what do you want to do today?");
 		if(!currentUser.isTutor()) {
 			biddingPageBtn.setEnabled(false);
+			bidsMonitorBtn.setEnabled(false);
 		}
 	}
 	
@@ -53,6 +55,7 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 		newRequestBtn = new JButton("New Tutor Request");
 		biddingPageBtn = new JButton("Bid on student request");
 		seeContractBtn = new JButton("See my contracts");
+		bidsMonitorBtn = new JButton("Bids Monitoring Dashboard");
 	}
 	
 	/**
@@ -64,7 +67,9 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 		userLabel.setBounds(10, 10, 380, 30);
 		newRequestBtn.setBounds(10, 50, 380, 50);
 		biddingPageBtn.setBounds(10, 110, 380, 50);
-		seeContractBtn.setBounds(10, 170, 380, 50);
+		bidsMonitorBtn.setBounds(10, 170, 380, 50);
+		seeContractBtn.setBounds(10, 230, 380, 50);
+		
 	}
 
 	/**
@@ -75,6 +80,7 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 		container.add(userLabel);
         container.add(newRequestBtn);
         container.add(biddingPageBtn);
+        container.add(bidsMonitorBtn);
         container.add(seeContractBtn);
 	}
 	
@@ -85,6 +91,7 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 	protected void bindActionListeners() {
 		newRequestBtn.addActionListener(this);
 		biddingPageBtn.addActionListener(this);
+		bidsMonitorBtn.addActionListener(this);
 		seeContractBtn.addActionListener(this);
 	}
 	
@@ -115,6 +122,10 @@ public class SelectActionLayout extends WindowLayout implements ActionListener {
 			new SeeContractWindow(currentUser);
             dispose();
         }
+		else if (e.getSource() == bidsMonitorBtn) {
+			new MonitorWindow(currentUser);
+			dispose();
+		}
 	}
 
 }

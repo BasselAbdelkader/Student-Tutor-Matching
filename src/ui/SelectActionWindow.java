@@ -13,7 +13,7 @@ public class SelectActionWindow {
 		SelectActionLayout window = new SelectActionLayout(currentUser);
         window.setTitle("Welcome Back");
         window.setVisible(true);
-        window.setBounds(100, 100, 420, 270);
+        window.setBounds(100, 100, 420, 330);
         window.setResizable(false);
 	}
 }

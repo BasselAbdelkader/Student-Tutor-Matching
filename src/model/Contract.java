@@ -36,7 +36,8 @@ public class Contract {
 
 	private String initialRequestId;
 	private String dateSigned;
-	private ArrayList<String> sessions = new ArrayList<String>();
+	
+	private boolean subscribed = false;
 	
 	/**
 	 * This constructor creates a new unsigned contract (i.e. a bid) instance and sets the date created to the time the instance was created 
@@ -124,6 +125,10 @@ public class Contract {
 		
 		if (jsonNode.get("additionalInfo").get("initialRequestId") != null) {
 			this.initialRequestId = jsonNode.get("additionalInfo").get("initialRequestId").textValue();
+		}
+		
+		if (jsonNode.get("additionalInfo").get("subscribed") != null) {
+			this.subscribed = jsonNode.get("additionalInfo").get("subscribed").booleanValue();
 		}
 		
 	}
@@ -261,6 +266,10 @@ public class Contract {
 		this.contractDuration = contractDuration;
 	}
 	
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
+	}
+	
 	public String toString() {
 		String out  = "";
 		out = out + this.subjectName + " - ";
@@ -284,6 +293,10 @@ public class Contract {
 	    out = out + "Sessions Per Week: " + this.sessionsPerWeek + "\n";
 	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";
 	    return out;
+	}
+
+	public boolean isSubscribed() {
+		return this.subscribed;
 	}
 	
 

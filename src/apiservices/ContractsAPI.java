@@ -95,7 +95,8 @@ public class ContractsAPI extends APIWrapper {
 			      		"\"sessions\":[]" +
 			      	"}" + "," +
 			      "\"additionalInfo\":{" + 
-			      		"\"initialRequestId\":\""+ contract.getInitialRequestId() + "\"" + 
+			      		"\"initialRequestId\":\""+ contract.getInitialRequestId() + "\"" + "," +
+			      		"\"subscribed\":"+ "false" +
 		      	   "}" + 
 			    "}";
 		String response = super.postHttpRequest(jsonString, url);
@@ -201,7 +202,12 @@ public class ContractsAPI extends APIWrapper {
 			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" + "," +
 			      		"\"contractDuration\":\""+ contract.getContractDuration()+ "\"" + "," +
 			      		"\"sessions\":[]" +
-			      	"}" + 
+			      	"}" + "," +
+			      		
+					"\"additionalInfo\":{" + 
+						"\"initialRequestId\":\""+ contract.getInitialRequestId() + "\"" + "," +
+						"\"subscribed\":"+ (contract.isSubscribed() ? "true" : "false") +
+					"}" +
 			    "}";
 		String response = super.updateHttpRequest(jsonString,url + "/" + contract.getId());
 		

@@ -217,7 +217,7 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
 			if(id != null) {
 				try {
 					selectedContract = ContractsAPI.getInstance().getContract(id);
-					bidDetails.setText(selectedContract.toString());
+					bidDetails.setText(selectedContract.getContractDetails());
 					messageBtn.setEnabled(true);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -278,6 +278,7 @@ public class RequestLayout extends RefreshableLayout implements ActionListener, 
     			JOptionPane.showMessageDialog(this, "There are no bids for your request within time limit. Closing request.");
     		}else {
     			//select best bid
+    			contracts.get(0).sign();
     			ContractsAPI.getInstance().signContract(request,contracts.get(0));
     			JOptionPane.showMessageDialog(this, "Your time limit is up. Best bidder was selected. Closing request");
     		}

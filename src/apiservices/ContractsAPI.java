@@ -167,6 +167,7 @@ public class ContractsAPI extends APIWrapper {
 			throw new Exception("Contract instance not signed");
 		}
 		String contractId = contract.getId();
+		System.out.println("INITIAL: " + contractId);
 		String updateString = "{" +
 				"\"expiryDate\":\"" + contract.getExpiryDate() + "\"" +
 			  "}";
@@ -175,11 +176,15 @@ public class ContractsAPI extends APIWrapper {
 			  "}";
 		
 		if( getSignedContract(bid) == null) {
+			super.updateHttpRequest(updateString, url + "/" + contractId);
+			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 			deleteUnsignedContracts(bid);
 			RequestAPI.getInstance().closeRequest(bid);
+		}else {
+			super.updateHttpRequest(updateString, url + "/" + contractId);
+			super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
 		}
-		super.updateHttpRequest(updateString, url + "/" + contractId);
-		super.postHttpRequest(jsonString, url + "/" + contractId + "/sign");
+		
 		return false;
 	}
 	

@@ -57,8 +57,12 @@ public class OpenBidsWindow extends RefreshableController{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					
 	        		Contract contract = ContractsAPI.getInstance().addContract(new Contract(currentUser, selectedBid));
+	        		
+	        		
 	        		contract.sign();
+	        		
 	        		ContractsAPI.getInstance().signContract(selectedBid,contract);
 					new ViewContractWindow(currentUser,contract);
 					closeWindow();

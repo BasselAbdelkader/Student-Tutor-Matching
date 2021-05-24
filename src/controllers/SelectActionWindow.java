@@ -21,7 +21,7 @@ public class SelectActionWindow extends WindowController{
 	User currentUser;
 	
 	SelectActionWindow(User currentUser){
-		super(new SelectActionLayout(),"Welcome Back", 820, 330);
+		super(new SelectActionLayout(),"Welcome Back", 810, 330);
 		this.window = (SelectActionLayout) super.window;
 		this.currentUser = currentUser;
     	bindActionListeners();

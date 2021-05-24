@@ -75,6 +75,7 @@ public class RequestWindow extends RefreshableController{
 					new ViewContractWindow(currentUser,ContractsAPI.getInstance().getContract(selectedContract.getId()));
 					closeWindow();
 				}catch (Exception e1) {
+					e1.printStackTrace();
 					JOptionPane.showMessageDialog(window, "Error buying out request");
 					refresh();
 				}

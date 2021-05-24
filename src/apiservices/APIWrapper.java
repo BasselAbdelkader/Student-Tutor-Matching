@@ -41,6 +41,8 @@ public abstract class APIWrapper {
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 	    if (response.statusCode() < 200 || response.statusCode() > 299) {
+	    	System.out.println("BAD GET: " + url);
+	    	System.out.println(response.statusCode());
 	    	System.out.println(response.body());
 	    	return null;
 	    }
@@ -70,8 +72,9 @@ public abstract class APIWrapper {
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 	    if (response.statusCode() < 200 || response.statusCode() > 299) {
-	    	System.out.print("BAD REQUEST: " + jsonString);
-	    	System.out.print(response.statusCode());
+	    	System.out.println("BAD POST: " + jsonString);
+	    	System.out.println(response.statusCode());
+	    	System.out.println(response.body());
 	    	throw new Exception("Bad Request");
 	    }
 
@@ -99,8 +102,10 @@ public abstract class APIWrapper {
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 	    if (response.statusCode() < 200 || response.statusCode() > 299) {
-	    	System.out.print(response.statusCode());
-	    	throw new Exception("Bad Request");
+	    	System.out.println("BAD DELETE: " + url);
+	    	System.out.println(response.statusCode());
+	    	System.out.println(response.body());
+	    	throw new Exception("Bad delete");
 	    }
 
 	    return response.body();
@@ -128,9 +133,10 @@ public abstract class APIWrapper {
 	    response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 	    if (response.statusCode() < 200 || response.statusCode() > 299) {
-	    	System.out.print("BAD UPDATE: " + jsonString);
-	    	System.out.print(response.statusCode());
-	    	throw new Exception("Bad Request");
+	    	System.out.println("BAD UPDATE: " + jsonString);
+	    	System.out.println(response.statusCode());
+	    	System.out.println(response.body());
+	    	throw new Exception("Bad update");
 	    }
 
 	    return response.body();

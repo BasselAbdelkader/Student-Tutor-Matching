@@ -1,20 +1,12 @@
 package ui;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
-import apiservices.ContractsAPI;
 import model.Contract;
-import model.User;
+
 
 /**
  * This is the layout for a see my contracts window. 
@@ -22,13 +14,9 @@ import model.User;
  * @author Andrew Pang
  *
  */
-public class SeeContractsLayout extends RefreshableLayout implements ActionListener, ListSelectionListener {
+public class SeeContractsLayout extends WindowLayout {
 
 	private static final long serialVersionUID = 1L;
-	
-	User currentUser;
-	
-	Contract selectedContract;
 	
 	JLabel bidsLabel, contractsLabel, pastContractsLabel;
 	
@@ -36,13 +24,6 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 	JList<Contract> contractsList, bidsList, pastContractsList;
 	
 	JButton refreshBtn, viewContractBtn;
-
-	
-	public SeeContractsLayout(User currentUser) {
-		this.currentUser = currentUser;
-		refresh();
-	}
-	
 	
 	/**
      * Instantiate the View Elements to be added to the Layout
@@ -99,93 +80,42 @@ public class SeeContractsLayout extends RefreshableLayout implements ActionListe
 		
 
 	}
-	
-	/**
-	 * Bind elements that interacts with the user with their respective action listeners
-	 */
-	@Override
-	protected void bindActionListeners() {
-		viewContractBtn.addActionListener(this);
-		refreshBtn.addActionListener(this);
-		contractsList.addListSelectionListener(this);
-		bidsList.addListSelectionListener(this);
-		pastContractsList.addListSelectionListener(this);
+
+	public DefaultListModel<Contract> getContractsListModel() {
+		return contractsListModel;
 	}
-	
-	/**
-	 * Initialize the elements properties
-	 */
-	@Override
-	protected void init() {
-		// TODO Auto-generated method stub
-		viewContractBtn.setEnabled(false);
+
+	public DefaultListModel<Contract> getBidsListModel() {
+		return bidsListModel;
 	}
-	
-	/**
-	 * Default actions to perform on an auto refresh call
-	 */
-	@Override
-	protected void refresh() {
-		// TODO Auto-generated method stub
-		
-		try {
-			viewContractBtn.setEnabled(false);
-			bidsListModel.clear();
-			contractsListModel.clear();
-			pastContractListModel.clear();
-			for (Contract c :  ContractsAPI.getInstance().getContractsForUser(currentUser)) {
-				if (c.getDateSigned() == null) {
-					bidsListModel.add(bidsListModel.getSize(), c);
-				}else { 
-					if(Instant.parse(c.getExpiryDate()).toEpochMilli() > System.currentTimeMillis()) {
-						contractsListModel.add(contractsListModel.getSize(),c);
-					}else {
-						pastContractListModel.add(pastContractListModel.getSize(),c);
-					}
-					
-				}
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+	public DefaultListModel<Contract> getPastContractListModel() {
+		return pastContractListModel;
 	}
-	
-	/**
-	 * Actions to be performed in the case of a user induced events for list views
-	 * @param e The action event
-	 */
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		if(e.getSource() instanceof JList ) {
-			JList<Contract> list = (JList<Contract>) e.getSource();
-			
-			if(list.getSelectedIndex() >= 0) {
-				selectedContract = list.getSelectedValue();
-				viewContractBtn.setEnabled(true);
-			}
-			else {
-				viewContractBtn.setEnabled(false);
-			}
-		}		
+
+	public JList<Contract> getContractsList() {
+		return contractsList;
 	}
-	
-	/**
-	 * Actions to be performed in the case of a user induced events
-	 * @param e The action event
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == viewContractBtn) {
-			new ViewContractWindow(currentUser, selectedContract);
-			
-		}
-		else if (e.getSource() == refreshBtn) {
-			refresh();
-			
-		}
-		
+
+	public JList<Contract> getBidsList() {
+		return bidsList;
 	}
+
+	public JList<Contract> getPastContractsList() {
+		return pastContractsList;
+	}
+
+	public JButton getRefreshBtn() {
+		return refreshBtn;
+	}
+
+	public JButton getViewContractBtn() {
+		return viewContractBtn;
+	}
+
+	
+	
+	
+	
 
 }

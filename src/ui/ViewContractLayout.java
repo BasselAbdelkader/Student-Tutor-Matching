@@ -1,8 +1,6 @@
 package ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.Instant;
+
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -10,18 +8,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import apiservices.RequestAPI;
-import apiservices.UserAPI;
-import apiservices.ContractsAPI;
-import apiservices.MessagesAPI;
-import model.Request;
-import model.Contract;
+
 import model.Message;
-import model.User;
 /**
  * This is the layout for a view contract window. 
  * This window is opened when the user has selected a contract to view, so the user can view the contract details and message the other party.
@@ -30,13 +21,10 @@ import model.User;
  * @author Andrew Pang
  *
  */
-public class ViewContractLayout extends RefreshableLayout implements ActionListener{
+public class ViewContractLayout extends WindowLayout {
 
 	
 	private static final long serialVersionUID = 1L;
-	User currentUser;
-	Contract contract;
-	Request request;
 
 	//Labels
 	JLabel contractDetailsLabel;
@@ -73,14 +61,6 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
 	
 	//Checkboxs
 	JCheckBox subscribeBox;
-	
-	
-	public ViewContractLayout(User currentUser, Contract contract) {
-		super();
-		this.currentUser = currentUser;
-		this.contract = contract;
-		refresh();
-	}
 	
 	/**
      * Instantiate the View Elements to be added to the Layout
@@ -195,162 +175,72 @@ public class ViewContractLayout extends RefreshableLayout implements ActionListe
         container.add(sendChatBtn);
 	}
 
-	/**
-	 * Bind elements that interacts with the user with their respective action listeners
-	 */
-	@Override
-	protected void bindActionListeners() {
-		signContractBtn.addActionListener(this);
-        updateContractBtn.addActionListener(this);
-        sendChatBtn.addActionListener(this);
-        refreshBtn.addActionListener(this);
-        renewContractBtn.addActionListener(this);
-        subscribeBox.addActionListener(this);
-        seeOtherBidsBtn.addActionListener(this);
+	
+
+	public JTextArea getContractDetails() {
+		return contractDetails;
 	}
 
-	/**
-	 * Initialize the elements properties
-	 */
-	@Override
-	protected void init() {
-		// TODO Auto-generated method stub
-		signContractBtn.setEnabled(false);
-		updateContractBtn.setEnabled(false);
-		renewContractBtn.setEnabled(false);
-		subscribeBox.setEnabled(false);
-		seeOtherBidsBtn.setEnabled(false);
-		sendChatBtn.setEnabled(false);
-		chatInput.setEnabled(false);
+	public JComboBox<String> getHoursPerSessionInput() {
+		return hoursPerSessionInput;
+	}
+
+	public JComboBox<String> getSessionsPerWeekInput() {
+		return sessionsPerWeekInput;
+	}
+
+	public JTextField getRatePerSessionInput() {
+		return ratePerSessionInput;
+	}
+
+	public JComboBox<String> getContractDurationInput() {
+		return contractDurationInput;
+	}
+
+	public JTextField getChatInput() {
+		return chatInput;
+	}
+
+	public JTextField getNewTutorIDInput() {
+		return newTutorIDInput;
+	}
+
+	public DefaultListModel<Message> getMsgListModel() {
+		return msgListModel;
+	}
+
+	public JList<Message> getMsgList() {
+		return msgList;
+	}
+
+	public JButton getRefreshBtn() {
+		return refreshBtn;
+	}
+
+	public JButton getUpdateContractBtn() {
+		return updateContractBtn;
+	}
+
+	public JButton getSignContractBtn() {
+		return signContractBtn;
+	}
+
+	public JButton getRenewContractBtn() {
+		return renewContractBtn;
+	}
+
+	public JButton getSendChatBtn() {
+		return sendChatBtn;
+	}
+
+	public JButton getSeeOtherBidsBtn() {
+		return seeOtherBidsBtn;
+	}
+
+	public JCheckBox getSubscribeBox() {
+		return subscribeBox;
 	}
 	
-	/**
-	 * Actions to be performed in the case of a user induced events
-	 * @param e The action event
-	 */	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-      if(e.getSource() == sendChatBtn) {
-    	if (chatInput.getText().length() > 0) {
-    		try {
-    			Message m = new Message(request, currentUser, contract, chatInput.getText());
-    			
-				MessagesAPI.getInstance().sendMessage(m);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Unable to send message");
-			}
-    		refresh();
-    	}
-      }
-      else if(e.getSource() == refreshBtn) {
-    	  refresh();
-      } 
-      else if(e.getSource() == updateContractBtn) {
-    	  
-    	  contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
-    	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
-    	  contract.setRatePerSession(ratePerSessionInput.getText());
-    	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
-    	  try {
-    		  ContractsAPI.getInstance().updateContract(contract);
-    	  } catch (Exception e1) {
-    		  JOptionPane.showMessageDialog(this, "Failed to update contract details. Try again.");
-    		  e1.printStackTrace();
-    	  }
-    	  refresh();
-      } 
-      else if(e.getSource() == signContractBtn) {
-    	  try {
-    		  contract.sign();
-    		  ContractsAPI.getInstance().signContract(request,contract);
-    	  } catch (Exception e1) {
-    		  JOptionPane.showMessageDialog(this, "Cannot Sign Contract");
-    		  e1.printStackTrace();
-    	  }
-    	  refresh();
-      }
-      else if (e.getSource() == renewContractBtn) {
-    	  
-    	  try {
-    		  User tutor = UserAPI.getInstance().getUserByID(newTutorIDInput.getText());
-    		  if (tutor.getCompetencyLevel(contract.getSubjectId()) > currentUser.getCompetencyLevel(contract.getSubjectId()) + 2) {
-    			  contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
-    	    	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
-    	    	  contract.setRatePerSession(ratePerSessionInput.getText());
-    	    	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
-    	    	  Contract newcontract = new Contract(tutor, contract);
-        		  Contract renewed = ContractsAPI.getInstance().addContract(newcontract);
-        		  renewed.sign();
-        		  ContractsAPI.getInstance().signContract(RequestAPI.getInstance().getRequest(renewed.getInitialRequestId()), renewed);
-        		  new ViewContractWindow(this.currentUser,renewed);
-        		  this.dispose();
-    		  }else {
-    			  JOptionPane.showMessageDialog(this, "Tutor is incompetent!");
-    		  }
-    		  
-    		  
-    	  }catch (Exception e1) {
-    		  JOptionPane.showMessageDialog(this, "Cannot Sign Contract");
-    		  e1.printStackTrace();
-    	  }
-    	  refresh();
-      }
-      else if(e.getSource() == seeOtherBidsBtn) {
-    	  new RequestWindow(currentUser,request);
-    	  
-      }
-      else if(e.getSource() == subscribeBox) {
-    	  contract.setSubscribed(subscribeBox.isSelected());
-    	  try {
-    		  ContractsAPI.getInstance().updateContract(contract);
-    	  } catch (Exception e1) {
-    		  JOptionPane.showMessageDialog(this, "Failed to update contract details. Try again.");
-    		  e1.printStackTrace();
-    	  }
-    	  refresh();
-      }
-	}
-
-
-	/**
-	 * Default actions to perform on an auto refresh call
-	 */
-	@Override
-	protected void refresh() {
-		try {
-			contract = ContractsAPI.getInstance().getContract(contract.getId());
-			contractDetails.setText(contract.getContractDetails());
-			newTutorIDInput.setText(contract.getFirstPartyId());
-			subscribeBox.setSelected(contract.isSubscribed());
-			request = RequestAPI.getInstance().getRequest(contract.getInitialRequestId());
-			msgListModel.clear();
-			msgListModel.addAll(request.getMessagesForContract(contract.getId()));
-			
-			boolean userIsRequestor = currentUser.getId().contentEquals(contract.getSecondPartyId());
-			boolean userIsBidder = currentUser.getId().contentEquals(contract.getFirstPartyId());
-			boolean notsigned = contract.getDateSigned() == null ;
-			boolean isExpired = Instant.parse(contract.getExpiryDate()).toEpochMilli() < System.currentTimeMillis();
-			boolean isOpenRequest = request.getType().contentEquals("open");
-			
-			signContractBtn.setEnabled(notsigned && userIsRequestor );
-			updateContractBtn.setEnabled(notsigned && userIsBidder);
-			subscribeBox.setEnabled(isOpenRequest && notsigned && userIsBidder);
-			sendChatBtn.setEnabled(!isOpenRequest|| !notsigned);
-			chatInput.setEnabled(!isOpenRequest || !notsigned);
-			seeOtherBidsBtn.setEnabled(isOpenRequest && notsigned);
-			renewContractBtn.setEnabled(!notsigned && isExpired && userIsRequestor);
-			newTutorIDInput.setEnabled(!notsigned && isExpired && userIsRequestor );
-			
-			
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Failed to get contract details. The request may have ended.");
-			dispose();
-		}
-	}
-
+	
 	
 }

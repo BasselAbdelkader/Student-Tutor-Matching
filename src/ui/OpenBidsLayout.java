@@ -29,16 +29,11 @@ import model.User;
  * @author Andrew Pang
  *
  */
-public class OpenBidsLayout extends RefreshableLayout implements ActionListener, ListSelectionListener {
+public class OpenBidsLayout extends WindowLayout {
 	
 	 
 	private static final long serialVersionUID = 1L;
-		ArrayList<Subject> subjects;
-	    Request selectedBid;
-	    Subject selectedSubject;
-	    User currentUser;
-	    
-	    
+		
 	    
 	    //Labels
 	    JLabel searchSubjectLabel;
@@ -70,9 +65,6 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
 		JButton messageBtn;
 		JButton refreshBtn;
 	    
-	public OpenBidsLayout(User currentUser) {
-		this.currentUser = currentUser;
-	}
 	
 	/**
      * Instantiate the View Elements to be added to the Layout
@@ -165,165 +157,54 @@ public class OpenBidsLayout extends RefreshableLayout implements ActionListener,
         container.add(refreshBtn);
 	}
 
-	/**
-	 * Bind elements that interacts with the user with their respective action listeners
-	 */
-	@Override
-	protected void bindActionListeners() {
-		 searchSubjectInput.addActionListener(this);
-	     buyOutBtn.addActionListener(this);
-	     requestList.addListSelectionListener(this);
-	     messageBtn.addActionListener(this);
-	     seeBidsBtn.addActionListener(this);
-	     createBidBtn.addActionListener(this);
-	     refreshBtn.addActionListener(this);
-	}
-	
-	/**
-	 * Initialize the elements properties
-	 */
-	@Override
-	protected void init() {
-		requestDetails.setEditable(false);
-		buyOutBtn.setEnabled(false);
-		createBidBtn.setEnabled(false);
-		seeBidsBtn.setEnabled(false);
-		messageBtn.setEnabled(false);
-		loadSubjects();
-	}
-	
-	/**
-	 * Actions to be performed in the case of a user induced events
-	 * @param e The action event
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		if (e.getSource() == searchSubjectInput) {
-			loadRequests();
-        }
-		else if(e.getSource() == buyOutBtn) {
-        	try {
-        		Contract contract = ContractsAPI.getInstance().addContract(new Contract(currentUser, selectedBid));
-        		ContractsAPI.getInstance().signContract(selectedBid,contract);
-				new ViewContractWindow(currentUser,contract);
-				dispose();
-			}
-        	catch (Exception e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Error buying out request");
-			}
-        }
-		else if (e.getSource() ==  createBidBtn) {
-        	try {
-        		Contract contract = new Contract(currentUser, selectedBid);
-        		contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
-        		contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
-        		contract.setRatePerSession(ratePerSessionInput.getText());
-        		ContractsAPI.getInstance().addContract(contract);
-        		new RequestWindow(currentUser,selectedBid);
-			}
-        	catch (Exception e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, "Error creating a bid");
-			}
-        }
-        else if(e.getSource() == messageBtn) {
-        	Contract contract = new Contract(currentUser, selectedBid);
-    		try {
-				Contract addedContract = ContractsAPI.getInstance().addContract(contract);
-				new ViewContractWindow(currentUser,addedContract);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-        	
-        }
-        else if(e.getSource() == seeBidsBtn) {
-        	new RequestWindow(currentUser,selectedBid);
-        }
-        else if(e.getSource() == refreshBtn) {
-        	loadSubjects();
-        	refresh();
-        }
 
+	public DefaultListModel<String> getRequestListModel() {
+		return requestListModel;
 	}
 
-	/**
-	 * Actions to be performed in the case of a user induced events for list views
-	 * @param e The action event
-	 */
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		if (e.getSource() == requestList) {
-			loadRequestDetails();
-		}
+	public JList<String> getRequestList() {
+		return requestList;
 	}
 
-	/**
-	 * Default actions to perform on an auto refresh call
-	 */
-	@Override
-	protected void refresh() {
-		if(selectedBid != null) {
-			loadRequestDetails();
-		}
-		loadRequests();
-	}
-	
-	/**
-	 * Reload the list of subjects available
-	 */
-	private void loadSubjects() {
-		searchSubjectInput.removeAll();
-		searchSubjectInput.removeAllItems();
-		try {
-			subjects = SubjectAPI.getInstance().getAllSubjects();
-			for (Subject s : subjects) {
-				searchSubjectInput.addItem(s.getName());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error getting subjects");
-		}
-	}
-	
-	/**
-	 * Reload the list of requests available for that subject
-	 */
-	private void loadRequests() {
-		requestListModel.clear();
-		if(searchSubjectInput.getSelectedIndex() > 0) {
-			selectedSubject = subjects.get(searchSubjectInput.getSelectedIndex());
-			requestListModel.addAll(selectedSubject.getOpenRequestIds());
-			requestDetails.setText("");
-		}
-	}
-	
-	/**
-	 * Reload the details of the request
-	 */
-	private void loadRequestDetails() {
-		String id = requestList.getSelectedValue();
-		if(id != null) {
-			try {
-				selectedBid = RequestAPI.getInstance().getRequest(id);
-				requestDetails.setText(selectedBid.toString());
-				boolean qualified = selectedBid.getCompetency() <= currentUser.getCompetencyLevel(selectedSubject.getId());
-				boolean closed = selectedBid.getDateClosedDown() == null;
-				boolean check = closed && qualified;
-				buyOutBtn.setEnabled(check && selectedBid.getType().contentEquals("open") );
-				createBidBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
-				seeBidsBtn.setEnabled(check && selectedBid.getType().contentEquals("open"));
-				messageBtn.setEnabled(check && selectedBid.getType().contentEquals("closed"));
-				
-			} catch (Exception e1) {
-				e1.printStackTrace();
-				JOptionPane.showMessageDialog(this, "No longer able to get bid details");
-				requestDetails.setText("");
-				loadRequests();
-			}
-		}
+	public JTextArea getRequestDetails() {
+		return requestDetails;
 	}
 
+	public JComboBox getSearchSubjectInput() {
+		return searchSubjectInput;
+	}
+
+	public JComboBox getHoursPerSessionInput() {
+		return hoursPerSessionInput;
+	}
+
+	public JComboBox getSessionsPerWeekInput() {
+		return sessionsPerWeekInput;
+	}
+
+	public JTextField getRatePerSessionInput() {
+		return ratePerSessionInput;
+	}
+
+	public JButton getCreateBidBtn() {
+		return createBidBtn;
+	}
+
+	public JButton getSeeBidsBtn() {
+		return seeBidsBtn;
+	}
+
+	public JButton getBuyOutBtn() {
+		return buyOutBtn;
+	}
+
+	public JButton getMessageBtn() {
+		return messageBtn;
+	}
+
+	public JButton getRefreshBtn() {
+		return refreshBtn;
+	}
+	
 	
 }

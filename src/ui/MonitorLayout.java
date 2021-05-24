@@ -1,37 +1,27 @@
 package ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JTextArea;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
-import apiservices.ContractsAPI;
 import model.Contract;
-import model.User;
 
-public class MonitorLayout extends RefreshableLayout implements ActionListener,ListSelectionListener{
+
+public class MonitorLayout extends WindowLayout{
 
 	private static final long serialVersionUID = 1L;
-	User currentUser;
-	Contract selectedBid;
-	
+
 	JLabel subscribedBidsLabel, bidDetailsLabel;
 	DefaultListModel<Contract> subscribedBidsModel;
+	
 	JList<Contract> subscribedBids;
 	JTextArea bidDetails;
 	JButton refreshBtn, seeBidsBtn, updateBidBtn;
 	
-	public MonitorLayout(User currentUser) {
-		// TODO Auto-generated constructor stub
-		this.currentUser = currentUser;
-		refresh();
+	public MonitorLayout() {
+		super();
 	}	
 
 	@Override
@@ -42,10 +32,9 @@ public class MonitorLayout extends RefreshableLayout implements ActionListener,L
 		
 		subscribedBidsModel = new DefaultListModel<Contract>();
 		subscribedBids = new JList<Contract>(subscribedBidsModel);
-		
 		bidDetails = new JTextArea();
 		
-		seeBidsBtn = new JButton("See Other Bidders");
+		seeBidsBtn = new JButton("See Bid");
 		refreshBtn = new JButton("Refresh");
 		
 	}
@@ -72,55 +61,29 @@ public class MonitorLayout extends RefreshableLayout implements ActionListener,L
 		container.add(seeBidsBtn);
 	}
 
-	@Override
-	protected void bindActionListeners() {
-		// TODO Auto-generated method stub
-		refreshBtn.addActionListener(this);
-		seeBidsBtn.addActionListener(this);
-		subscribedBids.addListSelectionListener(this);
+
+	public DefaultListModel<Contract> getSubscribedBidsModel() {
+		return subscribedBidsModel;
 	}
 
-	@Override
-	protected void init() {
-		// TODO Auto-generated method stub
-		seeBidsBtn.setEnabled(false);
-		bidDetails.setEditable(false);
+	public JTextArea getBidDetails() {
+		return bidDetails;
+	}
+
+	public JButton getRefreshBtn() {
+		return refreshBtn;
+	}
+
+	public JButton getSeeBidsBtn() {
+		return seeBidsBtn;
+	}
+
+	public JButton getUpdateBidBtn() {
+		return updateBidBtn;
+	}
+
+	public JList<Contract> getSubscribedBids() {
+		return subscribedBids;
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getSource() == seeBidsBtn) {
-			new ViewContractWindow(currentUser,selectedBid);
-		}else if(e.getSource() == refreshBtn) {
-			refresh();
-		}
-	}
-
-	@Override
-	protected void refresh() {
-		// TODO Auto-generated method stub
-		try {
-			subscribedBidsModel.clear();
-			ArrayList<Contract> contracts = ContractsAPI.getInstance().getContractsForUser(currentUser);
-			for(Contract c : contracts) {
-				if(c.isSubscribed() && c.getFirstPartyId().contentEquals(currentUser.getId())) {
-					subscribedBidsModel.add(subscribedBidsModel.getSize(), c);
-				}
-			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-	}
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getSource() == subscribedBids && subscribedBids.getSelectedIndex() >= 0) {
-			selectedBid = subscribedBids.getSelectedValue();
-			bidDetails.setText(selectedBid.getContractDetails());
-			seeBidsBtn.setEnabled(true);
-		}
-	}
-
 }

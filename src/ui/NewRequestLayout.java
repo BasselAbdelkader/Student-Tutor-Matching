@@ -21,13 +21,9 @@ import model.User;
  * @author Andrew Pang
  *
  */
-public class NewRequestLayout extends WindowLayout implements ActionListener {
+public class NewRequestLayout extends WindowLayout{
 	
 	private static final long serialVersionUID = 1L;
-	
-	//Instance Vars
-	private User currentUser;
-	private ArrayList<Subject> subjects;
 	
 	//Labels
 	private JLabel requestTypeLabel ;
@@ -50,9 +46,8 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
 	//Buttons
 	private JButton createRequestBtn;
 	
-	public NewRequestLayout(User currentUser) {
+	public NewRequestLayout() {
 		super();
-		this.currentUser = currentUser;
 	}
 	
 	/**
@@ -133,54 +128,38 @@ public class NewRequestLayout extends WindowLayout implements ActionListener {
         container.add(createRequestBtn);
 	}
 
-	/**
-	 * Bid elements that interacts with the user with their respective action listeners
-	 */
-	@Override
-	protected void bindActionListeners() {
-		createRequestBtn.addActionListener(this);
+
+	public JComboBox<String> getRequestTypeInput() {
+		return requestTypeInput;
+	}
+
+	public JComboBox getSubjectInput() {
+		return subjectInput;
+	}
+
+	public JComboBox<String> getCompetencyInput() {
+		return competencyInput;
+	}
+
+	public JComboBox<String> getHoursPerSessionInput() {
+		return hoursPerSessionInput;
+	}
+
+	public JComboBox<String> getSessionsPerWeekInput() {
+		return sessionsPerWeekInput;
+	}
+
+	public JTextField getRatePerSessionInput() {
+		return ratePerSessionInput;
+	}
+
+	public JComboBox<String> getContractDurationInput() {
+		return contractDurationInput;
+	}
+
+	public JButton getCreateRequestBtn() {
+		return createRequestBtn;
 	}
 	
-	/**
-	 * Initialize the elements properties
-	 */
-	@Override
-	protected void init() {
-		try {
-			subjects = SubjectAPI.getInstance().getAllSubjects();
-			for (Subject s : subjects) {
-				subjectInput.addItem(s.getName());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Error getting subjects");
-		}
-	}
-	
-	/**
-	 * Actions to be performed in the case of a user induced events
-	 * @param e The action event
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == createRequestBtn) {
-			Request b = new Request(currentUser,
-					requestTypeInput.getSelectedItem().toString(),
-					subjects.get(subjectInput.getSelectedIndex()).getId(),
-					Integer.parseInt(competencyInput.getSelectedItem().toString()),
-					hoursPerSessionInput.getSelectedItem().toString(),
-					sessionsPerWeekInput.getSelectedItem().toString(),
-					ratePerSessionInput.getText(),
-					contractDurationInput.getSelectedItem().toString()
-					);
-			try {
-				String id = RequestAPI.getInstance().addRequest(b);
-				new RequestWindow(currentUser, RequestAPI.getInstance().getRequest(id));
-				dispose();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-	}
 	
 }

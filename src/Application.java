@@ -1,4 +1,4 @@
-import ui.LoginWindow;
+import controllers.LoginWindow;
 
 public class Application {
 	

@@ -1,5 +1,6 @@
 package model;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -11,7 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * For the purposes of this project, an unsigned contract is a bid for a bid request.
  * A signed contract is a successful bid that is closed by the requestor. 
  */
-public class Contract {
+public class Contract implements Subscription {
 	
 	private String firstPartyId;
 	private String tutorName;
@@ -292,9 +293,32 @@ public class Contract {
 	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";
 	    return out;
 	}
-
+	
+	@Override
 	public boolean isSubscribed() {
 		return this.subscribed;
+	}
+
+	@Override
+	public void subscribe() {
+		this.subscribed = true;
+	}
+
+	@Override
+	public void unsubscribe() {
+		this.subscribed = false;
+	}
+
+	@Override
+	public String getNotification() {
+		long now = System.currentTimeMillis();
+		long expiry = Instant.parse(getExpiryDate()).toEpochMilli();
+		long diff = expiry - now ;
+		if(getDateSigned() != null && diff > 0 && diff < TimeUnit.DAYS.toMillis(30) ) {
+			return "Contract : " + this.toString() + " will expire in less than a month!";
+		}else {
+			return null;
+		}
 	}
 	
 

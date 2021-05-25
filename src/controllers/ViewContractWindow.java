@@ -119,8 +119,6 @@ public class ViewContractWindow extends RefreshableController{
 	        	    	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
 	        	    	  Contract newcontract = new Contract(tutor, contract);
 	            		  Contract renewed = ContractsAPI.getInstance().addContract(newcontract);
-	            		  renewed.sign();
-	            		  ContractsAPI.getInstance().signContract(RequestAPI.getInstance().getRequest(renewed.getInitialRequestId()), renewed);
 	            		  new ViewContractWindow(currentUser,renewed);
 	            		  closeWindow();
 	        		  }else {
@@ -140,14 +138,18 @@ public class ViewContractWindow extends RefreshableController{
 		window.getSubscribeBox().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contract.setSubscribed(window.getSubscribeBox().isSelected());
-	        	  try {
-	        		  ContractsAPI.getInstance().updateContract(contract);
-	        	  } catch (Exception e1) {
-	        		  JOptionPane.showMessageDialog(window, "Failed to update contract details. Try again.");
-	        		  e1.printStackTrace();
-	        	  }
-	        	  refresh();
+				if (window.getSubscribeBox().isSelected()) {
+					contract.subscribe();
+				}else {
+					contract.unsubscribe();
+				}
+	        	try {
+	        		ContractsAPI.getInstance().updateContract(contract);
+	        	} catch (Exception e1) {
+	        		JOptionPane.showMessageDialog(window, "Failed to update contract details. Try again.");
+	        		e1.printStackTrace();
+	        	}
+	        	refresh();
 			}
 		});
 		
@@ -194,13 +196,14 @@ public class ViewContractWindow extends RefreshableController{
 			boolean notsigned = contract.getDateSigned() == null ;
 			boolean isExpired = Instant.parse(contract.getExpiryDate()).toEpochMilli() < System.currentTimeMillis();
 			boolean isOpenRequest = request.getType().contentEquals("open");
-			
-			window.getSignContractBtn().setEnabled(notsigned && userIsRequestor );
+			boolean isRenewed = ContractsAPI.getInstance().getSignedContract(request) != null;
+					
+			window.getSignContractBtn().setEnabled((notsigned && userIsRequestor && !isRenewed) || (notsigned && isRenewed && userIsBidder));
 			window.getUpdateContractBtn().setEnabled(notsigned && userIsBidder);
 			window.getSubscribeBox().setEnabled(isOpenRequest && notsigned && userIsBidder);
 			window.getSendChatBtn().setEnabled(!isOpenRequest|| !notsigned);
 			window.getChatInput().setEnabled(!isOpenRequest || !notsigned);
-			window.getSeeOtherBidsBtn().setEnabled(isOpenRequest && notsigned);
+			window.getSeeOtherBidsBtn().setEnabled(isOpenRequest && notsigned && !isRenewed);
 			window.getRenewContractBtn().setEnabled(!notsigned && isExpired && userIsRequestor);
 			window.getNewTutorIDInput().setEnabled(!notsigned && isExpired && userIsRequestor );
 

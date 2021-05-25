@@ -11,12 +11,6 @@ public abstract class RefreshableController extends WindowController implements 
 	private static final int DEFAULT_REFRESH_INTERVAL = 120000;
 	private Timer timer = new Timer();
 	
-	RefreshableController(WindowLayout win, String title, int height, int width) {
-		super(win, title, height, width);
-		timer.schedule(refresherTask, new Date(System.currentTimeMillis() + DEFAULT_REFRESH_INTERVAL), DEFAULT_REFRESH_INTERVAL);
-		// TODO Auto-generated constructor stub
-	}
-	
 	/**
 	 * A task to perform, in this case is the refresh function.
 	 */
@@ -26,6 +20,12 @@ public abstract class RefreshableController extends WindowController implements 
 	    	refresh(); 
 	    }
 	};
+	
+	RefreshableController(WindowLayout win, String title, int height, int width) {
+		super(win, title, height, width);
+		timer.schedule(refresherTask, new Date(System.currentTimeMillis() + DEFAULT_REFRESH_INTERVAL), DEFAULT_REFRESH_INTERVAL);
+		// TODO Auto-generated constructor stub
+	}
 
 	public abstract void refresh();
 	

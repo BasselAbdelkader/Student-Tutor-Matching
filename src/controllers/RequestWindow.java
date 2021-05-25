@@ -65,6 +65,7 @@ public class RequestWindow extends RefreshableController{
 				new ViewContractWindow(currentUser,selectedContract);
 			}
 		});
+		
 
 		
 		window.getCloseBidBtn().addActionListener(new ActionListener() {

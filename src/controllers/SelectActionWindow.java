@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import apiservices.ContractsAPI;
 import model.Contract;
+import model.Subscription;
 import model.User;
 import ui.SelectActionLayout;
 /**
@@ -83,12 +84,9 @@ public class SelectActionWindow extends WindowController{
 		}
 		try {
 			ArrayList<Contract> contracts = ContractsAPI.getInstance().getContractsForUser(currentUser);
-			long now = System.currentTimeMillis();
-			for(Contract c : contracts) {
-				long expiry = Instant.parse(c.getExpiryDate()).toEpochMilli();
-				long diff = expiry - now ;
-				if(c.getDateSigned() != null && diff > 0 && diff < TimeUnit.DAYS.toMillis(30) ) {
-					window.getNotificationModel().add(window.getNotificationModel().getSize(), "Contract : " + c.toString() + " will expire in less than a month!");
+			for(Subscription c : contracts) {
+				if(c.getNotification() != null ) {
+					window.getNotificationModel().add(window.getNotificationModel().getSize(),c.getNotification());
 				}
 			}
 		} catch (Exception e) {

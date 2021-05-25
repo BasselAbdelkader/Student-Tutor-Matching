@@ -1,27 +1,17 @@
 package ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
-import apiservices.RequestAPI;
-import apiservices.ContractsAPI;
-import apiservices.SubjectAPI;
-import model.Request;
-import model.Contract;
-import model.Subject;
-import model.User;
+
+
 
 /**
  * This is the layout for a new open bidding window. 

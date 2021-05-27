@@ -16,19 +16,15 @@ public class Contract implements Subscription {
 	
 	private String firstPartyId;
 	private String tutorName;
-	public String getTutorName() {
-		return tutorName;
-	}
-
+	
 	private String secondPartyId;
 	private String studentName;
-	public String getStudentName() {
-		return studentName;
-	}
+	
 
 	private String id;
 	private String subjectId;
 	private String subjectName;
+	
 	private String dateCreated;
 	private String expiryDate;
 	private String hoursPerSession;
@@ -246,7 +242,18 @@ public class Contract implements Subscription {
 	public String getContractDuration() {
 		return contractDuration;
 	}
-
+	
+	public String getTutorName() {
+		return tutorName;
+	}
+	
+	public String getStudentName() {
+		return studentName;
+	}
+	
+	public String getSubjectName() {
+		return subjectName;
+	}
 	
 	
 	public void sign() {
@@ -292,26 +299,26 @@ public class Contract implements Subscription {
 	
 	public String toString() {
 		String out  = "";
-		out = out + this.subjectName + " - ";
-		out = out + this.studentName + "(S) and ";
-	    out = out + this.tutorName + "(T)";
+		out = out + getSubjectName() + " - ";
+		out = out + getStudentName() + "(S) and ";
+	    out = out + getTutorName() + "(T)";
 	    return out;
 	}
 
 	public String getContractDetails() {
 		String out  = "";
-		out = out + "Subject: " + this.subjectName + "\n";
-		out = out + "Student: " + this.studentName + "\n";
-	    out = out + "Tutor: " + this.tutorName + "\n";
-	    out = out + "Date Created: " + this.dateCreated + "\n";
-	    if(dateSigned != null) {
-	    	out = out + "Date Signed: " + this.dateSigned + "\n";
-	    	out = out + "Contract Expiry: " + this.expiryDate + "\n";
+		out = out + "Subject: " + getSubjectName() + "\n";
+		out = out + "Student: " + getStudentName() + "\n";
+	    out = out + "Tutor: " + getTutorName() + "\n";
+	    out = out + "Date Created: " + getDateCreated() + "\n";
+	    if(getDateSigned() != null) {
+	    	out = out + "Date Signed: " + getDateSigned() + "\n";
+	    	out = out + "Contract Expiry: " + getExpiryDate() + "\n";
 	    }
-	    out = out + "Contract duration: " + this.contractDuration + "\n";
-	    out = out + "Hours Per Session: " + this.hoursPerSession + "\n";
-	    out = out + "Sessions Per Week: " + this.sessionsPerWeek + "\n";
-	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";
+	    out = out + "Contract duration: " + getContractDuration() + "\n";
+	    out = out + "Hours Per Session: " + getHoursPerSession() + "\n";
+	    out = out + "Sessions Per Week: " + getSessionsPerWeek() + "\n";
+	    out = out + "Rate Per Session: " + getRatePerSession() + "\n";
 	    return out;
 	}
 	

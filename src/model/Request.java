@@ -198,15 +198,15 @@ public class Request {
 
 	public String toString() {
 		String out  = "";
-	    out = out + type + " request \n";
-	    out = out + "Initiator: " + this.inititatorName + "\n";
-	    out = out + "Date Created: " + this.dateCreated + "\n";
-	    out = out + "Date Closed: " + this.dateClosedDown + "\n";
-	    out = out + "Minimum Competency: " + this.competency + "\n";
-	    out = out + "Contract duration: " + this.contractDuration + "\n";
-	    out = out + "Hours Per Session: " + this.hoursPerSession + "\n";
-	    out = out + "Sessions Per Week: " + this.sessionsPerWeek + "\n";
-	    out = out + "Rate Per Session: " + this.ratePerSession + "\n";
+	    out = out + getType() + " request \n";
+	    out = out + "Initiator: " + getInitiatorName() + "\n";
+	    out = out + "Date Created: " + getDateCreated() + "\n";
+	    out = out + "Date Closed: " + getDateClosedDown() + "\n";
+	    out = out + "Minimum Competency: " + getCompetency() + "\n";
+	    out = out + "Contract duration: " + getContractDuration() + "\n";
+	    out = out + "Hours Per Session: " + getHoursPerSession() + "\n";
+	    out = out + "Sessions Per Week: " + getSessionsPerWeek() + "\n";
+	    out = out + "Rate Per Session: " + getRatePerSession() + "\n";
 	    return out;
 	}
 	

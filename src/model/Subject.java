@@ -55,8 +55,8 @@ public class Subject {
 
 	public String toString() {
 		String out = "";
-		out = out + this.name + "\n";
-		out = out + this.description + "\n";
+		out = out + getName() + "\n";
+		out = out + getDescription() + "\n";
 		return out;
 	}
 	

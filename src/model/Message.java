@@ -103,7 +103,7 @@ public class Message {
 	}
 	
 	public String toString() {
-		String out = datePosted + " (" + posterUserName + "): " + content;
+		String out = getDatePosted() + " (" + posterUserName + "): " + getContent();
 		return out;
 	}
 }

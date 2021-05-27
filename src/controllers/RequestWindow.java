@@ -72,6 +72,7 @@ public class RequestWindow extends RefreshableController{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					selectedContract.sign();
 	        		ContractsAPI.getInstance().signContract(request,selectedContract);
 					new ViewContractWindow(currentUser,ContractsAPI.getInstance().getContract(selectedContract.getId()));
 					closeWindow();

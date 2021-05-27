@@ -107,6 +107,27 @@ public class ViewContractWindow extends RefreshableController{
 			}
 		});
 		
+		window.getExtendButton().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					
+					contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
+					Contract newcontract = new Contract(contract);
+	          		Contract renewed = ContractsAPI.getInstance().addContract(newcontract);
+	          		new ViewContractWindow(currentUser,renewed);
+	          		closeWindow();        		  
+	        		  
+	        	  }catch (Exception e1) {
+	        		  JOptionPane.showMessageDialog(window, "Cannot Sign Contract");
+	        		  e1.printStackTrace();
+	        	  }
+	        	  refresh();
+			}
+			
+		});
+		
 		window.getRenewContractBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -205,6 +226,7 @@ public class ViewContractWindow extends RefreshableController{
 			window.getChatInput().setEnabled(!isOpenRequest || !notsigned);
 			window.getSeeOtherBidsBtn().setEnabled(isOpenRequest && notsigned && !isRenewed);
 			window.getRenewContractBtn().setEnabled(!notsigned && isExpired && userIsRequestor);
+			window.getRenewContractBtn().setEnabled(!notsigned && userIsRequestor);
 			window.getNewTutorIDInput().setEnabled(!notsigned && isExpired && userIsRequestor );
 
 		} catch (Exception e) {

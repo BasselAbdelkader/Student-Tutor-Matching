@@ -8,7 +8,6 @@ import ui.WindowLayout;
 
 public abstract class RefreshableController extends WindowController implements Refreshable{
 	
-	private static final int DEFAULT_REFRESH_INTERVAL = 120000;
 	private Timer timer = new Timer();
 	
 	/**
@@ -23,7 +22,7 @@ public abstract class RefreshableController extends WindowController implements 
 	
 	RefreshableController(WindowLayout win, String title, int height, int width) {
 		super(win, title, height, width);
-		timer.schedule(refresherTask, new Date(System.currentTimeMillis() + DEFAULT_REFRESH_INTERVAL), DEFAULT_REFRESH_INTERVAL);
+		timer.schedule(refresherTask, new Date(System.currentTimeMillis() + Refreshable.DEFAULT_REFRESH_INTERVAL), Refreshable.DEFAULT_REFRESH_INTERVAL);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -32,6 +31,7 @@ public abstract class RefreshableController extends WindowController implements 
 	/**
 	 * Make sure to cancel the refresh task before exisiting. 
 	 */
+	@Override
 	protected void closeWindow() {
 		refresherTask.cancel();
 		super.closeWindow();

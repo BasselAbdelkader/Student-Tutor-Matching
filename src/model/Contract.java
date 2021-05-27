@@ -16,6 +16,10 @@ public class Contract implements Subscription {
 	
 	private String firstPartyId;
 	private String tutorName;
+	public String getTutorName() {
+		return tutorName;
+	}
+
 	private String secondPartyId;
 	private String studentName;
 	public String getStudentName() {
@@ -80,6 +84,21 @@ public class Contract implements Subscription {
 		this.ratePerSession = fromContract.getRatePerSession();
 		this.contractDuration = fromContract.getContractDuration();
 		this.sign();	
+	}
+	
+	public Contract(Contract fromContract) {
+		this.firstPartyId = fromContract.getFirstPartyId();
+		this.tutorName = fromContract.getTutorName();
+		this.secondPartyId = fromContract.getSecondPartyId();
+		this.studentName = fromContract.getStudentName();
+		this.subjectId = fromContract.getSubjectId();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		this.dateCreated = timestamp.toInstant().toString();
+		this.initialRequestId = fromContract.getInitialRequestId();
+		this.hoursPerSession = fromContract.getHoursPerSession();
+		this.sessionsPerWeek = fromContract.getSessionsPerWeek();
+		this.ratePerSession = fromContract.getRatePerSession();
+		this.contractDuration = fromContract.getContractDuration();
 	}
 	
 	/**

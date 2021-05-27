@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JFrame;
+
 import apiservices.ContractsAPI;
 import model.Contract;
 import model.Subscription;
@@ -40,7 +42,6 @@ public class SelectActionWindow extends WindowController{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new NewRequestWindow(currentUser);
-	            closeWindow();
 			}
 		});
 		
@@ -48,7 +49,6 @@ public class SelectActionWindow extends WindowController{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new OpenBidsWindow(currentUser);
-	            closeWindow();
 			}
 		});
 		
@@ -56,7 +56,6 @@ public class SelectActionWindow extends WindowController{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new MonitorWindow(currentUser);
-	            closeWindow();
 			}
 		});
 		
@@ -65,7 +64,6 @@ public class SelectActionWindow extends WindowController{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new SeeContractWindow(currentUser);
-	            closeWindow();
 			}
 		});
 		
@@ -77,6 +75,7 @@ public class SelectActionWindow extends WindowController{
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.getUserLabel().setText("Hello " + currentUser.getGivenName() + ", what do you want to do today?");
 		if(!currentUser.isTutor()) {
 			window.getBiddingPageBtn().setEnabled(false);
@@ -92,5 +91,6 @@ public class SelectActionWindow extends WindowController{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 }

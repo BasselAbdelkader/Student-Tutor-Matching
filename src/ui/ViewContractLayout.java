@@ -58,7 +58,10 @@ public class ViewContractLayout extends WindowLayout {
 	JButton renewContractBtn;
 	JButton sendChatBtn;
 	JButton seeOtherBidsBtn;
+	JButton extendButton;
 	
+
+
 	//Checkboxs
 	JCheckBox subscribeBox;
 	
@@ -96,11 +99,12 @@ public class ViewContractLayout extends WindowLayout {
 		
 		//Buttons
 		refreshBtn = new JButton("Refresh");
-		updateContractBtn = new JButton("Update Contract");
+		updateContractBtn = new JButton("Update Terms");
 		signContractBtn = new JButton("Sign Contract");
 		sendChatBtn = new JButton("Send");
-		renewContractBtn = new JButton("Renew Contract");
+		renewContractBtn = new JButton("Update & Reuse");
 		seeOtherBidsBtn = new JButton("See Other Bids");
+		extendButton = new JButton("Extend");
 		
 		//Checkboxes
 		subscribeBox = new JCheckBox("Subscribe to bid");
@@ -116,20 +120,23 @@ public class ViewContractLayout extends WindowLayout {
 		contractDetails.setBounds(10,50,460,150);
 		adjustContractLabel.setBounds(10,210,250,30);
 		subscribeBox.setBounds(260, 210, 150, 30);
-		hoursPerSessionLabel.setBounds(10,250,200,30);
-		hoursPerSessionInput.setBounds(210,250,200,30);
-		sessionsPerWeekLabel.setBounds(10,290,200,30);
-		sessionsPerWeekInput.setBounds(210,290,200,30);
-		ratePerSessionLabel.setBounds(10,330,200,30);
-		ratePerSessionInput.setBounds(210,330,200,30);
-		contractDurationLabel.setBounds(10,370,200,30);
-		contractDurationInput.setBounds(210,370,200,30);
-		newTutorIDLabel.setBounds(10, 410, 200, 30);
-		newTutorIDInput.setBounds(210, 410, 200, 30);
 		
-		renewContractBtn.setBounds(10, 450, 140, 30);
-		signContractBtn.setBounds(160,450,140,30);
-		updateContractBtn.setBounds(310,450,140,30);
+		hoursPerSessionLabel.setBounds(10,250,150,30);
+		hoursPerSessionInput.setBounds(160,250,150,30);
+		sessionsPerWeekLabel.setBounds(10,290,150,30);
+		sessionsPerWeekInput.setBounds(160,290,150,30);
+		ratePerSessionLabel.setBounds(10,330,150,30);
+		
+		ratePerSessionInput.setBounds(160,330,150,30);
+		contractDurationLabel.setBounds(10,370,150,30);
+		contractDurationInput.setBounds(160,370,150,30);
+		extendButton.setBounds(320,370,150,30);
+		newTutorIDLabel.setBounds(10, 410, 200, 30);
+		newTutorIDInput.setBounds(160, 410, 150, 30);
+		renewContractBtn.setBounds(320, 410, 150, 30);
+		
+		signContractBtn.setBounds(10,450,220,30);
+		updateContractBtn.setBounds(245,450,220,30);
 		
 		refreshBtn.setBounds(370, 10, 100, 30);
 		
@@ -166,6 +173,7 @@ public class ViewContractLayout extends WindowLayout {
         container.add(newTutorIDLabel);
         container.add(newTutorIDInput);
         container.add(renewContractBtn);
+        container.add(extendButton);
         container.add(signContractBtn);
         container.add(updateContractBtn);
         container.add(seeOtherBidsBtn);
@@ -175,7 +183,9 @@ public class ViewContractLayout extends WindowLayout {
         container.add(sendChatBtn);
 	}
 
-	
+	/**
+	 * Getters and Setters for each element
+	 */
 
 	public JTextArea getContractDetails() {
 		return contractDetails;
@@ -241,6 +251,7 @@ public class ViewContractLayout extends WindowLayout {
 		return subscribeBox;
 	}
 	
-	
-	
+	public JButton getExtendButton() {
+		return extendButton;
+	}
 }

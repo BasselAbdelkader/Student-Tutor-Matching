@@ -12,8 +12,8 @@ import java.net.http.HttpResponse;
  */
 public abstract class APIWrapper {
 	
-	private final static String api_key = "nwPqJThKp7jwCtf8McjrgTfWkdFmnJ";
-	protected final static String rootUrl = "https://fit3077.com/api/v1";
+	private final static String api_key = "fktLgQzBGKQMrR9prwMTRqBzjKk6F8";
+	protected final static String rootUrl = "https://fit3077.com/api/v2";
 	protected String url;
 	
 	public APIWrapper(String url) {

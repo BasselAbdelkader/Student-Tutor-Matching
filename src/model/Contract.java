@@ -293,10 +293,7 @@ public class Contract implements Subscription {
 		this.contractDuration = contractDuration;
 	}
 	
-	public void setSubscribed(boolean subscribed) {
-		this.subscribed = subscribed;
-	}
-	
+
 	public String toString() {
 		String out  = "";
 		out = out + getSubjectName() + " - ";

@@ -94,6 +94,8 @@ public class Contract implements Subscription {
 		this.subjectId = fromContract.getSubjectId();
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		this.dateCreated = timestamp.toInstant().toString();
+		Timestamp expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7));
+		this.expiryDate = expTimestamp.toInstant().toString();
 		this.initialRequestId = fromContract.getInitialRequestId();
 		this.hoursPerSession = fromContract.getHoursPerSession();
 		this.sessionsPerWeek = fromContract.getSessionsPerWeek();

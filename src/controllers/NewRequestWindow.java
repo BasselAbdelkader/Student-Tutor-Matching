@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import apiservices.RequestAPI;
-import apiservices.SubjectAPI;
+import adaptors.RequestAPI;
+import adaptors.SubjectAPI;
 import model.Request;
 import model.Subject;
 import model.User;

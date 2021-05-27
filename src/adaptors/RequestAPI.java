@@ -1,4 +1,4 @@
-package apiservices;
+package adaptors;
 import java.sql.Timestamp;
 import java.time.Instant;
 import com.fasterxml.jackson.databind.ObjectMapper;

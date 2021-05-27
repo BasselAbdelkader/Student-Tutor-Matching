@@ -1,4 +1,4 @@
-package apiservices;
+package adaptors;
 import model.Message;
 /**
  * MessagesAPI Class

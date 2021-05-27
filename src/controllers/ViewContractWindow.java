@@ -7,10 +7,10 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import apiservices.ContractsAPI;
-import apiservices.MessagesAPI;
-import apiservices.RequestAPI;
-import apiservices.UserAPI;
+import adaptors.ContractsAPI;
+import adaptors.MessagesAPI;
+import adaptors.RequestAPI;
+import adaptors.UserAPI;
 import model.Contract;
 import model.Message;
 import model.Request;
@@ -226,7 +226,7 @@ public class ViewContractWindow extends RefreshableController{
 			window.getChatInput().setEnabled(!isOpenRequest || !notsigned);
 			window.getSeeOtherBidsBtn().setEnabled(isOpenRequest && notsigned && !isRenewed);
 			window.getRenewContractBtn().setEnabled(!notsigned && isExpired && userIsRequestor);
-			window.getRenewContractBtn().setEnabled(!notsigned && userIsRequestor);
+			window.getExtendButton().setEnabled(!notsigned && userIsRequestor);
 			window.getNewTutorIDInput().setEnabled(!notsigned && isExpired && userIsRequestor );
 
 		} catch (Exception e) {

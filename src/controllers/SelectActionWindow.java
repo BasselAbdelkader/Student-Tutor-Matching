@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
-import apiservices.ContractsAPI;
+import adaptors.ContractsAPI;
 import model.Contract;
 import model.Subscription;
 import model.User;

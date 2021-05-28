@@ -42,9 +42,6 @@ public class Competency {
 	 * Get the id of the owner of the the competency
 	 * @return competency owner's id
 	 */
-	public String getOwnerId() {
-		return ownerId;
-	}
 	
 	/**
 	 * Get the id of the subject of the competency

@@ -233,14 +233,10 @@ public class Contract implements Subscription {
 		this.contractDuration = contractDuration;
 	}
 	
-	public void setSubscribed(boolean subscribed) {
-		this.subscribed = subscribed;
-	}
-	
 	public LessonInfo getLessonInfo() {
 		return lessonInfo;
 	}
-	
+
 	public String toString() {
 		String out  = "";
 		out = out + getSubjectName() + " - ";

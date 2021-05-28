@@ -26,7 +26,7 @@ public class Request {
 	private int competency =0 ;
 	
 	private LessonInfo lessonInfo;
-	private String contractDuration;
+	
 	
 
 	private ArrayList<String> contractIds = new ArrayList<String>();
@@ -49,9 +49,7 @@ public class Request {
 		this.type = type;
 		this.subjectId = subjectId;
 		this.competency = competency;
-		this.lessonInfo = new LessonInfo(hrsPerSession,sessionsPerWeek,ratePerSession);
-		this.contractDuration = contractDuration;
-		
+		this.lessonInfo = new LessonInfo(hrsPerSession,sessionsPerWeek,ratePerSession,contractDuration);
 	}
 
 	
@@ -77,12 +75,15 @@ public class Request {
 			String hoursPerSession = jsonNode.get("additionalInfo").get("hoursPerSession").textValue();
 			String sessionsPerWeek = jsonNode.get("additionalInfo").get("sessionsPerWeek").textValue();
 			String ratePerSession = jsonNode.get("additionalInfo").get("ratePerSession").textValue();
-			this.lessonInfo = new LessonInfo(hoursPerSession,sessionsPerWeek,ratePerSession);
+			String contractDuration = "6";
+			
+			if (jsonNode.get("lessonInfo").get("contractDuration") != null) {
+				contractDuration = jsonNode.get("lessonInfo").get("contractDuration").textValue();
+			}
+			
+			this.lessonInfo = new LessonInfo(hoursPerSession,sessionsPerWeek,ratePerSession, contractDuration);
 		}
-		
-		if (jsonNode.get("additionalInfo").get("contractDuration") != null) {
-			this.contractDuration = jsonNode.get("additionalInfo").get("contractDuration").textValue();
-		}
+
 		if (jsonNode.get("additionalInfo").get("competency") != null) {
 			this.competency = jsonNode.get("additionalInfo").get("competency").intValue();
 		}
@@ -177,7 +178,6 @@ public class Request {
 	    out = out + "Date Created: " + getDateCreated() + "\n";
 	    out = out + "Date Closed: " + getDateClosedDown() + "\n";
 	    out = out + "Minimum Competency: " + getCompetency() + "\n";
-	    out = out + "Contract duration: " + getContractDuration() + "\n";
 	    out = out + getLessonInfo().toString();
 	    return out;
 	}
@@ -188,10 +188,6 @@ public class Request {
 	 */
 	public int getCompetency() {
 		return this.competency;
-	}
-	
-	public String getContractDuration() {
-		return contractDuration;
 	}
 	
 	public LessonInfo getLessonInfo() {

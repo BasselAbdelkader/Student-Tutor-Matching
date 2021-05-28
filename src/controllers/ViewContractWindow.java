@@ -72,7 +72,7 @@ public class ViewContractWindow extends RefreshableController{
 				contract.getLessonInfo().setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
 	        	  contract.getLessonInfo().setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
 	        	  contract.getLessonInfo().setRatePerSession(ratePerSessionInput.getText());
-	        	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
+	        	  contract.getLessonInfo().setContractDuration(contractDurationInput.getSelectedItem().toString());
 	        	  try {
 	        		  ContractsAPI.getInstance().updateContract(contract);
 	        	  } catch (Exception e1) {
@@ -113,7 +113,7 @@ public class ViewContractWindow extends RefreshableController{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					
-					contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
+					contract.getLessonInfo().setContractDuration(contractDurationInput.getSelectedItem().toString());
 					Contract newcontract = new Contract(contract);
 	          		Contract renewed = ContractsAPI.getInstance().addContract(newcontract);
 	          		new ViewContractWindow(currentUser,renewed);
@@ -137,7 +137,7 @@ public class ViewContractWindow extends RefreshableController{
 	        			  contract.getLessonInfo().setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
 	        	    	  contract.getLessonInfo().setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
 	        	    	  contract.getLessonInfo().setRatePerSession(ratePerSessionInput.getText());
-	        	    	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
+	        	    	  contract.getLessonInfo().setContractDuration(contractDurationInput.getSelectedItem().toString());
 	        	    	  Contract newcontract = new Contract(tutor, contract);
 	            		  Contract renewed = ContractsAPI.getInstance().addContract(newcontract);
 	            		  new ViewContractWindow(currentUser,renewed);

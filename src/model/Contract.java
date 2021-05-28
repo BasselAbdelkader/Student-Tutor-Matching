@@ -31,7 +31,6 @@ public class Contract implements Subscription {
 	
 	private LessonInfo lessonInfo;
 	private String initialRequestId;
-	private String contractDuration;
 	
 	private boolean subscribed = false;
 	
@@ -57,7 +56,6 @@ public class Contract implements Subscription {
 		}
 		this.expiryDate = expTimestamp.toInstant().toString();
 		this.lessonInfo = fromBid.getLessonInfo();
-		this.contractDuration = fromBid.getContractDuration();
 		this.initialRequestId = fromBid.getId();
 	}
 	
@@ -71,7 +69,6 @@ public class Contract implements Subscription {
 		this.dateCreated = timestamp.toInstant().toString();
 		this.initialRequestId = fromContract.getInitialRequestId();
 		this.lessonInfo =  fromContract.getLessonInfo();
-		this.contractDuration = fromContract.getContractDuration();
 		this.sign();	
 	}
 	
@@ -89,7 +86,6 @@ public class Contract implements Subscription {
 		this.expiryDate = expTimestamp.toInstant().toString();
 		this.initialRequestId = fromContract.getInitialRequestId();
 		this.lessonInfo = fromContract.getLessonInfo();
-		this.contractDuration = fromContract.getContractDuration();
 	}
 	
 	/**
@@ -118,13 +114,14 @@ public class Contract implements Subscription {
 			String hoursPerSession = jsonNode.get("lessonInfo").get("hoursPerSession").textValue();
 			String sessionsPerWeek = jsonNode.get("lessonInfo").get("sessionsPerWeek").textValue();
 			String ratePerSession = jsonNode.get("lessonInfo").get("ratePerSession").textValue();
-			this.lessonInfo = new LessonInfo(hoursPerSession,sessionsPerWeek,ratePerSession);
-		}
-		
-		if (jsonNode.get("lessonInfo").get("contractDuration") != null) {
-			this.contractDuration = jsonNode.get("lessonInfo").get("contractDuration").textValue();
-		}else {
-			this.contractDuration = "6";
+			String contractDuration = "6";
+			
+			
+			if (jsonNode.get("lessonInfo").get("contractDuration") != null) {
+				contractDuration = jsonNode.get("lessonInfo").get("contractDuration").textValue();
+			}
+			
+			this.lessonInfo = new LessonInfo(hoursPerSession,sessionsPerWeek,ratePerSession, contractDuration);
 		}
 		
 		if (jsonNode.get("additionalInfo").get("initialRequestId") != null) {
@@ -203,10 +200,6 @@ public class Contract implements Subscription {
 		return dateSigned;
 	}
 	
-	public String getContractDuration() {
-		return contractDuration;
-	}
-	
 	public String getTutorName() {
 		return tutorName;
 	}
@@ -224,13 +217,9 @@ public class Contract implements Subscription {
 		if(this.dateSigned == null) {
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			this.dateSigned = timestamp.toInstant().toString();
-			Timestamp exptimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(Integer.parseInt(this.contractDuration) * 30));
+			Timestamp exptimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(Integer.parseInt(getLessonInfo().getContractDuration()) * 30));
 			this.expiryDate = exptimestamp.toInstant().toString(); 
 		}
-	}
-	
-	public void setContractDuration(String contractDuration) {
-		this.contractDuration = contractDuration;
 	}
 	
 	public LessonInfo getLessonInfo() {
@@ -255,7 +244,6 @@ public class Contract implements Subscription {
 	    	out = out + "Date Signed: " + getDateSigned() + "\n";
 	    	out = out + "Contract Expiry: " + getExpiryDate() + "\n";
 	    }
-	    out = out + "Contract duration: " + getContractDuration() + "\n";
 	    out = out + getLessonInfo().toString();
 	    return out;
 	}

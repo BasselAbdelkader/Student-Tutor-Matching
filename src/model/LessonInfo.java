@@ -4,11 +4,16 @@ public class LessonInfo {
 	private String hoursPerSession;
 	private String sessionsPerWeek;
 	private String ratePerSession;
+	private String contractDuration;
 	
-	public LessonInfo(String hoursPerSession, String sessionsPerWeek,String ratePerSession) {
+	
+
+	public LessonInfo(String hoursPerSession, String sessionsPerWeek,String ratePerSession, String contractDuration) {
 		this.hoursPerSession = hoursPerSession;
 		this.sessionsPerWeek = sessionsPerWeek;
 		this.ratePerSession = ratePerSession;
+		this.contractDuration = contractDuration;
+		
 	}
 	
 	/**
@@ -59,9 +64,18 @@ public class LessonInfo {
 		this.ratePerSession = ratePerSession;
 	}
 	
+	public String getContractDuration() {
+		return contractDuration;
+	}
+
+	public void setContractDuration(String contractDuration) {
+		this.contractDuration = contractDuration;
+	}
+	
 	@Override
 	public String toString() {
 		String out = "";
+		out = out + "Contract duration: " + getContractDuration() + "\n";
 		out = out + "Hours Per Session: " + getHoursPerSession() + "\n";
 	    out = out + "Sessions Per Week: " + getSessionsPerWeek() + "\n";
 	    out = out + "Rate Per Session: " + getRatePerSession() + "\n";

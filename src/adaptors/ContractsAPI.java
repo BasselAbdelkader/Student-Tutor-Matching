@@ -89,7 +89,7 @@ public class ContractsAPI extends APIWrapper {
 			      		"\"hoursPerSession\":\""+ contract.getLessonInfo().getHoursPerSession() + "\"" + "," +
 			      		"\"sessionsPerWeek\":\""+ contract.getLessonInfo().getSessionsPerWeek()+ "\"" + "," +
 			      		"\"ratePerSession\":\""+ contract.getLessonInfo().getRatePerSession()+ "\"" + "," +
-			      		"\"contractDuration\":\""+ contract.getContractDuration()+ "\"" + "," +
+			      		"\"contractDuration\":\""+ contract.getLessonInfo().getContractDuration()+ "\"" + "," +
 			      		"\"sessions\":[]" +
 			      	"}" + "," +
 			      "\"additionalInfo\":{" + 
@@ -203,7 +203,7 @@ public class ContractsAPI extends APIWrapper {
 			      		"\"hoursPerSession\":\""+ contract.getLessonInfo().getHoursPerSession() + "\"" + "," +
 			      		"\"sessionsPerWeek\":\""+ contract.getLessonInfo().getSessionsPerWeek()+ "\"" + "," +
 			      		"\"ratePerSession\":\""+ contract.getLessonInfo().getRatePerSession()+ "\"" + "," +
-			      		"\"contractDuration\":\""+ contract.getContractDuration()+ "\"" + "," +
+			      		"\"contractDuration\":\""+ contract.getLessonInfo().getContractDuration()+ "\"" + "," +
 			      		"\"sessions\":[]" +
 			      	"}" + "," +
 			      		

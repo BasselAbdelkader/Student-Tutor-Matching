@@ -77,8 +77,8 @@ public class Request {
 			String ratePerSession = jsonNode.get("additionalInfo").get("ratePerSession").textValue();
 			String contractDuration = "6";
 			
-			if (jsonNode.get("lessonInfo").get("contractDuration") != null) {
-				contractDuration = jsonNode.get("lessonInfo").get("contractDuration").textValue();
+			if (jsonNode.get("additionalInfo").get("contractDuration") != null) {
+				contractDuration = jsonNode.get("additionalInfo").get("contractDuration").textValue();
 			}
 			
 			this.lessonInfo = new LessonInfo(hoursPerSession,sessionsPerWeek,ratePerSession, contractDuration);

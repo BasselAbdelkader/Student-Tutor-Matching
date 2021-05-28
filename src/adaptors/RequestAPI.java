@@ -50,9 +50,9 @@ public class RequestAPI extends APIWrapper {
 			      "\"subjectId\":\"" + request.getSubjectId() + "\"" + "," +
 			      "\"additionalInfo\":{" + 
 			      		"\"competency\":"+ request.getCompetency() + "," +
-			      		"\"hoursPerSession\":\""+ request.getHoursPerSession() + "\"" + "," +
-			      		"\"sessionsPerWeek\":\""+ request.getSessionsPerWeek()+ "\"" + "," +
-			      		"\"ratePerSession\":\""+ request.getRatePerSession()+ "\"" + "," +
+			      		"\"hoursPerSession\":\""+ request.getLessonInfo().getHoursPerSession() + "\"" + "," +
+			      		"\"sessionsPerWeek\":\""+ request.getLessonInfo().getSessionsPerWeek()+ "\"" + "," +
+			      		"\"ratePerSession\":\""+ request.getLessonInfo().getRatePerSession()+ "\"" + "," +
 			      		"\"contractDuration\":\""+ request.getContractDuration()+ "\"" + "," +
 			      		"\"contractIds\":[]" +
 			      	"}" + 			      

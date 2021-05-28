@@ -86,9 +86,9 @@ public class ContractsAPI extends APIWrapper {
 			      "\"dateCreated\":\"" + contract.getDateCreated() + "\"" + "," +
 			      "\"expiryDate\":\"" + contract.getExpiryDate() + "\"" + "," +
 			      "\"lessonInfo\":{" + 
-			      		"\"hoursPerSession\":\""+ contract.getHoursPerSession() + "\"" + "," +
-			      		"\"sessionsPerWeek\":\""+ contract.getSessionsPerWeek()+ "\"" + "," +
-			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" + "," +
+			      		"\"hoursPerSession\":\""+ contract.getLessonInfo().getHoursPerSession() + "\"" + "," +
+			      		"\"sessionsPerWeek\":\""+ contract.getLessonInfo().getSessionsPerWeek()+ "\"" + "," +
+			      		"\"ratePerSession\":\""+ contract.getLessonInfo().getRatePerSession()+ "\"" + "," +
 			      		"\"contractDuration\":\""+ contract.getContractDuration()+ "\"" + "," +
 			      		"\"sessions\":[]" +
 			      	"}" + "," +
@@ -200,9 +200,9 @@ public class ContractsAPI extends APIWrapper {
 		
 		String jsonString = "{" +
 			      "\"lessonInfo\":{" + 
-			      		"\"hoursPerSession\":\""+ contract.getHoursPerSession() + "\"" + "," +
-			      		"\"sessionsPerWeek\":\""+ contract.getSessionsPerWeek()+ "\"" + "," +
-			      		"\"ratePerSession\":\""+ contract.getRatePerSession()+ "\"" + "," +
+			      		"\"hoursPerSession\":\""+ contract.getLessonInfo().getHoursPerSession() + "\"" + "," +
+			      		"\"sessionsPerWeek\":\""+ contract.getLessonInfo().getSessionsPerWeek()+ "\"" + "," +
+			      		"\"ratePerSession\":\""+ contract.getLessonInfo().getRatePerSession()+ "\"" + "," +
 			      		"\"contractDuration\":\""+ contract.getContractDuration()+ "\"" + "," +
 			      		"\"sessions\":[]" +
 			      	"}" + "," +

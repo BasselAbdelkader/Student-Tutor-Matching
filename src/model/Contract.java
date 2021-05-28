@@ -14,27 +14,24 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class Contract implements Subscription {
 	
+	private String id;
+	
 	private String firstPartyId;
 	private String tutorName;
 	
 	private String secondPartyId;
 	private String studentName;
-	
 
-	private String id;
 	private String subjectId;
 	private String subjectName;
 	
 	private String dateCreated;
 	private String expiryDate;
-	private String hoursPerSession;
-	private String sessionsPerWeek;
-	private String ratePerSession;
-	private String contractDuration;
-	
-
-	private String initialRequestId;
 	private String dateSigned;
+	
+	private LessonInfo lessonInfo;
+	private String initialRequestId;
+	private String contractDuration;
 	
 	private boolean subscribed = false;
 	
@@ -58,10 +55,8 @@ public class Contract implements Subscription {
 		}else if (fromBid.getType().contentEquals("open")) {
 			expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(30));
 		}
-		this.expiryDate = expTimestamp.toInstant().toString();;
-		this.hoursPerSession = fromBid.getHoursPerSession();
-		this.sessionsPerWeek = fromBid.getSessionsPerWeek();
-		this.ratePerSession = fromBid.getRatePerSession();
+		this.expiryDate = expTimestamp.toInstant().toString();
+		this.lessonInfo = fromBid.getLessonInfo();
 		this.contractDuration = fromBid.getContractDuration();
 		this.initialRequestId = fromBid.getId();
 	}
@@ -75,13 +70,13 @@ public class Contract implements Subscription {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		this.dateCreated = timestamp.toInstant().toString();
 		this.initialRequestId = fromContract.getInitialRequestId();
-		this.hoursPerSession = fromContract.getHoursPerSession();
-		this.sessionsPerWeek = fromContract.getSessionsPerWeek();
-		this.ratePerSession = fromContract.getRatePerSession();
+		this.lessonInfo =  fromContract.getLessonInfo();
 		this.contractDuration = fromContract.getContractDuration();
 		this.sign();	
 	}
 	
+	
+
 	public Contract(Contract fromContract) {
 		this.firstPartyId = fromContract.getFirstPartyId();
 		this.tutorName = fromContract.getTutorName();
@@ -93,9 +88,7 @@ public class Contract implements Subscription {
 		Timestamp expTimestamp = new Timestamp(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7));
 		this.expiryDate = expTimestamp.toInstant().toString();
 		this.initialRequestId = fromContract.getInitialRequestId();
-		this.hoursPerSession = fromContract.getHoursPerSession();
-		this.sessionsPerWeek = fromContract.getSessionsPerWeek();
-		this.ratePerSession = fromContract.getRatePerSession();
+		this.lessonInfo = fromContract.getLessonInfo();
 		this.contractDuration = fromContract.getContractDuration();
 	}
 	
@@ -121,16 +114,11 @@ public class Contract implements Subscription {
 			this.dateSigned = jsonNode.get("dateSigned").textValue();
 		}
 		
-		if (jsonNode.get("lessonInfo").get("hoursPerSession") != null) {
-			this.hoursPerSession = jsonNode.get("lessonInfo").get("hoursPerSession").textValue();
-		}
-		
-		if (jsonNode.get("lessonInfo").get("sessionsPerWeek") != null) {
-			this.sessionsPerWeek = jsonNode.get("lessonInfo").get("sessionsPerWeek").textValue();
-		}
-		
-		if (jsonNode.get("lessonInfo").get("ratePerSession") != null) {
-			this.ratePerSession = jsonNode.get("lessonInfo").get("ratePerSession").textValue();
+		if (jsonNode.get("lessonInfo").get("hoursPerSession") != null && jsonNode.get("lessonInfo").get("sessionsPerWeek") != null && jsonNode.get("lessonInfo").get("ratePerSession") != null) {
+			String hoursPerSession = jsonNode.get("lessonInfo").get("hoursPerSession").textValue();
+			String sessionsPerWeek = jsonNode.get("lessonInfo").get("sessionsPerWeek").textValue();
+			String ratePerSession = jsonNode.get("lessonInfo").get("ratePerSession").textValue();
+			this.lessonInfo = new LessonInfo(hoursPerSession,sessionsPerWeek,ratePerSession);
 		}
 		
 		if (jsonNode.get("lessonInfo").get("contractDuration") != null) {
@@ -200,30 +188,6 @@ public class Contract implements Subscription {
 	}
 	
 	/**
-	 * Get the agreed upon hours per session in the contract
-	 * @return number of hours per session agreed in the contract
-	 */
-	public String getHoursPerSession() {
-		return hoursPerSession;
-	}
-	
-	/**
-	 * Get the agreed upon sessions per week in the contract
-	 * @return number of sessions per week agreed in the contract
-	 */
-	public String getSessionsPerWeek() {
-		return sessionsPerWeek;
-	}
-	
-	/**
-	 * Get the agreed upon rate per session in the contract
-	 * @return rate per session agreed in the contract
-	 */
-	public String getRatePerSession() {
-		return ratePerSession;
-	}
-	
-	/**
 	 * Get the id of the initial bid request that led to this contract
 	 * @return id of initial request
 	 */
@@ -265,36 +229,16 @@ public class Contract implements Subscription {
 		}
 	}
 	
-	/**
-	 * Amend the number of hours per session in the UNSIGNED contract
-	 * @return null
-	 */
-	public void setHoursPerSession(String hoursPerSession) {
-		this.hoursPerSession = hoursPerSession;
-	}
-	
-	/**
-	 * Amend the number of sessions per session in the UNSIGNED contract
-	 * @return null
-	 */
-	public void setSessionsPerWeek(String sessionsPerWeek) {
-		this.sessionsPerWeek = sessionsPerWeek;
-	}
-	
-	/**
-	 * Amend the number rate per session in the UNSIGNED contract
-	 * @return null
-	 */
-	public void setRatePerSession(String ratePerSession) {
-		this.ratePerSession = ratePerSession;
-	}
-	
 	public void setContractDuration(String contractDuration) {
 		this.contractDuration = contractDuration;
 	}
 	
 	public void setSubscribed(boolean subscribed) {
 		this.subscribed = subscribed;
+	}
+	
+	public LessonInfo getLessonInfo() {
+		return lessonInfo;
 	}
 	
 	public String toString() {
@@ -316,9 +260,7 @@ public class Contract implements Subscription {
 	    	out = out + "Contract Expiry: " + getExpiryDate() + "\n";
 	    }
 	    out = out + "Contract duration: " + getContractDuration() + "\n";
-	    out = out + "Hours Per Session: " + getHoursPerSession() + "\n";
-	    out = out + "Sessions Per Week: " + getSessionsPerWeek() + "\n";
-	    out = out + "Rate Per Session: " + getRatePerSession() + "\n";
+	    out = out + getLessonInfo().toString();
 	    return out;
 	}
 	

@@ -24,9 +24,8 @@ public class Request {
 	private String subjectId;
 	private ArrayList<Message> messages = new ArrayList<Message>();
 	private int competency =0 ;
-	private String hoursPerSession;
-	private String sessionsPerWeek;
-	private String ratePerSession;
+	
+	private LessonInfo lessonInfo;
 	private String contractDuration;
 	
 
@@ -50,12 +49,12 @@ public class Request {
 		this.type = type;
 		this.subjectId = subjectId;
 		this.competency = competency;
-		this.hoursPerSession = hrsPerSession;
-		this.sessionsPerWeek = sessionsPerWeek;
-		this.ratePerSession = ratePerSession;
+		this.lessonInfo = new LessonInfo(hrsPerSession,sessionsPerWeek,ratePerSession);
 		this.contractDuration = contractDuration;
 		
 	}
+
+	
 
 	/**
 	 * This constructor constructs a Request instance from a JSON string
@@ -73,15 +72,14 @@ public class Request {
 		if (jsonNode.get("dateClosedDown") != null) {
 			this.dateClosedDown = jsonNode.get("dateClosedDown").textValue();
 		}
-		if (jsonNode.get("additionalInfo").get("hoursPerSession") != null) {
-			this.hoursPerSession = jsonNode.get("additionalInfo").get("hoursPerSession").textValue();
+		
+		if (jsonNode.get("additionalInfo").get("hoursPerSession") != null && jsonNode.get("additionalInfo").get("sessionsPerWeek") != null && jsonNode.get("additionalInfo").get("ratePerSession") != null) {
+			String hoursPerSession = jsonNode.get("additionalInfo").get("hoursPerSession").textValue();
+			String sessionsPerWeek = jsonNode.get("additionalInfo").get("sessionsPerWeek").textValue();
+			String ratePerSession = jsonNode.get("additionalInfo").get("ratePerSession").textValue();
+			this.lessonInfo = new LessonInfo(hoursPerSession,sessionsPerWeek,ratePerSession);
 		}
-		if (jsonNode.get("additionalInfo").get("sessionsPerWeek") != null) {
-			this.sessionsPerWeek = jsonNode.get("additionalInfo").get("sessionsPerWeek").textValue();
-		}
-		if (jsonNode.get("additionalInfo").get("ratePerSession") != null) {
-			this.ratePerSession = jsonNode.get("additionalInfo").get("ratePerSession").textValue();
-		}
+		
 		if (jsonNode.get("additionalInfo").get("contractDuration") != null) {
 			this.contractDuration = jsonNode.get("additionalInfo").get("contractDuration").textValue();
 		}
@@ -172,30 +170,6 @@ public class Request {
 		return out;
 	}
 
-	/**
-	 * Get the number of hours per session that the requestor needs
-	 * @return number of hours per session
-	 */
-	public String getHoursPerSession() {
-		return hoursPerSession;
-	}
-
-	/**
-	 * Get the number of sessions per week that the requestor needs
-	 * @return number of sessions per week
-	 */
-	public String getSessionsPerWeek() {
-		return sessionsPerWeek;
-	}
-
-	/**
-	 * Get the rate per session that the requestor needs
-	 * @return rate per session
-	 */
-	public String getRatePerSession() {
-		return ratePerSession;
-	}
-
 	public String toString() {
 		String out  = "";
 	    out = out + getType() + " request \n";
@@ -204,9 +178,7 @@ public class Request {
 	    out = out + "Date Closed: " + getDateClosedDown() + "\n";
 	    out = out + "Minimum Competency: " + getCompetency() + "\n";
 	    out = out + "Contract duration: " + getContractDuration() + "\n";
-	    out = out + "Hours Per Session: " + getHoursPerSession() + "\n";
-	    out = out + "Sessions Per Week: " + getSessionsPerWeek() + "\n";
-	    out = out + "Rate Per Session: " + getRatePerSession() + "\n";
+	    out = out + getLessonInfo().toString();
 	    return out;
 	}
 	
@@ -222,4 +194,7 @@ public class Request {
 		return contractDuration;
 	}
 	
+	public LessonInfo getLessonInfo() {
+		return lessonInfo;
+	}
 }

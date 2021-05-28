@@ -79,9 +79,9 @@ public class OpenBidsWindow extends RefreshableController{
 			public void actionPerformed(ActionEvent e) {
 				try {
 	        		Contract contract = new Contract(currentUser, selectedBid);
-	        		contract.setHoursPerSession(window.getHoursPerSessionInput().getSelectedItem().toString());
-	        		contract.setSessionsPerWeek(window.getSessionsPerWeekInput().getSelectedItem().toString());
-	        		contract.setRatePerSession(window.getRatePerSessionInput().getText());
+	        		contract.getLessonInfo().setHoursPerSession(window.getHoursPerSessionInput().getSelectedItem().toString());
+	        		contract.getLessonInfo().setSessionsPerWeek(window.getSessionsPerWeekInput().getSelectedItem().toString());
+	        		contract.getLessonInfo().setRatePerSession(window.getRatePerSessionInput().getText());
 	        		ContractsAPI.getInstance().addContract(contract);
 	        		new RequestWindow(currentUser,selectedBid);
 				}

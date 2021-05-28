@@ -69,9 +69,9 @@ public class ViewContractWindow extends RefreshableController{
 		window.getUpdateContractBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
-	        	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
-	        	  contract.setRatePerSession(ratePerSessionInput.getText());
+				contract.getLessonInfo().setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
+	        	  contract.getLessonInfo().setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
+	        	  contract.getLessonInfo().setRatePerSession(ratePerSessionInput.getText());
 	        	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
 	        	  try {
 	        		  ContractsAPI.getInstance().updateContract(contract);
@@ -134,9 +134,9 @@ public class ViewContractWindow extends RefreshableController{
 				try {
 	        		  User tutor = UserAPI.getInstance().getUserByID(window.getNewTutorIDInput().getText());
 	        		  if (tutor.getCompetencyLevel(contract.getSubjectId()) > currentUser.getCompetencyLevel(contract.getSubjectId()) + 2) {
-	        			  contract.setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
-	        	    	  contract.setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
-	        	    	  contract.setRatePerSession(ratePerSessionInput.getText());
+	        			  contract.getLessonInfo().setHoursPerSession(hoursPerSessionInput.getSelectedItem().toString());
+	        	    	  contract.getLessonInfo().setSessionsPerWeek(sessionsPerWeekInput.getSelectedItem().toString());
+	        	    	  contract.getLessonInfo().setRatePerSession(ratePerSessionInput.getText());
 	        	    	  contract.setContractDuration(contractDurationInput.getSelectedItem().toString());
 	        	    	  Contract newcontract = new Contract(tutor, contract);
 	            		  Contract renewed = ContractsAPI.getInstance().addContract(newcontract);
